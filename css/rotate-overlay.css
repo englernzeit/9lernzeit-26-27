@@ -1,0 +1,30 @@
+/* ============================================================
+   Rotate overlay — portrait fallback for iPad Safari (browser tab).
+   Shows the painted "Please turn me sideways" illustration
+   (assets/images/rotate-overlay.png). Toggled purely by the
+   portrait media query; no JS involved.
+   ============================================================ */
+
+.rotate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  background: var(--paper) url("../assets/images/rotate-overlay.png") center / contain no-repeat;
+}
+
+@media (orientation: portrait) {
+  .rotate-overlay {
+    display: block;
+  }
+}
+
+/* Text lives in the artwork; keep the DOM copy for screen readers */
+.rotate-overlay__text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

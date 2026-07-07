@@ -1,0 +1,34 @@
+/* ============================================================
+   Back tab — torn-paper / masking-tape "Back to …" affordance.
+   Used on section pages ("Back to [Unit]") and unit carousels
+   ("Back to Map"). Final torn-paper art added with assets;
+   the tape look below is the working shell. No browser chrome.
+   ============================================================ */
+
+.back-tab {
+  position: absolute;
+  top: var(--space-md);
+  left: var(--space-md);
+  z-index: 10;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-tape);
+  box-shadow: var(--shadow-lift-1);
+  transform: rotate(-2deg);
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+  transition: transform var(--motion-micro);
+}
+
+.back-tab::before {
+  content: "\2190\00a0"; /* ← hand-drawn arrow asset replaces this later */
+}
+
+.back-tab:hover,
+.back-tab:focus-visible {
+  transform: rotate(0deg) scale(1.05);
+}
+
+/* Keep tape rotation when pressed (overrides generic button:active) */
+.back-tab:active {
+  transform: rotate(-2deg) scale(0.97);
+}

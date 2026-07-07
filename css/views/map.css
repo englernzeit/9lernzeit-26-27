@@ -1,0 +1,400 @@
+/* ============================================================
+   Homepage map view — journey map assembled from painted assets.
+   Layers: route (1) → decor (2) → unit stops (3) → header/plan (5).
+   Idle motion: transforms/opacity only; killed by the global
+   prefers-reduced-motion rule in base.css.
+   ============================================================ */
+
+.map-view {
+  overflow: hidden;
+  /* Vintage travel map backdrop (stamps, faded Australia map) */
+  background: url("../../assets/images/background-travel.png") center / cover no-repeat;
+}
+
+/* --- Ink route ------------------------------------------------ */
+
+.map-view__route {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* One route per orientation */
+.map-view__route--portrait {
+  display: none;
+}
+
+@media (orientation: portrait) {
+  .map-view__route--landscape {
+    display: none;
+  }
+
+  .map-view__route--portrait {
+    display: block;
+  }
+}
+
+.map-view__route-path {
+  fill: none;
+  stroke: var(--ink);
+  /* User-space units: dashes read as hand-drawn pen strokes */
+  stroke-width: 0.38;
+  stroke-linecap: round;
+  stroke-dasharray: 1.1 1.6;
+  opacity: 0.6;
+  /* Slow dash crawl: the journey feels alive without moving layout */
+  animation: map-route-crawl 90s linear infinite;
+}
+
+@keyframes map-route-crawl {
+  to {
+    stroke-dashoffset: -27;
+  }
+}
+
+/* --- Header --------------------------------------------------- */
+
+/* Negative offsets compensate the transparent margins inside the
+   logo's square canvas — the lettering hugs the actual corner */
+.map-view__header {
+  position: absolute;
+  top: -2.25rem;
+  left: -2.25rem;
+  z-index: 5;
+}
+
+.map-view__title {
+  line-height: 0;
+}
+
+.map-view__logo {
+  width: clamp(16rem, 28vw, 24rem);
+  filter: drop-shadow(0 2px 4px rgba(44, 42, 38, 0.15));
+}
+
+/* --- Decor ---------------------------------------------------- */
+
+.map-view__plane {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(44, 42, 38, 0.15));
+}
+
+.map-view__plane--1 {
+  /* Empty paper between the START backpack and unit 2 */
+  top: 66%;
+  left: 10.5%;
+  width: clamp(4rem, 7vw, 6.5rem);
+  animation: map-plane-float 8s ease-in-out infinite;
+}
+
+.map-view__plane--2 {
+  top: 46%;
+  left: 44%;
+  width: clamp(3rem, 5vw, 4.5rem);
+  transform: scaleX(-1);
+  animation: map-plane-float-flip 10s ease-in-out infinite;
+}
+
+@keyframes map-plane-float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(6px, -6px) rotate(2deg); }
+}
+
+@keyframes map-plane-float-flip {
+  0%, 100% { transform: scaleX(-1) translate(0, 0) rotate(0deg); }
+  50% { transform: scaleX(-1) translate(6px, -5px) rotate(-2deg); }
+}
+
+/* --- START / FINISH waypoints --------------------------------- */
+
+.map-view__waypoint {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.map-view__waypoint--start {
+  left: 1.5%;
+  bottom: 0;
+  width: clamp(10rem, 17vw, 15rem);
+}
+
+.map-view__waypoint--finish {
+  right: 1%;
+  bottom: 0;
+  width: clamp(13rem, 21vw, 19rem);
+}
+
+.map-view__waypoint-art {
+  width: 100%;
+  filter: drop-shadow(0 3px 6px rgba(44, 42, 38, 0.2));
+}
+
+/* On the blank coral ribbon across the finish sign */
+.map-view__waypoint-caption {
+  position: absolute;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.06em;
+}
+
+.map-view__waypoint-caption--finish {
+  top: 44%;
+  left: 21%;
+  width: 52%;
+  font-size: clamp(1rem, 1.7vw, 1.45rem);
+  transform: rotate(-2deg);
+  color: #fffdf6;
+  text-shadow: 0 1px 2px rgba(44, 42, 38, 0.35);
+}
+
+/* --- Unit stops ------------------------------------------------ */
+
+.map-view__unit-stop {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform var(--motion-micro);
+}
+
+/* Die-cut sticker: shadow, attract glow and idle motion live on
+   the image; drop-shadow follows the alpha contour. */
+.map-view__unit-sticker {
+  width: clamp(13rem, 28vw, 21rem);
+  filter: drop-shadow(0 3px 6px rgba(44, 42, 38, 0.3));
+}
+
+/* Attract pulse ("look here") — a soft warm edge glow that breathes
+   once per cycle, staggered per unit so the map twinkles gently. */
+@keyframes map-sticker-attract {
+  0%, 62%, 100% {
+    filter: drop-shadow(0 3px 6px rgba(44, 42, 38, 0.3));
+  }
+  74%, 86% {
+    filter: drop-shadow(0 3px 6px rgba(44, 42, 38, 0.3))
+      drop-shadow(0 0 6px rgba(255, 214, 110, 0.95))
+      drop-shadow(0 0 16px rgba(255, 214, 110, 0.55));
+  }
+}
+
+/* Themed idle motion (stand-in until the animated video loops):
+   1 floats on water, 2 sways like the flag, 3 soars, 4 pulses. */
+@keyframes map-idle-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(0.6deg); }
+}
+
+@keyframes map-idle-sway {
+  0%, 100% { transform: rotate(-0.7deg); }
+  50% { transform: rotate(0.7deg); }
+}
+
+@keyframes map-idle-soar {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -6px); }
+}
+
+@keyframes map-idle-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); }
+}
+
+.map-view__unit-sticker--u1 {
+  animation: map-idle-bob 7s ease-in-out infinite,
+    map-sticker-attract 9s ease-in-out infinite;
+}
+
+.map-view__unit-sticker--u2 {
+  animation: map-idle-sway 6s ease-in-out infinite,
+    map-sticker-attract 9s ease-in-out 2.2s infinite;
+}
+
+.map-view__unit-sticker--u3 {
+  animation: map-idle-soar 9s ease-in-out infinite,
+    map-sticker-attract 9s ease-in-out 4.4s infinite;
+}
+
+.map-view__unit-sticker--u4 {
+  animation: map-idle-pulse 5s ease-in-out infinite,
+    map-sticker-attract 9s ease-in-out 6.6s infinite;
+}
+
+/* Hover/focus: hand takes over — idle/attract stop, sticker lifts */
+.map-view__unit-stop:hover .map-view__unit-sticker,
+.map-view__unit-stop:focus-visible .map-view__unit-sticker {
+  animation: none;
+  filter: drop-shadow(0 10px 16px rgba(44, 42, 38, 0.32))
+    drop-shadow(0 0 10px rgba(255, 244, 200, 0.95))
+    brightness(1.04);
+}
+
+.map-view__unit-stop:hover,
+.map-view__unit-stop:focus-visible {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Keep centering transform when pressed (overrides generic button:active) */
+.map-view__unit-stop:active {
+  transform: translate(-50%, -50%) scale(0.97);
+}
+
+/* Painted label plaque — upper right of the sticker, its number
+   badge (left end) touching the sticker's edge */
+.map-view__unit-labelplate {
+  position: absolute;
+  left: 67%;
+  top: 1%;
+  width: clamp(10rem, 18vw, 14.5rem);
+  transform: rotate(-1.5deg);
+  filter: drop-shadow(0 2px 4px rgba(44, 42, 38, 0.25));
+  transition: filter var(--motion-micro);
+}
+
+/* Unit 1: plaque to the right of the sticker, at kangaroo-head height */
+.map-view__unit-labelplate--u1 {
+  left: 72%;
+  top: 14%;
+}
+
+/* Unit 2: plaque to the right of the sticker, at hoop height */
+.map-view__unit-labelplate--u2 {
+  left: 76%;
+  top: 15%;
+}
+
+/* Unit 4: plaque pulled down close to the artwork */
+.map-view__unit-labelplate--u4 {
+  left: 58%;
+  top: 14%;
+}
+
+.map-view__unit-stop:hover .map-view__unit-labelplate,
+.map-view__unit-stop:focus-visible .map-view__unit-labelplate {
+  filter: drop-shadow(0 6px 10px rgba(44, 42, 38, 0.3))
+    drop-shadow(0 0 8px rgba(255, 244, 200, 0.9));
+}
+
+/* --- Today's Plan notebook (top-right) ------------------------- */
+
+.map-view__plan {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  z-index: 5;
+  width: clamp(10rem, 14vw, 12.5rem);
+  aspect-ratio: 896 / 1200;
+  background: url("../../assets/images/notebook.png") no-repeat center / contain;
+  filter: drop-shadow(0 4px 10px rgba(44, 42, 38, 0.2));
+  transform: rotate(1.5deg);
+}
+
+/* inset %% resolve against the notebook itself — content fills the page */
+.map-view__plan-page {
+  position: absolute;
+  inset: 7% 8% 10% 20%;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-view__plan-title {
+  font-family: var(--font-hand);
+  font-size: clamp(0.85rem, 1.3vw, 1.05rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+/* ============================================================
+   Portrait (phones, vertical iPad): the journey turns vertical —
+   START at the top, units snake down, FINISH at the bottom.
+   The map becomes a scrollable 230vh canvas.
+   ============================================================ */
+
+@media (orientation: portrait) {
+  .map-view {
+    height: 230vh;
+  }
+
+  .map-view__header {
+    top: -1.25rem;
+    left: -1.25rem;
+  }
+
+  .map-view__logo {
+    width: clamp(11rem, 54vw, 20rem);
+  }
+
+  .map-view__plan {
+    top: 0.75rem;
+    right: 0.5rem;
+    width: clamp(10rem, 42vw, 13.5rem);
+  }
+
+  .map-view__plan-title {
+    font-size: clamp(0.7rem, 3vw, 1rem);
+  }
+
+  .checklist__label {
+    font-size: clamp(0.7rem, 2.9vw, 0.95rem);
+  }
+
+  .map-view__waypoint--start {
+    left: 3%;
+    bottom: auto;
+    top: 7.5%;
+    width: clamp(8rem, 30vw, 13rem);
+  }
+
+  /* Finish: centered, bigger, sitting right at the route's end */
+  .map-view__waypoint--finish {
+    right: auto;
+    left: 50%;
+    bottom: auto;
+    top: 79%;
+    transform: translateX(-50%);
+    width: clamp(13rem, 54vw, 21rem);
+  }
+
+  .map-view__unit-stop {
+    left: var(--xp);
+    top: var(--yp);
+  }
+
+  .map-view__unit-sticker {
+    width: min(56vw, 21rem);
+  }
+
+  /* Plaques sit centered under each sticker — readable, no collisions */
+  .map-view__unit-labelplate,
+  .map-view__unit-labelplate--u1,
+  .map-view__unit-labelplate--u2,
+  .map-view__unit-labelplate--u4 {
+    left: 50%;
+    top: 88%;
+    width: min(52vw, 19rem);
+    transform: translateX(-50%) rotate(-1.5deg);
+  }
+
+  .map-view__plane--1 {
+    top: 30%;
+    left: 74%;
+  }
+
+  .map-view__plane--2 {
+    top: 59%;
+    left: 8%;
+  }
+}

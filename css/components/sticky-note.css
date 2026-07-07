@@ -1,0 +1,9 @@
+/* ============================================================
+   Sticky note — journal decoration component.
+   Assets must have transparent backgrounds (WebP + PNG fallback).
+   ============================================================ */
+
+.sticky-note {
+  position: absolute;
+  /* Rotation / lift effects via transform only */
+}

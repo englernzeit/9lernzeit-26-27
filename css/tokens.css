@@ -1,0 +1,65 @@
+/* ============================================================
+   Design tokens — single source of truth for the journal look.
+   Values are defined by DESIGN-SYSTEM.md (§2, §9, §11, §13);
+   change tokens here, never hardcode values in components.
+   ============================================================ */
+
+:root {
+  /* --- Paper & ink (DS §2) --- */
+  --paper: #f5efe0;
+  --paper-card: #fffdf6;
+  --paper-shadowed: #e8dcc3;
+  --ink: #2c2a26;
+  --ink-blue: #1d3a5f;
+
+  /* --- Unit accents (locked per unit, DS §2) --- */
+  --unit-1: #c94f3d; /* Australia */
+  --unit-2: #6d8f4e; /* Respect & Community */
+  --unit-3: #d9962e; /* Looking Forward */
+  --unit-4: #7b5ea7; /* Generation Like */
+
+  /* --- Step (differentiation) colors — same on every unit.
+         Sampled from the card background art (assets/images/cards);
+         light → dark mirrors Step 1 → Step 4 difficulty. --- */
+  --step-1: #82bd61; /* LE — light fresh green */
+  --step-2: #607d29; /* G-Kurs — olive */
+  --step-3: #549b5a; /* E-Kurs — emerald→lime gradient */
+  --step-4: #00553e; /* Challenge ★ — deep emerald */
+
+  /* --- Watercolor washes (DS §2) --- */
+  --wash-sky: #a8c6d6;
+  --wash-teal: #3b6e8f;
+  --wash-sage: #b5c4a1;
+  --wash-sand: #e3c795;
+  --wash-blush: #e8b4a8;
+  --accent-coral: #e07a6f;
+  --tape: rgba(255, 244, 200, 0.85);
+
+  /* --- Legacy aliases (kept until components migrate) --- */
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-accent: var(--wash-teal);
+  --color-tape: var(--tape);
+
+  /* --- Shadows: soft top light, warm, never black (DS §9) --- */
+  --shadow-lift-1: 0 2px 5px rgba(44, 42, 38, 0.18);
+  --shadow-lift-2: 0 3px 10px rgba(44, 42, 38, 0.15);
+  --shadow-lift-3: 0 8px 20px rgba(44, 42, 38, 0.18);
+
+  /* --- Typography (DS §13) --- */
+  --font-body: Georgia, "Times New Roman", serif;
+  /* Single bundled handwritten face (assets/fonts/patrick-hand.woff2);
+     local system faces only as fallback while it loads */
+  --font-hand: "Patrick Hand", "Chalkboard SE", "Segoe Print", cursive;
+
+  /* --- Spacing scale --- */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+
+  /* --- Motion: transforms/opacity only, ease-out (DS §11) --- */
+  --motion-micro: 0.2s ease-out;   /* lift / press / tick */
+  --motion-panel: 0.35s ease;      /* view + carousel transitions */
+  --transition-panel: transform var(--motion-panel), opacity var(--motion-panel);
+}

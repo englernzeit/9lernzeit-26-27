@@ -1,0 +1,30 @@
+/* ============================================================
+   Layout — app shell and view containers
+   ============================================================ */
+
+.app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Each routed view fills the shell; transitions use transforms only */
+.view {
+  position: absolute;
+  inset: 0;
+}
+
+/* Portrait: views flow and scroll instead of filling a fixed shell */
+@media (orientation: portrait) {
+  .app {
+    height: auto;
+    overflow: visible;
+  }
+
+  .view {
+    position: relative;
+    inset: auto;
+    min-height: 100svh;
+  }
+}

@@ -1,0 +1,74 @@
+/* ============================================================
+   Base — reset and element defaults
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden; /* landscape: the app is a fixed canvas */
+}
+
+/* Portrait (phones, vertical iPad): the page scrolls vertically */
+@media (orientation: portrait) {
+  html,
+  body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+body {
+  /* Painted paper texture over the token color fallback */
+  background: var(--color-paper) url("../assets/images/paper-texture.png") center / cover no-repeat;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Buttons are physical objects: press state per DESIGN-SYSTEM.md §7 */
+button:active {
+  transform: scale(0.97);
+}
+
+/* Ink outline on keyboard focus (DS §7) */
+:focus-visible {
+  outline: 2px solid var(--ink-blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Idle/decorative motion off for users who ask for it (DS §11) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

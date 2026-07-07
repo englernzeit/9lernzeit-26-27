@@ -1,0 +1,59 @@
+/* ============================================================
+   Today's Plan checklist — tappable items on the notebook page.
+   Checked state shows the painted ink tick (assets/icons/tick.png)
+   sweeping in over a hand-drawn box. State lives in localStorage.
+   ============================================================ */
+
+.checklist {
+  list-style: none;
+  /* Fills the notebook page (plan-page is a column flexbox) */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.checklist__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+}
+
+.checklist__tick {
+  position: relative;
+  flex: none;
+  width: 1.3em;
+  height: 1.3em;
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  /* Slight hand-drawn wobble */
+  transform: rotate(-1deg);
+}
+
+/* Painted red tick filling the whole box */
+.checklist__tick-img {
+  position: absolute;
+  inset: -6%;
+  width: 112%;
+  opacity: 0;
+  transform: scale(0.4) rotate(-8deg);
+  transform-origin: bottom left;
+  transition: transform var(--motion-micro), opacity var(--motion-micro);
+}
+
+.checklist__item.is-checked .checklist__tick-img {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.checklist__label {
+  font-family: var(--font-hand);
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.checklist__item.is-checked .checklist__label {
+  opacity: 0.55;
+}

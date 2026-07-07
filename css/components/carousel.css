@@ -1,0 +1,38 @@
+/* ============================================================
+   Unit carousel — panel with the 7 location buttons. Only one
+   panel exists at a time (router re-renders per route, so panels
+   can never stack). Transitions: CSS transforms only.
+   ============================================================ */
+
+.carousel {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel__locations {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: var(--space-md);
+}
+
+.carousel__location-btn {
+  min-width: 8.5rem;
+  padding: var(--space-md);
+  background: var(--paper-card);
+  border: 1px solid rgba(44, 42, 38, 0.2);
+  border-radius: 6px;
+  box-shadow: var(--shadow-lift-1);
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  transition: transform var(--motion-micro);
+  /* Final journal art (photo-corner / postcard styling) added later */
+}
+
+.carousel__location-btn:hover,
+.carousel__location-btn:focus-visible {
+  transform: translateY(-4px) rotate(-1deg);
+}

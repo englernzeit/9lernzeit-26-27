@@ -1,0 +1,468 @@
+/* ============================================================
+   Journal carousel + cards (competence pages, handoff 2a).
+   Holder transforms/opacity are set inline by journalCarousel.js;
+   everything visual lives here. Cinematic pacing ~1400ms.
+   ============================================================ */
+
+/* --- Carousel frame -------------------------------------------- */
+
+.jcar {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.jcar__stage {
+  position: relative;
+  touch-action: pan-y;
+}
+
+/* Stage heights per mode (design: words 330, steps 430) */
+.jcar--stack .jcar__stage { height: 21rem; }
+.jcar--slide .jcar__stage { height: 26rem; }
+.jcar--spread .jcar__stage { height: 26.5rem; }
+.jcar--single .jcar__stage { height: auto; padding: 0.4rem 0 1rem; }
+
+/* Card holder: centered, width per mode */
+.jcar__holder {
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  width: min(35rem, 86vw); /* stack default (560px) */
+  margin-left: calc(-1 * min(35rem, 86vw) / 2);
+  will-change: transform, opacity;
+}
+
+.jcar--slide .jcar__holder {
+  width: min(40rem, 88vw);
+  margin-left: calc(-1 * min(40rem, 88vw) / 2);
+  top: 0;
+}
+
+.jcar--spread .jcar__holder {
+  width: min(63.75rem, 92vw); /* 1020px */
+  margin-left: calc(-1 * min(63.75rem, 92vw) / 2);
+  top: 0;
+}
+
+/* Step 4 single card — no absolute stage */
+.jcar--single .jcar__stage > .taskcard {
+  width: min(63.75rem, 92vw);
+  margin: 0 auto;
+  transform: rotate(-0.4deg);
+}
+
+/* --- Blob arrows ------------------------------------------------ */
+
+.jcar__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3.4rem;
+  height: 3.4rem;
+  background: rgba(253, 247, 234, 0.95);
+  border: 2px solid rgba(107, 95, 76, 0.45);
+  box-shadow: 0 8px 18px rgba(70, 60, 110, 0.16);
+  font-size: 1.6rem;
+  color: var(--j-ink);
+  z-index: 40;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.jcar__arrow--prev {
+  left: 1.75rem;
+  border-radius: 50% 46% 52% 48% / 48% 52% 46% 50%;
+}
+
+.jcar__arrow--next {
+  right: 1.75rem;
+  border-radius: 46% 52% 48% 50% / 52% 46% 50% 48%;
+}
+
+/* Words stack: arrows hug the pile like in the design */
+.jcar--stack .jcar__arrow--prev { left: max(1.5rem, calc(50% - 26rem)); }
+.jcar--stack .jcar__arrow--next { right: max(1.5rem, calc(50% - 26rem)); }
+
+.jcar__arrow:hover,
+.jcar__arrow:focus-visible {
+  transform: translateY(-50%) scale(1.1);
+}
+
+.jcar__arrow:active {
+  transform: translateY(-50%) scale(0.94);
+}
+
+.jcar__arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+  transform: translateY(-50%);
+}
+
+/* --- Numbered dots ---------------------------------------------- */
+
+.jcar__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-top: 0.6rem;
+}
+
+.jcar__dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  border: 2px solid rgba(107, 95, 76, 0.55);
+  background: rgba(253, 247, 234, 0.92);
+  color: var(--j-line);
+  box-shadow: 0 2px 6px rgba(70, 60, 110, 0.14);
+  transition: background 0.5s, color 0.5s;
+}
+
+.jcar__dot--teal.jcar__dot--active { background: var(--j-teal); }
+.jcar__dot--coral.jcar__dot--active { background: var(--j-coral); }
+.jcar__dot--olive.jcar__dot--active { background: var(--j-olive); }
+.jcar__dot--slate.jcar__dot--active { background: var(--j-slate); }
+.jcar__dot--ochre.jcar__dot--active { background: var(--j-ochre); }
+
+.jcar__dot--active {
+  color: var(--j-paper-1);
+}
+
+/* --- Watercolor placeholder slots ------------------------------- */
+
+.journal-artslot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  font-size: 11px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.journal-artslot--teal {
+  background: repeating-linear-gradient(45deg, rgba(79, 127, 150, 0.16) 0 8px, rgba(79, 127, 150, 0.05) 8px 16px);
+  color: var(--j-teal);
+}
+
+.journal-artslot--coral {
+  background: repeating-linear-gradient(45deg, rgba(192, 106, 88, 0.14) 0 8px, rgba(192, 106, 88, 0.04) 8px 16px);
+  color: #a3766b;
+}
+
+.journal-artslot--olive {
+  background: repeating-linear-gradient(45deg, rgba(125, 138, 79, 0.14) 0 10px, rgba(125, 138, 79, 0.04) 10px 20px);
+  color: #6f7a48;
+}
+
+.journal-artslot--slate {
+  background: repeating-linear-gradient(45deg, rgba(107, 124, 156, 0.14) 0 10px, rgba(107, 124, 156, 0.04) 10px 20px);
+  color: var(--j-slate);
+}
+
+.journal-artslot--ochre {
+  background: repeating-linear-gradient(45deg, rgba(160, 131, 80, 0.14) 0 10px, rgba(160, 131, 80, 0.04) 10px 20px);
+  color: var(--j-ochre);
+}
+
+/* --- Word postcard ---------------------------------------------- */
+
+.wordcard {
+  position: relative;
+  display: flex;
+  background: var(--j-paper-2);
+  border: 1px solid rgba(120, 105, 80, 0.22);
+  border-radius: 10px;
+  box-shadow: 0 16px 32px rgba(70, 60, 110, 0.18);
+  padding: 1.6rem 1.6rem 1.5rem 2.1rem;
+  min-height: 15.6rem;
+}
+
+.wordcard__main {
+  flex: 1;
+  padding-right: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.wordcard__eyebrow {
+  font-size: 0.95rem;
+  letter-spacing: 1.5px;
+  color: var(--j-khaki);
+  text-transform: uppercase;
+}
+
+.wordcard__en {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 3.25rem;
+  line-height: 1;
+  color: var(--j-teal-deep);
+}
+
+.wordcard__de {
+  font-size: 1.5rem;
+  color: var(--j-ink);
+  border-top: 2px dotted rgba(138, 125, 99, 0.45);
+  padding-top: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.wordcard__ex {
+  font-family: var(--j-font-display);
+  font-size: 1.45rem;
+  color: var(--j-khaki);
+}
+
+.wordcard__side {
+  width: 8.1rem;
+  border-left: 2px dashed rgba(138, 125, 99, 0.35);
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex: 0 0 auto;
+}
+
+/* Stamp: white frame around the striped art slot */
+.wordcard__stamp {
+  width: 4.9rem;
+  height: 5.75rem;
+  border: 2px solid rgba(79, 127, 150, 0.45);
+  padding: 3px;
+  background: var(--j-paper-2);
+  transform: rotate(2deg);
+}
+
+.wordcard__stamp .journal-artslot {
+  width: 100%;
+  height: 100%;
+  font-size: 9px;
+}
+
+.wordcard__postmark {
+  width: 4.6rem;
+  height: 4.6rem;
+  border-radius: 50%;
+  border: 2px dashed rgba(79, 127, 150, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-9deg);
+  color: var(--j-teal);
+  font-family: var(--j-font-display);
+  line-height: 1.05;
+}
+
+.wordcard__postmark-label {
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.wordcard__postmark-num {
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+/* --- Task cards -------------------------------------------------- */
+
+.taskcard {
+  position: relative;
+  box-sizing: border-box;
+  border: 1px solid rgba(120, 105, 80, 0.2);
+  box-shadow: var(--j-shadow-card);
+}
+
+/* Step 1 note: wobbly corners, art slot top-right */
+.taskcard--note {
+  background: var(--j-paper-1);
+  border-radius: 16px 30px 18px 32px / 30px 16px 34px 18px;
+  padding: 1.75rem 2.1rem 1.25rem;
+  min-height: 22rem;
+}
+
+.taskcard--note .taskcard__corner-art {
+  position: absolute;
+  right: 1.6rem;
+  top: 1.6rem;
+  width: 9.5rem;
+  height: 6.6rem;
+  border-radius: 8px 14px 10px 16px / 14px 8px 16px 10px;
+  border: 1px dashed rgba(192, 106, 88, 0.5);
+}
+
+.taskcard--note .taskcard__body {
+  max-width: 26rem;
+}
+
+/* Steps 2–4 spread: illustration column left */
+.taskcard--spread {
+  display: flex;
+  background: var(--j-paper-3);
+  border-radius: 14px 24px 16px 26px / 24px 14px 26px 16px;
+  min-height: 24.5rem;
+  overflow: hidden;
+}
+
+.taskcard__side-art {
+  width: 16.25rem;
+  flex: 0 0 auto;
+  border-right: 2px dashed rgba(138, 125, 99, 0.35);
+  padding: 1.25rem;
+  font-size: 12px;
+}
+
+.taskcard--spread .taskcard__body {
+  flex: 1;
+  padding: 1.9rem 2.4rem 1.5rem;
+}
+
+/* Shared card typography */
+.taskcard__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+
+.taskcard__num {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 2.1rem;
+}
+
+.taskcard--coral .taskcard__num { color: var(--j-coral); }
+.taskcard--olive .taskcard__num { color: var(--j-olive); }
+.taskcard--slate .taskcard__num { color: var(--j-slate); }
+.taskcard--ochre .taskcard__num { color: var(--j-ochre); }
+
+.taskcard__kind {
+  font-size: 0.95rem;
+  letter-spacing: 1.5px;
+  color: var(--j-khaki);
+  text-transform: uppercase;
+}
+
+.taskcard__title {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  margin-top: 0.4rem;
+}
+
+.taskcard__intro {
+  font-size: 1.3rem;
+  color: var(--j-secondary);
+  margin-top: 0.15rem;
+}
+
+.taskcard__lines {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 33.75rem;
+}
+
+.taskcard__line {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  font-size: 1.3rem;
+  line-height: 1.4;
+}
+
+.taskcard__bullet {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  transform: translateY(-2px);
+}
+
+.taskcard--coral .taskcard__bullet { background: rgba(192, 106, 88, 0.55); }
+.taskcard--olive .taskcard__bullet { background: rgba(125, 138, 79, 0.55); }
+.taskcard--slate .taskcard__bullet { background: rgba(107, 124, 156, 0.55); }
+.taskcard--ochre .taskcard__bullet { background: rgba(160, 131, 80, 0.55); }
+
+/* Check-out self-check boxes */
+.taskcard__checkbox {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(160, 131, 80, 0.6);
+  border-radius: 4px 6px 4px 6px;
+  flex: 0 0 auto;
+  transform: translateY(2px);
+}
+
+.taskcard__help {
+  margin-top: 1.1rem;
+  padding-top: 0.5rem;
+  border-top: 2px dashed rgba(138, 125, 99, 0.4);
+  font-family: var(--j-font-display);
+  font-size: 1.4rem;
+}
+
+.taskcard--coral .taskcard__help { color: var(--j-coral); }
+.taskcard--olive .taskcard__help { color: var(--j-olive); }
+.taskcard--slate .taskcard__help { color: var(--j-slate); }
+.taskcard--ochre .taskcard__help { color: var(--j-ochre); }
+
+/* --- Portrait / narrow ------------------------------------------ */
+
+@media (orientation: portrait) {
+  /* Spread cards fold: illustration on top, text below */
+  .taskcard--spread {
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .taskcard__side-art {
+    width: 100%;
+    height: 8rem;
+    border-right: none;
+    border-bottom: 2px dashed rgba(138, 125, 99, 0.35);
+  }
+
+  .taskcard--spread .taskcard__body {
+    padding: 1.4rem 1.5rem 1.25rem;
+  }
+
+  .jcar--spread .jcar__stage { height: 34rem; }
+  .jcar--slide .jcar__stage { height: 30rem; }
+  .jcar--stack .jcar__stage { height: 23rem; }
+
+  .taskcard--note {
+    min-height: 26rem;
+    padding: 1.5rem 1.4rem 1.25rem;
+  }
+
+  /* Corner art shrinks so text keeps room */
+  .taskcard--note .taskcard__corner-art {
+    width: 7rem;
+    height: 5rem;
+    right: 1rem;
+    top: 1rem;
+  }
+
+  .jcar__arrow--prev { left: 0.4rem; }
+  .jcar__arrow--next { right: 0.4rem; }
+  .jcar--stack .jcar__arrow--prev { left: 0.4rem; }
+  .jcar--stack .jcar__arrow--next { right: 0.4rem; }
+
+  .wordcard {
+    padding: 1.25rem 1rem 1.25rem 1.4rem;
+  }
+
+  .wordcard__en { font-size: 2.6rem; }
+  .wordcard__side { width: 7rem; padding-left: 0.9rem; }
+}

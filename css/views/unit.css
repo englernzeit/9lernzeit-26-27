@@ -1,0 +1,177 @@
+/* ============================================================
+   Unit views.
+   .unit-map — island layout for units with full page art
+   (cloudy backdrop, banner, central island, location cards).
+   .unit-view — carousel shell fallback for units 2–4.
+   ============================================================ */
+
+/* --- Island layout ------------------------------------------- */
+
+.unit-map {
+  overflow: hidden;
+  background: var(--paper) center / cover no-repeat;
+  /* backgroundImage is set inline from unit data (bg-clouds) */
+}
+
+.unit-map__links {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.unit-map__link {
+  stroke: var(--ink);
+  stroke-width: 0.32;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1.4;
+  opacity: 0.45;
+}
+
+.unit-map__banner {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  z-index: 4;
+  width: clamp(16rem, 30vw, 24rem);
+  filter: drop-shadow(0 3px 6px rgba(44, 42, 38, 0.2));
+}
+
+.unit-map__island {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: clamp(24rem, 46vw, 42rem);
+  filter: drop-shadow(0 6px 14px rgba(44, 42, 38, 0.22));
+}
+
+/* Cards positioned against the view in landscape */
+.unit-map__cards {
+  display: contents;
+}
+
+.unit-map__card {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: clamp(8rem, 14vw, 11.5rem);
+  transition: transform var(--motion-micro);
+}
+
+.unit-map__card-img {
+  width: 100%;
+  filter: drop-shadow(0 3px 6px rgba(44, 42, 38, 0.25));
+  transition: filter var(--motion-micro);
+}
+
+.unit-map__card:hover,
+.unit-map__card:focus-visible {
+  transform: translate(-50%, -50%) scale(1.07);
+}
+
+.unit-map__card:hover .unit-map__card-img,
+.unit-map__card:focus-visible .unit-map__card-img {
+  filter: drop-shadow(0 9px 14px rgba(44, 42, 38, 0.3))
+    drop-shadow(0 0 10px rgba(255, 244, 200, 0.95))
+    brightness(1.04);
+}
+
+.unit-map__card:active {
+  transform: translate(-50%, -50%) scale(0.97);
+}
+
+/* Portrait: banner → island → cards grid, page scrolls */
+@media (orientation: portrait) {
+  .unit-map {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 4.5rem 4vw 2rem;
+  }
+
+  .unit-map__links {
+    display: none;
+  }
+
+  .unit-map__banner {
+    position: static;
+    transform: rotate(-1deg);
+    width: min(78vw, 22rem);
+  }
+
+  .unit-map__island {
+    position: static;
+    transform: none;
+    width: min(94vw, 34rem);
+  }
+
+  .unit-map__cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3vw;
+    width: 100%;
+    max-width: 34rem;
+  }
+
+  .unit-map__card {
+    position: static;
+    transform: none;
+    width: 100%;
+  }
+
+  .unit-map__card:hover,
+  .unit-map__card:focus-visible {
+    transform: scale(1.04);
+  }
+
+  .unit-map__card:active {
+    transform: scale(0.97);
+  }
+
+  /* Odd card count: Revision spans the last row, centered, same size */
+  .unit-map__card--revision-summit {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 1.5vw);
+  }
+}
+
+/* --- Carousel shell (units 2–4, content later) ---------------- */
+
+.unit-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+}
+
+.unit-view__title {
+  font-family: var(--font-hand);
+  font-size: 2.5rem;
+}
+
+.unit-view__tagline {
+  margin-top: calc(-1 * var(--space-md));
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  font-style: italic;
+  opacity: 0.75;
+}
+
+/* Portrait: room for the back tab above the title */
+@media (orientation: portrait) {
+  .unit-view {
+    justify-content: flex-start;
+    padding-top: 5rem;
+  }
+}

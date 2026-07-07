@@ -1,0 +1,243 @@
+/* ============================================================
+   Competence page — watercolor travel journal (handoff 2a).
+   Tokens local to the journal design live on .journal;
+   card/carousel chrome is in components/journal-carousel.css.
+   ============================================================ */
+
+.journal {
+  /* Journal palette (handoff §Design Tokens) */
+  --j-ink: #33415c;
+  --j-secondary: #5a6478;
+  --j-khaki: #8a7d63;
+  --j-line: #6b5f4c;
+  --j-paper-1: #fdf7ea;
+  --j-paper-2: #fdfaf1;
+  --j-paper-3: #fdf9ee;
+  --j-sticky: #f7ecb8;
+  --j-coral: #c06a58;
+  --j-coral-deep: #a35545;
+  --j-teal: #4f7f96;
+  --j-teal-deep: #3e6a80;
+  --j-olive: #5e6a37;
+  --j-olive-bg: rgba(125, 138, 79, 0.22);
+  --j-slate: #5a6a8c;
+  --j-slate-bg: rgba(107, 124, 156, 0.22);
+  --j-ochre: #8a6f3e;
+  --j-ochre-bg: rgba(160, 131, 80, 0.22);
+  --j-font-display: "Caveat", var(--font-hand);
+  --j-font-body: "Patrick Hand", var(--font-hand);
+  --j-shadow-card: 0 16px 34px rgba(70, 60, 110, 0.18);
+  --j-motion: 1400ms cubic-bezier(0.22, 0.85, 0.25, 1);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 4rem;
+  background: #f2dfa8 url("../../assets/images/bg-journal.jpg") center bottom / cover no-repeat;
+  font-family: var(--j-font-body);
+  color: var(--j-ink);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- Header ---------------------------------------------------- */
+
+.journal__header {
+  position: relative;
+  min-height: 9.25rem; /* 148px */
+}
+
+/* The shared back tab, tuned to the journal palette */
+.journal .back-tab {
+  top: 1.6rem;
+  left: 1.6rem;
+  background: var(--j-sticky);
+  box-shadow: 0 6px 14px rgba(70, 60, 110, 0.15);
+  transform: rotate(-1.5deg);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+}
+
+.journal__plaque {
+  position: absolute;
+  left: 50%;
+  top: 1rem;
+  transform: translateX(-50%) rotate(-0.8deg);
+  background: var(--j-paper-2);
+  padding: 0.75rem 2.9rem 0.5rem;
+  border-radius: 14px 26px 16px 28px / 26px 14px 30px 16px;
+  box-shadow: 0 10px 24px rgba(70, 60, 110, 0.16);
+  text-align: center;
+  z-index: 2;
+}
+
+.journal__title {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 3.9vw, 2.9rem);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.journal__subtitle {
+  font-family: var(--j-font-display);
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+  color: var(--j-khaki);
+}
+
+/* Name tag + round PDF badge, top right */
+.journal__id-cluster {
+  position: absolute;
+  right: 1.6rem;
+  top: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  z-index: 3;
+}
+
+.journal__nametag {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  background: rgba(230, 212, 160, 0.75);
+  padding: 0.5rem 0.9rem;
+  transform: rotate(1.2deg);
+  box-shadow: 0 4px 10px rgba(70, 60, 110, 0.12);
+}
+
+.journal__nametag-caption {
+  font-size: 1.2rem;
+}
+
+.journal__nametag-input {
+  width: 7.5rem;
+  border: none;
+  border-bottom: 2px dotted var(--j-line);
+  background: transparent;
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+  padding: 0 2px 1px;
+}
+
+.journal__nametag-input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--j-coral);
+}
+
+.journal__nametag-input--missing {
+  border-bottom-color: var(--j-coral-deep);
+  background: rgba(192, 106, 88, 0.12);
+}
+
+.journal__pdf-badge {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  border: 2px solid var(--j-coral);
+  color: var(--j-coral);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  transform: rotate(7deg);
+  background: rgba(253, 247, 234, 0.7);
+  transition: transform var(--motion-micro);
+}
+
+.journal__pdf-badge:hover,
+.journal__pdf-badge:focus-visible {
+  transform: rotate(7deg) scale(1.1);
+}
+
+.journal__pdf-badge:active {
+  transform: rotate(7deg) scale(0.94);
+}
+
+.journal__pdf-hint {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.4rem;
+  font-family: var(--j-font-display);
+  font-size: 1.1rem;
+  color: var(--j-coral-deep);
+  white-space: nowrap;
+}
+
+.journal__pdf-hint--show {
+  display: block;
+}
+
+/* --- Section shells -------------------------------------------- */
+
+.journal__section {
+  position: relative;
+  margin-top: 2.75rem;
+}
+
+.journal__section:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.journal__section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0 2.9rem;
+}
+
+.journal__swatch {
+  padding: 0.3rem 1.25rem 0.25rem;
+  transform: rotate(-1.2deg) skewX(-4deg);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.7rem;
+  box-shadow: 0 3px 8px rgba(70, 60, 110, 0.1);
+}
+
+.journal__swatch--teal { background: rgba(79, 127, 150, 0.2); color: var(--j-teal-deep); }
+.journal__swatch--coral { background: rgba(192, 106, 88, 0.22); color: var(--j-coral-deep); }
+.journal__swatch--olive { background: var(--j-olive-bg); color: var(--j-olive); }
+.journal__swatch--slate { background: var(--j-slate-bg); color: var(--j-slate); }
+.journal__swatch--ochre { background: var(--j-ochre-bg); color: var(--j-ochre); }
+
+.journal__section-sub {
+  font-size: 1.2rem;
+  color: var(--j-khaki);
+}
+
+/* --- Portrait / narrow ------------------------------------------ */
+
+@media (orientation: portrait) {
+  .journal {
+    overflow-y: visible; /* the page itself scrolls in portrait */
+  }
+
+  .journal__header {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    padding-top: 4.6rem; /* room for the absolute back tab */
+  }
+
+  .journal__plaque {
+    position: static;
+    transform: rotate(-0.8deg);
+  }
+
+  .journal__id-cluster {
+    position: static;
+    justify-content: center;
+  }
+
+  .journal__pdf-hint {
+    top: auto;
+    right: auto;
+  }
+
+  .journal__section-head {
+    padding: 0 1.2rem;
+  }
+}

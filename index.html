@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>English Explorer</title>
+
+  <!-- PWA: installable, fullscreen landscape on iPad -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#f5efe0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- App shell: all views (map / unit carousel / section page) render here -->
+  <main id="app" class="app"></main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
