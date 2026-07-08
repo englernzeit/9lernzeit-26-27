@@ -1,0 +1,261 @@
+/* ============================================================
+   Word Master — button (in the New words header) + full-screen
+   vocabulary drill overlay. The overlay mounts on <body>, so it
+   carries its own copy of the journal palette tokens.
+   ============================================================ */
+
+/* --- Trigger button (symmetric to the New words swatch) -------- */
+
+.journal__wordmaster-btn {
+  margin-left: auto; /* push to the right of the header row */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--j-teal-deep);
+  background: var(--j-paper-2);
+  border: 2px solid rgba(79, 127, 150, 0.55);
+  border-radius: 12px 20px 12px 22px / 20px 12px 22px 12px;
+  padding: 0.3rem 1.1rem 0.25rem;
+  box-shadow: 0 4px 10px rgba(70, 60, 110, 0.16);
+  transform: rotate(1.2deg);
+  transition: transform var(--motion-micro), filter var(--motion-micro);
+}
+
+.journal__wordmaster-btn:hover,
+.journal__wordmaster-btn:focus-visible {
+  transform: rotate(1.2deg) translateY(-2px) scale(1.03);
+  filter: brightness(1.03) drop-shadow(0 0 6px rgba(79, 127, 150, 0.4));
+}
+
+.journal__wordmaster-btn:active {
+  transform: rotate(1.2deg) scale(0.97);
+}
+
+.journal__wordmaster-badge {
+  font-family: var(--j-font-body);
+  font-size: 0.9rem;
+  color: var(--j-paper-1);
+  background: var(--j-teal);
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+}
+
+@media (orientation: portrait) {
+  .journal__wordmaster-btn {
+    margin-left: 0;
+    font-size: 1.3rem;
+  }
+}
+
+/* --- Overlay page ---------------------------------------------- */
+
+.wordmaster {
+  /* self-contained palette (mounted outside .journal) */
+  --j-ink: #33415c;
+  --j-khaki: #8a7d63;
+  --j-line: #6b5f4c;
+  --j-paper-1: #fdf7ea;
+  --j-paper-2: #fdfaf1;
+  --j-coral: #c06a58;
+  --j-teal: #4f7f96;
+  --j-teal-deep: #3e6a80;
+  --j-olive: #5e6a37;
+  --j-font-display: "Caveat", cursive;
+  --j-font-body: "Patrick Hand", cursive;
+
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1rem 3rem;
+  background: #f2dfa8 url("../../assets/images/bg-journal.jpg") center bottom / cover no-repeat;
+  color: var(--j-ink);
+  font-family: var(--j-font-body);
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.wordmaster--closing {
+  opacity: 0;
+}
+
+.wordmaster__sheet {
+  width: min(52rem, 100%);
+  height: fit-content;
+  background: var(--j-paper-2);
+  border: 1px solid rgba(120, 105, 80, 0.2);
+  border-radius: 18px 30px 20px 28px / 28px 18px 30px 20px;
+  box-shadow: 0 24px 60px rgba(70, 60, 110, 0.2);
+  padding: 1.6rem 2rem 2rem;
+}
+
+/* Header */
+.wordmaster__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  border-bottom: 2px dashed rgba(138, 125, 99, 0.35);
+}
+
+.wordmaster__back {
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+  background: #f7ecb8;
+  border-radius: 8px;
+  padding: 0.3rem 0.9rem;
+  transform: rotate(-1.5deg);
+  box-shadow: 0 4px 10px rgba(70, 60, 110, 0.14);
+  transition: transform var(--motion-micro);
+}
+
+.wordmaster__back:hover,
+.wordmaster__back:focus-visible {
+  transform: rotate(0) scale(1.04);
+}
+
+.wordmaster__titles {
+  flex: 1;
+  min-width: 8rem;
+}
+
+.wordmaster__title {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  letter-spacing: 1px;
+  line-height: 1;
+  color: var(--j-teal-deep);
+}
+
+.wordmaster__subtitle {
+  font-family: var(--j-font-display);
+  font-size: 1.15rem;
+  color: var(--j-khaki);
+}
+
+.wordmaster__score {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--j-ink);
+  background: rgba(79, 127, 150, 0.16);
+  border: 2px solid rgba(79, 127, 150, 0.5);
+  border-radius: 999px;
+  padding: 0.25rem 1rem;
+  white-space: nowrap;
+}
+
+.wordmaster__score--done {
+  color: var(--j-paper-1);
+  background: var(--j-olive);
+  border-color: var(--j-olive);
+}
+
+/* Sentence list */
+.wordmaster__list {
+  list-style: none;
+  margin-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.wordmaster__item {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+
+.wordmaster__num {
+  flex: 0 0 auto;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: rgba(79, 127, 150, 0.16);
+  color: var(--j-teal-deep);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.15rem;
+}
+
+.wordmaster__item-body {
+  flex: 1;
+}
+
+.wordmaster__de {
+  font-size: 1.05rem;
+  color: var(--j-khaki);
+}
+
+.wordmaster__de strong {
+  color: var(--j-coral);
+  font-weight: 700;
+}
+
+.wordmaster__en {
+  font-size: 1.25rem;
+  color: var(--j-ink);
+  line-height: 1.7;
+  margin-top: 0.15rem;
+}
+
+.wordmaster__gap {
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+  text-align: center;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--j-teal);
+  padding: 0 0.2rem;
+  margin: 0 0.15rem;
+  min-width: 4ch;
+}
+
+.wordmaster__gap:focus-visible {
+  outline: none;
+  border-bottom-color: var(--j-coral);
+}
+
+.wordmaster__gap--right {
+  color: var(--j-olive);
+  border-bottom-color: var(--j-olive);
+  background: rgba(109, 143, 78, 0.14);
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+/* Footer */
+.wordmaster__footer {
+  margin-top: 1.6rem;
+  text-align: center;
+}
+
+.wordmaster__reset {
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  color: var(--j-khaki);
+  background: transparent;
+  border: 1.5px solid rgba(138, 125, 99, 0.4);
+  border-radius: 999px;
+  padding: 0.35rem 1.2rem;
+  transition: color var(--motion-micro), border-color var(--motion-micro);
+}
+
+.wordmaster__reset:hover,
+.wordmaster__reset:focus-visible {
+  color: var(--j-coral);
+  border-color: var(--j-coral);
+}

@@ -101,6 +101,24 @@ export function createJournalCarousel({ mode, accent, cards }) {
       prev.disabled = active === 0;
       next.disabled = active === n - 1;
     }
+    measure();
+  }
+
+  // Stage height follows the active card (slide/spread only), so a card
+  // is never cut off or padded with empty space. Stack cards are uniform.
+  function measure() {
+    if (mode === "stack") return;
+    const el = holders[active];
+    if (el && el.offsetHeight) stage.style.height = `${el.offsetHeight}px`;
+  }
+
+  // Keep in sync as fonts/images finish loading or the window resizes
+  if (mode !== "stack" && typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(() => measure());
+    holders.forEach((h) => ro.observe(h));
+  }
+  if (typeof window !== "undefined") {
+    window.addEventListener("resize", measure);
   }
 
   render();

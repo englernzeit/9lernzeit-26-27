@@ -64,3 +64,36 @@ export function setAnswer(unitId, sectionId, key, value) {
     /* storage unavailable */
   }
 }
+
+/* --- Word Master score (X correct of N sentences) -------------- */
+
+function wordMasterKey(unitId, sectionId) {
+  return `explorer:wordmaster:${unitId}:${sectionId}`;
+}
+
+/**
+ * @param {string} unitId
+ * @param {string} sectionId
+ * @returns {{correct: number, total: number} | null}
+ */
+export function getWordMasterScore(unitId, sectionId) {
+  try {
+    const raw = localStorage.getItem(wordMasterKey(unitId, sectionId));
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * @param {string} unitId
+ * @param {string} sectionId
+ * @param {{correct: number, total: number}} score
+ */
+export function setWordMasterScore(unitId, sectionId, score) {
+  try {
+    localStorage.setItem(wordMasterKey(unitId, sectionId), JSON.stringify(score));
+  } catch {
+    /* storage unavailable */
+  }
+}

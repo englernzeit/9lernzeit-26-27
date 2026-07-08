@@ -18,7 +18,22 @@ import { getUnit, getSection } from "../data/units.js";
 import { getCompetenceContent } from "../data/competences/index.js";
 import { createBackTab } from "../components/backTab.js";
 import { createJournalCarousel } from "../components/journalCarousel.js";
-import { getName, setName, getAnswers } from "../state/answersStore.js";
+import {
+  createGlossaryText,
+  createMultipleChoice,
+  createGroupSort,
+  createSentenceBuild,
+  createGame,
+} from "../components/exercises.js";
+import {
+  getName,
+  setName,
+  getAnswers,
+  setAnswer,
+  getWordMasterScore,
+  setWordMasterScore,
+} from "../state/answersStore.js";
+import { createWordMaster } from "../components/wordMaster.js";
 import { buildAnswerSheetPdf, downloadPdf } from "../utils/pdf.js";
 
 /** Fallback shape for pages whose lesson content is not written yet. */
@@ -71,7 +86,7 @@ export function renderSectionView(root, unitId, sectionId) {
   plaque.className = "journal__plaque";
   const title = document.createElement("h1");
   title.className = "journal__title";
-  title.textContent = section.label;
+  title.textContent = content.title ?? section.label;
   const subtitle = document.createElement("p");
   subtitle.className = "journal__subtitle";
   subtitle.textContent = `${unit.label}${unit.tagline ? ` · ${unit.tagline}` : ""}`;
@@ -82,17 +97,85 @@ export function renderSectionView(root, unitId, sectionId) {
 
   view.appendChild(header);
 
+  const ctx = { unitId, sectionId };
+
+  // --- Reading passage (optional) --------------------------------
+  if (content.passage) {
+    view.appendChild(buildPassage(content.passage));
+  }
+
   // --- New words (optional) --------------------------------------
   if (content.newWords) {
-    view.appendChild(buildNewWordsSection(content.newWords));
+    const wordsSection = buildNewWordsSection(content.newWords);
+    if (content.wordMaster?.items?.length) {
+      addWordMasterButton(wordsSection, content.wordMaster, ctx);
+    }
+    view.appendChild(wordsSection);
   }
 
   // --- Steps ------------------------------------------------------
   for (const step of content.steps) {
-    view.appendChild(buildStepSection(step));
+    view.appendChild(buildStepSection(step, ctx));
   }
 
   root.appendChild(view);
+}
+
+/* ================= reading passage ============================= */
+
+/** @param {{title: string, lead?: string[], tipsTitle?: string, tips?: string[], closing?: string[]}} passage */
+function buildPassage(passage) {
+  const section = document.createElement("section");
+  section.className = "journal__section";
+
+  const article = document.createElement("article");
+  article.className = "journal-passage";
+
+  const h = document.createElement("h2");
+  h.className = "journal-passage__title";
+  h.textContent = passage.title;
+  article.appendChild(h);
+
+  (passage.lead ?? []).forEach((para, i) => {
+    const p = document.createElement("p");
+    p.className = "journal-passage__para";
+    if (i === 0) p.classList.add("journal-passage__para--lead");
+    p.textContent = para;
+    article.appendChild(p);
+  });
+
+  if (passage.tips?.length) {
+    if (passage.tipsTitle) {
+      const th = document.createElement("h3");
+      th.className = "journal-passage__subhead";
+      th.textContent = passage.tipsTitle;
+      article.appendChild(th);
+    }
+    const ol = document.createElement("ol");
+    ol.className = "journal-passage__tips";
+    for (const tip of passage.tips) {
+      const li = document.createElement("li");
+      li.className = "journal-passage__tip";
+      const num = document.createElement("span");
+      num.className = "journal-passage__tip-num";
+      li.appendChild(num);
+      const span = document.createElement("span");
+      span.textContent = tip;
+      li.appendChild(span);
+      ol.appendChild(li);
+    }
+    article.appendChild(ol);
+  }
+
+  (passage.closing ?? []).forEach((para) => {
+    const p = document.createElement("p");
+    p.className = "journal-passage__para";
+    p.textContent = para;
+    article.appendChild(p);
+  });
+
+  section.appendChild(article);
+  return section;
 }
 
 /* ================= header: Name + PDF ========================== */
@@ -164,13 +247,35 @@ function downloadAnswerSheet(view, unit, section, content, name) {
     if (value && value.trim()) answers[el.dataset.answerKey] = value;
   }
 
-  const steps = content.steps.map((s) => ({
-    heading: `Step ${s.step} — ${s.subtitle}`,
-    items: s.cards.map((card, i) => ({
-      label: `Task ${i + 1} · ${card.title}`,
-      answer: answers[`step${s.step}-task${i + 1}`] ?? "",
-    })),
-  }));
+  // Only written / sentence-starter cards contribute to the PDF;
+  // text, games and self-checking exercises are done in-app.
+  const steps = content.steps
+    .map((s) => ({
+      heading: `Step ${s.step} — ${s.subtitle}`,
+      items: s.cards.flatMap((card, i) => {
+        const base = `step${s.step}-task${i + 1}`;
+        if (card.starters?.length) {
+          return card.starters.map((starter, k) => ({
+            label: `${card.title}: ${starter}`,
+            answer: answers[`${base}s${k + 1}`] ?? "",
+          }));
+        }
+        if (card.answer) {
+          return [{ label: card.title, answer: answers[base] ?? "" }];
+        }
+        return [];
+      }),
+    }))
+    .filter((s) => s.items.length);
+
+  // Word Master result, if the learner played it
+  const wm = getWordMasterScore(unit.id, section.id);
+  if (wm) {
+    steps.unshift({
+      heading: "Word Master",
+      items: [{ label: "Sentences correct", answer: `${wm.correct} / ${wm.total}` }],
+    });
+  }
 
   const blob = buildAnswerSheetPdf({
     title: `${section.label} — Answer Sheet`,
@@ -220,10 +325,19 @@ function buildNewWordsSection(newWords) {
 
     const stamp = document.createElement("div");
     stamp.className = "wordcard__stamp";
-    const stampArt = document.createElement("div");
-    stampArt.className = "journal-artslot journal-artslot--teal";
-    stampArt.textContent = "акварель: слово";
-    stamp.appendChild(stampArt);
+    if (word.image) {
+      const img = document.createElement("img");
+      img.className = "wordcard__stamp-img";
+      img.src = word.image;
+      img.alt = word.en;
+      img.draggable = false;
+      stamp.appendChild(img);
+    } else {
+      const stampArt = document.createElement("div");
+      stampArt.className = "journal-artslot journal-artslot--teal";
+      stampArt.textContent = "акварель: слово";
+      stamp.appendChild(stampArt);
+    }
 
     const postmark = document.createElement("div");
     postmark.className = "wordcard__postmark";
@@ -244,17 +358,66 @@ function buildNewWordsSection(newWords) {
   return section;
 }
 
+/**
+ * "Word Master" button — symmetric to the New words swatch, on the
+ * right of the same header row. Opens the full-screen vocabulary drill;
+ * its score is saved and printed in the PDF.
+ *
+ * @param {HTMLElement} wordsSection
+ * @param {{subtitle?: string, items: Array}} wordMaster
+ * @param {{unitId: string, sectionId: string}} ctx
+ */
+function addWordMasterButton(wordsSection, wordMaster, ctx) {
+  const head = wordsSection.querySelector(".journal__section-head");
+  if (!head) return;
+
+  const btn = document.createElement("button");
+  btn.className = "journal__wordmaster-btn";
+  btn.textContent = "Word Master";
+  btn.setAttribute("aria-label", "Open the Word Master vocabulary game");
+
+  const badge = document.createElement("span");
+  badge.className = "journal__wordmaster-badge";
+  const paintBadge = () => {
+    const s = getWordMasterScore(ctx.unitId, ctx.sectionId);
+    badge.textContent = s ? `${s.correct}/${s.total}` : "";
+    badge.style.display = s ? "" : "none";
+  };
+  paintBadge();
+  btn.appendChild(badge);
+
+  btn.addEventListener("click", () => {
+    const overlay = createWordMaster({
+      title: "Word Master",
+      subtitle: wordMaster.subtitle ?? "Complete the sentences with the right English word.",
+      items: wordMaster.items,
+      onScore: (correct, total) => {
+        setWordMasterScore(ctx.unitId, ctx.sectionId, { correct, total });
+      },
+      onClose: paintBadge,
+    });
+    document.body.appendChild(overlay);
+    overlay.focus();
+  });
+
+  head.appendChild(btn);
+}
+
 /* ================= Step sections ================================ */
 
-/** @param {{step: number, subtitle: string, accent: string, layout: string, cards: Array}} step */
-function buildStepSection(step) {
+/**
+ * @param {{step: number, subtitle: string, accent: string, layout: string, cards: Array}} step
+ * @param {{unitId: string, sectionId: string}} ctx
+ */
+function buildStepSection(step, ctx) {
   const section = sectionShell(step.accent, `Step ${step.step}`, step.subtitle);
 
-  const cards = step.cards.map((cardData, i) =>
-    step.layout === "slide"
-      ? buildNoteCard(step, cardData, i)
-      : buildSpreadCard(step, cardData, i),
-  );
+  // Task numbering skips text/game cards so writing tasks read 1, 2, 3…
+  let taskNo = 0;
+  const cards = step.cards.map((data, i) => {
+    if (data.type !== "text" && data.type !== "game") taskNo += 1;
+    return buildCard(step, data, i, taskNo, ctx);
+  });
 
   if (step.layout === "single") {
     const holder = document.createElement("div");
@@ -274,76 +437,88 @@ function buildStepSection(step) {
 }
 
 /**
- * Step 1 card — note style: text left, small image slot top-right.
- * @param {object} step
- * @param {object} data
- * @param {number} index
- */
-function buildNoteCard(step, data, index) {
-  const card = document.createElement("article");
-  card.className = `taskcard taskcard--note taskcard--${step.accent}`;
-
-  const art = document.createElement("div");
-  art.className = `taskcard__corner-art journal-artslot journal-artslot--${step.accent}`;
-  art.textContent = "акварель: картинка к заданию";
-  card.appendChild(art);
-
-  card.appendChild(taskCardBody(step, data, index));
-  return card;
-}
-
-/**
- * Steps 2–4 card — journal spread: illustration column left, text right.
- * @param {object} step
- * @param {object} data
- * @param {number} index
- */
-function buildSpreadCard(step, data, index) {
-  const card = document.createElement("article");
-  card.className = `taskcard taskcard--spread taskcard--${step.accent}`;
-
-  const art = document.createElement("div");
-  art.className = `taskcard__side-art journal-artslot journal-artslot--${step.accent}`;
-  art.textContent =
-    step.layout === "single" ? "акварель: финальная иллюстрация" : "акварель: иллюстрация задания";
-  card.appendChild(art);
-
-  card.appendChild(taskCardBody(step, data, index));
-  return card;
-}
-
-/**
- * Shared task-card content: Task N + kind, title, intro, lines
- * (bullets or self-check boxes), optional German help.
+ * One card, dispatched on `data.type`:
+ *   text            → reading variant (tappable glossary if flagged)
+ *   multiple-choice → self-checking MC test
+ *   group-sort      → sort chips into bins, self-checking
+ *   sentence-build  → order word tokens, self-checking
+ *   game            → hangman placeholder (code later)
+ *   written / —     → intro + optional lines + answer field
  *
  * @param {object} step
  * @param {object} data
  * @param {number} index
+ * @param {number} taskNo
+ * @param {{unitId: string, sectionId: string}} ctx
  */
-function taskCardBody(step, data, index) {
+function buildCard(step, data, index, taskNo, ctx) {
+  const card = document.createElement("article");
+  card.className = `taskcard taskcard--sheet taskcard--${step.accent}`;
+  if (data.type === "game") card.classList.add("taskcard--game");
+
   const body = document.createElement("div");
   body.className = "taskcard__body";
+  card.appendChild(body);
 
-  const head = document.createElement("div");
-  head.className = "taskcard__head";
-  const num = document.createElement("span");
-  num.className = "taskcard__num";
-  num.textContent = `Task ${index + 1}`;
-  const kind = document.createElement("span");
-  kind.className = "taskcard__kind";
-  kind.textContent = data.kind ?? "";
-  head.append(num, kind);
+  // The game card is nothing but the game — no header, title or intro.
+  if (data.type !== "game") {
+    const head = document.createElement("div");
+    head.className = "taskcard__head";
+    const num = document.createElement("span");
+    num.className = "taskcard__num";
+    num.textContent = data.type === "text" ? "Text" : `Task ${taskNo}`;
+    const kind = document.createElement("span");
+    kind.className = "taskcard__kind";
+    kind.textContent = data.kind ?? "";
+    head.append(num, kind);
+    body.appendChild(head);
 
-  const title = document.createElement("h3");
-  title.className = "taskcard__title";
-  title.textContent = data.title;
+    if (data.title) {
+      const title = document.createElement("h3");
+      title.className = "taskcard__title";
+      title.textContent = data.title;
+      body.appendChild(title);
+    }
+    if (data.intro) {
+      const intro = document.createElement("p");
+      intro.className = "taskcard__intro";
+      intro.textContent = data.intro;
+      body.appendChild(intro);
+    }
+  }
 
-  const intro = document.createElement("p");
-  intro.className = "taskcard__intro";
-  intro.textContent = data.intro ?? "";
+  switch (data.type) {
+    case "text":
+      body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs) }));
+      break;
+    case "multiple-choice":
+      body.appendChild(createMultipleChoice({ questions: data.questions }));
+      break;
+    case "group-sort":
+      body.appendChild(createGroupSort({ groups: data.groups }));
+      break;
+    case "sentence-build":
+      body.appendChild(createSentenceBuild({ sentences: data.sentences }));
+      break;
+    case "game":
+      body.appendChild(createGame(data));
+      break;
+    default:
+      appendWrittenBody(body, step, data, index, ctx);
+  }
 
-  body.append(head, title, intro);
+  if (data.help) {
+    const help = document.createElement("div");
+    help.className = "taskcard__help";
+    help.textContent = data.help;
+    body.appendChild(help);
+  }
 
+  return card;
+}
+
+/** Written-task content: optional bullet/check lines + a saved answer field. */
+function appendWrittenBody(body, step, data, index, ctx) {
   if (data.lines?.length) {
     const lines = document.createElement("div");
     lines.className = "taskcard__lines";
@@ -360,14 +535,53 @@ function taskCardBody(step, data, index) {
     body.appendChild(lines);
   }
 
-  if (data.help) {
-    const help = document.createElement("div");
-    help.className = "taskcard__help";
-    help.textContent = data.help;
-    body.appendChild(help);
+  // Sentence starters — each becomes a "starter … [input]" row; the
+  // learner completes five sentences. Replaces the single textarea.
+  if (data.starters?.length && ctx) {
+    const list = document.createElement("div");
+    list.className = "taskcard__starters";
+    data.starters.forEach((starter, k) => {
+      const row = document.createElement("div");
+      row.className = "taskcard__starter";
+      const label = document.createElement("span");
+      label.className = "taskcard__starter-label";
+      label.textContent = starter;
+      const key = `step${step.step}-task${index + 1}s${k + 1}`;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "taskcard__starter-input";
+      input.dataset.answerKey = key;
+      const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
+      if (saved) input.value = saved;
+      input.addEventListener("input", () => {
+        setAnswer(ctx.unitId, ctx.sectionId, key, input.value);
+      });
+      row.append(label, input);
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+    return;
   }
 
-  return body;
+  if (data.answer && ctx) {
+    const key = `step${step.step}-task${index + 1}`;
+    const area = document.createElement("textarea");
+    area.className = "taskcard__answer";
+    area.rows = data.lines?.length ? 4 : 3;
+    area.placeholder = "Write your answer…";
+    area.dataset.answerKey = key;
+    const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
+    if (saved) area.value = saved;
+    area.addEventListener("input", () => {
+      setAnswer(ctx.unitId, ctx.sectionId, key, area.value);
+    });
+    body.appendChild(area);
+  }
+}
+
+/** A paragraph may be a plain string or an array of glossary segments. */
+function normalizeParagraphs(paragraphs) {
+  return (paragraphs ?? []).map((p) => (typeof p === "string" ? [p] : p));
 }
 
 /* ================= shared chrome ================================ */

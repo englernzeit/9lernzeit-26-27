@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monster's Lunch</title>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Neucha&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2c3a64;
+    --ink-soft:#41508a;
+    --paper:#f7f2e2;
+    --paper-dark:#efe7cf;
+    --red:#9e2b2b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Neucha',cursive;
+    min-height:100vh;
+    display:flex;justify-content:center;
+    padding:12px;
+  }
+  .game{
+    width:100%;max-width:420px;
+    border:3px solid var(--ink);
+    border-radius:14px;
+    background:
+      radial-gradient(ellipse at 30% 10%, rgba(255,255,255,.5), transparent 60%),
+      var(--paper);
+    box-shadow:6px 6px 0 rgba(44,58,100,.18);
+    padding:14px 16px 18px;
+    position:relative;
+    overflow:hidden;
+  }
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  h1{
+    font-family:'Amatic SC',cursive;
+    font-size:clamp(34px,9vw,44px);
+    letter-spacing:2px;
+    line-height:.9;
+  }
+  .stats{font-size:17px;text-align:right;line-height:1.25;white-space:nowrap}
+  .stats b{color:var(--red)}
+
+  .word{
+    display:flex;justify-content:center;gap:8px;
+    margin:10px 0 4px;
+    min-height:44px;
+    flex-wrap:wrap;
+  }
+  .word .slot{
+    width:30px;height:40px;
+    border-bottom:3px solid var(--ink);
+    font-size:30px;text-align:center;
+    font-family:'Amatic SC',cursive;
+    letter-spacing:1px;
+  }
+  .hint{text-align:center;font-size:17px;color:var(--ink-soft);min-height:22px}
+
+  /* ------ scene ------ */
+  .scene{position:relative;margin:2px auto 8px;width:100%}
+  svg{display:block;width:100%;height:auto}
+  .inky{stroke:var(--ink);stroke-linecap:round;stroke-linejoin:round;fill:none}
+
+  #hero{transition:transform .9s cubic-bezier(.45,.05,.55,1.2)}
+  #heroImgWrap{transform-origin:0 -75px;animation:sway 3.4s ease-in-out infinite}
+  @keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+  .shake{animation:shake .45s ease}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+
+  #monsterClosed,#chompWord,#yumWord{opacity:0}
+  #monsterOpen,#monsterClosed{transition:opacity .3s}
+  #chompWord,#yumWord{transition:opacity .4s}
+  .chomped #monsterOpen{opacity:0}
+  .chomped #monsterClosed{opacity:1}
+  .chomped #hero{opacity:0;transition:opacity .2s .1s}
+  .chomped #chompWord,.chomped #yumWord{opacity:1;transition-delay:.35s}
+
+  .flyaway #hero{transform:translate(60px,-560px) !important;transition:transform 1.6s ease-in}
+
+  /* ------ keyboard ------ */
+  .kb{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .kb button{
+    font-family:'Neucha',cursive;
+    font-size:19px;padding:7px 0;
+    background:var(--paper);color:var(--ink);
+    border:2px solid var(--ink);border-radius:7px;
+    cursor:pointer;transition:transform .08s;
+  }
+  .kb button:hover:not(:disabled){background:var(--paper-dark);transform:translateY(-2px)}
+  .kb button:focus-visible{outline:3px solid var(--red);outline-offset:1px}
+  .kb button:disabled{cursor:default;opacity:.9}
+  .kb button.hit{background:var(--ink);color:var(--paper)}
+  .kb button.miss{
+    color:var(--red);border-color:var(--red);
+    background:
+      linear-gradient(45deg,transparent 44%,var(--red) 44%,var(--red) 56%,transparent 56%),
+      linear-gradient(-45deg,transparent 44%,var(--red) 44%,var(--red) 56%,transparent 56%);
+    text-shadow:0 0 4px var(--paper);
+  }
+
+  /* ------ overlay ------ */
+  .overlay{
+    position:absolute;inset:0;
+    background:rgba(247,242,226,.9);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;text-align:center;padding:20px;
+    opacity:0;pointer-events:none;transition:opacity .5s;
+  }
+  .overlay.show{opacity:1;pointer-events:auto;transition-delay:.9s}
+  .overlay h2{font-family:'Amatic SC',cursive;font-size:52px;letter-spacing:2px}
+  .overlay .answer{font-size:22px}
+  .overlay .answer b{font-family:'Amatic SC',cursive;font-size:34px;letter-spacing:3px;color:var(--red)}
+  .overlay button{
+    font-family:'Amatic SC',cursive;font-size:28px;letter-spacing:2px;
+    padding:8px 26px;border:3px solid var(--ink);border-radius:10px;
+    background:var(--paper);color:var(--ink);cursor:pointer;
+    box-shadow:4px 4px 0 rgba(44,58,100,.25);
+  }
+  .overlay button:hover{background:var(--paper-dark)}
+
+
+  /* ------ горизонтальная раскладка (планшеты/десктоп) ------ */
+  @media (min-width: 600px){
+    body{align-items:center}
+    .game{
+      max-width:940px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 400px;
+      grid-template-areas:
+        "header scene"
+        "word   scene"
+        "hint   scene"
+        "kb     scene";
+      column-gap:22px;
+      align-content:center;
+    }
+    header{grid-area:header}
+    .word{grid-area:word}
+    .hint{grid-area:hint}
+    .scene{grid-area:scene;align-self:center;margin:0}
+    .kb{grid-area:kb;align-self:start;margin-top:10px}
+    .kb button{font-size:21px;padding:9px 0}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    #heroImgWrap{animation:none}
+    #hero,.flyaway #hero{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="game" id="game">
+  <header>
+    <h1>MONSTER'S<br>LUNCH</h1>
+    <div class="stats">
+      Score: <b id="score">0</b><br>
+      Level: <b id="level">1</b><br>
+      Errors: <b id="errs">0</b>/6
+    </div>
+  </header>
+
+  <div class="word" id="word"></div>
+  <div class="hint" id="hint"></div>
+
+  <div class="scene" id="scene">
+    <svg viewBox="0 0 400 470" aria-hidden="true">
+      <!-- clouds -->
+      <g class="inky" stroke-width="2" opacity=".5">
+        <path d="M28 60 q14 -18 32 -8 q10 -14 26 -6 q16 -8 22 8"/>
+        <path d="M320 40 q12 -16 28 -7 q9 -12 23 -5 q14 -7 19 7"/>
+      </g>
+
+      <!-- MONSTER (two images: mouth open / closed) -->
+      <image id="monsterOpen"   x="0" y="245" width="400" height="225" preserveAspectRatio="xMidYMax meet"/>
+      <image id="monsterClosed" x="0" y="245" width="400" height="225" preserveAspectRatio="xMidYMax meet"/>
+
+      <!-- HERO WITH RED BALLOON -->
+      <g id="hero" transform="translate(200,60)">
+        <g id="heroShake">
+          <g id="heroImgWrap">
+            <image id="heroImg" x="-56" y="-75" width="112" height="150" preserveAspectRatio="xMidYMid meet"/>
+          </g>
+        </g>
+      </g>
+
+      <text id="chompWord" x="60" y="290" font-family="'Amatic SC',cursive" font-size="36" fill="#2c3a64" transform="rotate(-8 60 290)">Chomp!</text>
+      <text id="yumWord" x="310" y="300" font-family="'Amatic SC',cursive" font-size="32" fill="#9e2b2b" transform="rotate(8 310 300)">Yum!</text>
+    </svg>
+
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle"></h2>
+      <div class="answer" id="ovAnswer"></div>
+      <button id="ovBtn">Play again</button>
+    </div>
+  </div>
+
+  <div class="kb" id="kb"></div>
+</div>
+
+<script src="words.js"></script>
+<script>
+(function(){
+  /* ============================================================
+     SETTINGS — everything you may want to change is here
+     ============================================================ */
+
+  /* Images. Currently loaded from the generated links.
+     Recommended: download them, put next to this file,
+     and replace the links with "monster-open.png" etc. */
+  const IMG = {
+    monsterOpen:   "monster-open.png",
+    monsterClosed: "monster-closed.png",
+    hero:          "hero.png",
+  };
+
+  /* Hero Y positions for 0..6 errors.
+     The last number is where he "falls" into the mouth —
+     adjust it if the mouth is higher or lower. */
+  const STEPS = [78, 118, 158, 199, 239, 279, 320];
+
+  /* Words come from the ?w= URL parameter (per competence page) if
+     present, otherwise from words.js. Format: "WORD|hint" per line. */
+  const WORD_PARAM = new URLSearchParams(location.search).get("w");
+  const WORD_SOURCE = WORD_PARAM
+    ? decodeURIComponent(WORD_PARAM)
+    : (typeof WORDS_TEXT === "string" ? WORDS_TEXT : "");
+  const WORDS = WORD_SOURCE
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith("#"))
+    .map(l => l.split("|"))
+    .map(p => [p[0].trim().toUpperCase().replace(/Ё/g,"Е"), (p[1]||"").trim()])
+    .filter(p => p[0]);
+  if (!WORDS.length) WORDS.push(["MONSTER","Who is waiting down below?"]); /* запасное слово, если файл не найден */
+
+  /* ============================================================ */
+
+  const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const MAX_ERR = 6;
+
+  const $ = id => document.getElementById(id);
+  const scene=$("scene"), hero=$("hero"), heroShake=$("heroShake"),
+        wordEl=$("word"), hintEl=$("hint"), kbEl=$("kb"),
+        overlay=$("overlay"), ovTitle=$("ovTitle"), ovAnswer=$("ovAnswer"), ovBtn=$("ovBtn");
+
+  $("monsterOpen").setAttribute("href", IMG.monsterOpen);
+  $("monsterClosed").setAttribute("href", IMG.monsterClosed);
+  $("heroImg").setAttribute("href", IMG.hero);
+
+  let word="", hint="", guessed=new Set(), errors=0, score=0, level=1, over=false, lastIdx=-1;
+
+  function pickWord(){
+    let i; do { i = Math.floor(Math.random()*WORDS.length); } while (WORDS.length>1 && i===lastIdx);
+    lastIdx=i; [word,hint]=WORDS[i];
+  }
+
+  function buildKeyboard(){
+    kbEl.innerHTML="";
+    ALPHABET.forEach(ch=>{
+      const b=document.createElement("button");
+      b.textContent=ch; b.dataset.ch=ch;
+      b.addEventListener("click",()=>guess(ch));
+      kbEl.appendChild(b);
+    });
+  }
+
+  function renderWord(){
+    wordEl.innerHTML="";
+    for(const ch of word){
+      const s=document.createElement("div");
+      s.className="slot";
+      s.textContent = guessed.has(ch) || over ? ch : "";
+      wordEl.appendChild(s);
+    }
+  }
+
+  function setHero(){
+    hero.style.transform = `translate(200px, ${STEPS[errors]}px)`;
+  }
+
+  function guess(ch){
+    if(over || guessed.has(ch)) return;
+    guessed.add(ch);
+    const btn = kbEl.querySelector(`[data-ch="${ch}"]`);
+    if(word.includes(ch)){
+      btn.classList.add("hit"); btn.disabled=true;
+      score++; $("score").textContent=score;
+      renderWord();
+      if([...word].every(c=>guessed.has(c))) win();
+    } else {
+      btn.classList.add("miss"); btn.disabled=true;
+      errors++; $("errs").textContent=errors;
+      heroShake.classList.remove("shake"); void heroShake.offsetWidth;
+      heroShake.classList.add("shake");
+      setHero();
+      if(errors>=MAX_ERR) lose();
+    }
+  }
+
+  function win(){
+    over=true;
+    level++; $("level").textContent=level;
+    scene.classList.add("flyaway");
+    showOverlay("Saved! 🎈", `The word: <b>${word}</b>`);
+  }
+
+  function lose(){
+    over=true;
+    setTimeout(()=>{
+      scene.classList.add("chomped");
+      showOverlay("Chomp! Eaten…", `The word was: <b>${word}</b>`);
+    }, 950); /* wait for the hero to reach the mouth */
+  }
+
+  function showOverlay(title, answer){
+    ovTitle.textContent=title;
+    ovAnswer.innerHTML=answer;
+    renderWord();
+    overlay.classList.add("show");
+    ovBtn.focus();
+  }
+
+  function newRound(){
+    guessed=new Set(); errors=0; over=false;
+    $("errs").textContent="0";
+    scene.classList.remove("chomped","flyaway");
+    overlay.classList.remove("show");
+    pickWord();
+    hintEl.textContent = "Hint: " + hint;
+    buildKeyboard();
+    renderWord();
+    hero.style.transition="none";
+    setHero();
+    void hero.offsetWidth;
+    hero.style.transition="";
+  }
+
+  ovBtn.addEventListener("click", newRound);
+  document.addEventListener("keydown", e=>{
+    const ch = e.key.toUpperCase();
+    if(ch.length===1 && ALPHABET.includes(ch)) guess(ch);
+    if(e.key==="Enter" && over) newRound();
+  });
+
+  newRound();
+
+  /* When embedded, tell the parent our real height so the card fits
+     the game exactly (no empty space, no inner scroll). */
+  const gameEl = $("game");
+  function postHeight(){
+    try { parent.postMessage({ type: "gameHeight", h: gameEl.offsetHeight + 28 }, "*"); } catch(e){}
+  }
+  if (window.parent !== window) {
+    window.addEventListener("load", postHeight);
+    if (typeof ResizeObserver !== "undefined") new ResizeObserver(postHeight).observe(gameEl);
+    postHeight();
+  }
+})();
+</script>
+</body>
+</html>

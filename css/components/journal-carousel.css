@@ -14,12 +14,15 @@
 .jcar__stage {
   position: relative;
   touch-action: pan-y;
+  /* Slide/spread heights are set from JS to the active card's height,
+     so a card is never taller (scroll) or shorter (empty gap) than it
+     needs. This animates the change between cards. */
+  transition: height 0.45s cubic-bezier(0.22, 0.85, 0.25, 1);
 }
 
-/* Stage heights per mode (design: words 330, steps 430) */
 .jcar--stack .jcar__stage { height: 21rem; }
-.jcar--slide .jcar__stage { height: 26rem; }
-.jcar--spread .jcar__stage { height: 26.5rem; }
+.jcar--slide .jcar__stage,
+.jcar--spread .jcar__stage { min-height: 12rem; }
 .jcar--single .jcar__stage { height: auto; padding: 0.4rem 0 1rem; }
 
 /* Card holder: centered, width per mode */
@@ -33,8 +36,8 @@
 }
 
 .jcar--slide .jcar__holder {
-  width: min(40rem, 88vw);
-  margin-left: calc(-1 * min(40rem, 88vw) / 2);
+  width: min(46rem, 90vw);
+  margin-left: calc(-1 * min(46rem, 90vw) / 2);
   top: 0;
 }
 
@@ -283,6 +286,28 @@
   box-shadow: var(--j-shadow-card);
 }
 
+/* Unified content sheet (competence pages) — sizes to its own
+   content; the carousel stage follows the active card's height, so
+   no card is ever cut off (scroll) or padded out (empty gap). */
+.taskcard--sheet {
+  display: flex;
+  flex-direction: column;
+  background: var(--j-paper-1);
+  border-radius: 16px 30px 18px 32px / 30px 16px 34px 18px;
+}
+
+.taskcard--sheet .taskcard__body {
+  padding: 1.15rem 1.8rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Game card: minimal padding so the embedded game fills the width and
+   triggers its wide layout. */
+.taskcard--game .taskcard__body {
+  padding: 1.1rem 0.7rem 0.8rem;
+}
+
 /* Step 1 note: wobbly corners, art slot top-right */
 .taskcard--note {
   background: var(--j-paper-1);
@@ -337,7 +362,8 @@
 .taskcard__num {
   font-family: var(--j-font-display);
   font-weight: 700;
-  font-size: 2.1rem;
+  font-size: 1.85rem;
+  line-height: 1;
 }
 
 .taskcard--coral .taskcard__num { color: var(--j-coral); }
@@ -355,14 +381,16 @@
 .taskcard__title {
   font-family: var(--j-font-display);
   font-weight: 700;
-  font-size: 2rem;
-  margin-top: 0.4rem;
+  font-size: 1.75rem;
+  line-height: 1.05;
+  margin-top: 0.2rem;
 }
 
 .taskcard__intro {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
+  line-height: 1.25;
   color: var(--j-secondary);
-  margin-top: 0.15rem;
+  margin-top: 0.1rem;
 }
 
 .taskcard__lines {

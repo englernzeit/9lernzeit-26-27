@@ -14,6 +14,8 @@
 @import url("components/checklist.css");
 @import url("components/sticky-note.css");
 @import url("components/journal-carousel.css");
+@import url("components/exercises.css");
+@import url("components/wordmaster.css");
 
 /* Views */
 @import url("views/map.css");

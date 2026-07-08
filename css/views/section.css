@@ -206,11 +206,194 @@
   color: var(--j-khaki);
 }
 
+/* --- Reading passage ------------------------------------------- */
+
+.journal-passage {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2rem 2.4rem 1.75rem;
+  background: var(--j-paper-2);
+  border: 1px solid rgba(120, 105, 80, 0.2);
+  border-radius: 18px 30px 20px 28px / 28px 18px 30px 20px;
+  box-shadow: var(--j-shadow-card);
+  transform: rotate(-0.3deg);
+}
+
+.journal-passage__title {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--j-teal-deep);
+  margin-bottom: 0.6rem;
+}
+
+.journal-passage__para {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--j-ink);
+  margin-top: 0.7rem;
+}
+
+/* Illuminated drop cap on the opening paragraph */
+.journal-passage__para--lead::first-letter {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 3.6rem;
+  line-height: 0.8;
+  float: left;
+  margin: 0.1rem 0.5rem 0 0;
+  color: var(--j-coral);
+}
+
+.journal-passage__subhead {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--j-olive);
+  margin-top: 1.4rem;
+}
+
+.journal-passage__tips {
+  list-style: none;
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  counter-reset: tip;
+}
+
+.journal-passage__tip {
+  display: flex;
+  gap: 0.85rem;
+  align-items: baseline;
+  font-size: 1.1rem;
+  line-height: 1.45;
+  color: var(--j-ink);
+}
+
+.journal-passage__tip-num {
+  counter-increment: tip;
+  flex: 0 0 auto;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: rgba(192, 106, 88, 0.15);
+  color: var(--j-coral);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(0.25rem);
+}
+
+.journal-passage__tip-num::before {
+  content: counter(tip);
+}
+
+/* --- Answer field on task cards -------------------------------- */
+
+.taskcard__answer {
+  margin-top: 0.9rem;
+  width: 100%;
+  resize: vertical;
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  border-radius: 10px;
+  /* Ruled-notebook lines to invite writing */
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 1.7rem,
+    rgba(138, 125, 99, 0.28) 1.7rem,
+    rgba(138, 125, 99, 0.28) calc(1.7rem + 1px)
+  );
+  padding: 0.4rem 0.8rem;
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  line-height: 1.75rem;
+  color: var(--j-ink);
+}
+
+.taskcard__answer::placeholder {
+  color: rgba(90, 100, 120, 0.45);
+}
+
+.taskcard__answer:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(192, 106, 88, 0.4);
+}
+
+/* Real vocabulary photo in the postcard stamp */
+.wordcard__stamp-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* LE reading text (Step 1, coral): larger A1 sentences, roomy line
+   spacing so the ten short sentences fill the whole card. */
+.taskcard--coral .exo-glossary {
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Flowing A1 reading text — reads as a paragraph, not a list */
+.taskcard--coral .exo-glossary__para {
+  font-size: 1.35rem;
+  line-height: 1.85;
+  text-align: justify;
+}
+
+/* Sentence starters (five-sentence writing task) */
+.taskcard__starters {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.taskcard__starter {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.taskcard__starter-label {
+  font-family: var(--j-font-display);
+  font-size: 1.35rem;
+  color: var(--j-ink);
+  white-space: nowrap;
+}
+
+.taskcard__starter-input {
+  flex: 1;
+  min-width: 9rem;
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  color: var(--j-ink);
+  background: transparent;
+  border: none;
+  border-bottom: 2px dotted rgba(138, 125, 99, 0.5);
+  padding: 0 0.3rem 0.2rem;
+}
+
+.taskcard__starter-input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--j-coral);
+}
+
 /* --- Portrait / narrow ------------------------------------------ */
 
 @media (orientation: portrait) {
   .journal {
     overflow-y: visible; /* the page itself scrolls in portrait */
+  }
+
+  .journal-passage {
+    margin: 0 1rem;
+    padding: 1.5rem 1.4rem;
   }
 
   .journal__header {

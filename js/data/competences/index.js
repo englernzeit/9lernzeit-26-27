@@ -7,9 +7,11 @@
  */
 
 import readingReef from "./australia-reading-reef.js";
+import digitalFootprint from "./generation-like-digital-footprint.js";
 
 const CONTENT = {
   "australia/reading-reef": readingReef,
+  "generation-like/digital-footprint": digitalFootprint,
 };
 
 /**

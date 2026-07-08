@@ -79,7 +79,15 @@ export const UNITS = [
     mapPositionPortrait: { x: 38, y: 67 },
     sticker: "assets/images/sticker-unit4-generation.png",
     labelImage: "assets/images/label-unit4.png",
-    sections: placeholderSections(),
+    // Competence pages built from the Unit 4 teaching material.
+    // Only Reading has content so far; the rest render "coming soon".
+    sections: [
+      { id: "digital-footprint", label: "Reading · Digital Footprint" },
+      { id: "jerome-influencer", label: "Listening · Jerome the Influencer" },
+      { id: "if-clauses", label: "Grammar · If-Clauses" },
+      { id: "written-discussion", label: "Writing · Written Discussion" },
+      { id: "vocabulary", label: "Vocabulary" },
+    ],
   },
 ];
 

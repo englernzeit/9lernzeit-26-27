@@ -1,0 +1,308 @@
+/* ============================================================
+   Interactive exercise widgets (competence pages).
+   Rendered inside .journal, so --j-* tokens resolve.
+   Paired with js/components/exercises.js.
+   ============================================================ */
+
+.exo {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.exo__score {
+  align-self: flex-start;
+  font-family: var(--j-font-display);
+  font-size: 1.2rem;
+  color: var(--j-khaki);
+}
+
+.exo__checkbar {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+.exo__check {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--j-paper-1);
+  background: var(--j-olive);
+  border-radius: 999px;
+  padding: 0.35rem 1.4rem;
+  box-shadow: var(--shadow-lift-1);
+  transition: filter var(--motion-micro);
+}
+
+.exo__check:hover,
+.exo__check:focus-visible {
+  filter: brightness(1.06);
+}
+
+.exo__check:active {
+  transform: scale(0.96);
+}
+
+.exo__result {
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-olive);
+}
+
+/* --- Tappable-glossary reading text ---------------------------- */
+
+.exo-glossary__hint {
+  font-size: 0.95rem;
+  color: var(--j-khaki);
+  font-style: italic;
+}
+
+.exo-glossary__para {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--j-ink);
+}
+
+.glossary-word {
+  position: relative;
+  display: inline;
+  font: inherit;
+  color: var(--j-coral-deep);
+  border-bottom: 2px dotted var(--j-coral);
+  padding: 0 1px;
+  cursor: pointer;
+}
+
+.glossary-word .glossary-pop {
+  position: absolute;
+  left: 50%;
+  bottom: 130%;
+  transform: translateX(-50%) scale(0.9);
+  transform-origin: bottom center;
+  white-space: nowrap;
+  background: var(--j-ink);
+  color: var(--j-paper-1);
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  box-shadow: var(--shadow-lift-2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 5;
+}
+
+.glossary-word--open {
+  background: rgba(192, 106, 88, 0.14);
+}
+
+.glossary-word--open .glossary-pop {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* --- Multiple choice ------------------------------------------- */
+
+.exo-mc {
+  gap: 0.45rem;
+}
+
+.exo-mc__q {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.exo-mc__prompt {
+  font-size: 1.1rem;
+  line-height: 1.25;
+  color: var(--j-ink);
+}
+
+.exo-mc__opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.exo-mc__opt {
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  color: var(--j-ink);
+  background: var(--j-paper-2);
+  border: 1.5px solid rgba(120, 105, 80, 0.3);
+  border-radius: 10px;
+  padding: 0.35rem 0.85rem;
+  transition: background var(--motion-micro), border-color var(--motion-micro);
+}
+
+.exo-mc__opt:hover:not(:disabled) {
+  border-color: var(--j-teal);
+}
+
+.exo-mc__opt--right {
+  background: rgba(109, 143, 78, 0.2);
+  border-color: var(--j-olive);
+  color: var(--j-olive);
+}
+
+.exo-mc__opt--wrong {
+  background: rgba(192, 106, 88, 0.16);
+  border-color: var(--j-coral);
+  color: var(--j-coral-deep);
+}
+
+.exo-mc__opt:disabled {
+  cursor: default;
+}
+
+/* --- Group sort ------------------------------------------------- */
+
+.exo-sort__tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2.6rem;
+  padding: 0.5rem;
+  border: 2px dashed rgba(138, 125, 99, 0.35);
+  border-radius: 12px;
+}
+
+.exo-sort__chip {
+  font-family: var(--j-font-body);
+  font-size: 1.05rem;
+  color: var(--j-ink);
+  background: var(--j-paper-2);
+  border: 1.5px solid rgba(120, 105, 80, 0.3);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  box-shadow: var(--shadow-lift-1);
+  transition: transform var(--motion-micro), border-color var(--motion-micro);
+}
+
+.exo-sort__chip--sel {
+  border-color: var(--j-teal);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.exo-sort__chip--right {
+  background: rgba(109, 143, 78, 0.2);
+  border-color: var(--j-olive);
+}
+
+.exo-sort__chip--wrong {
+  background: rgba(192, 106, 88, 0.16);
+  border-color: var(--j-coral);
+}
+
+.exo-sort__bins {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.exo-sort__bin {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.exo-sort__bin-label {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--j-ink);
+}
+
+.exo-sort__bin-drop {
+  min-height: 6.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(138, 125, 99, 0.3);
+  border-radius: 12px;
+}
+
+/* --- Sentence build -------------------------------------------- */
+
+.exo-build__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+
+.exo-build__row--right { background: rgba(109, 143, 78, 0.15); }
+.exo-build__row--wrong { background: rgba(192, 106, 88, 0.12); }
+
+.exo-build__line {
+  min-height: 2.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 2px dotted rgba(138, 125, 99, 0.4);
+}
+
+.exo-build__bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.exo-build__tok {
+  font-family: var(--j-font-body);
+  font-size: 1.05rem;
+  color: var(--j-ink);
+  background: var(--j-paper-2);
+  border: 1.5px solid rgba(120, 105, 80, 0.3);
+  border-radius: 8px;
+  padding: 0.3rem 0.7rem;
+  transition: opacity var(--motion-micro);
+}
+
+.exo-build__tok--used {
+  background: rgba(79, 127, 150, 0.14);
+  border-color: var(--j-teal);
+}
+
+/* --- Game placeholder ------------------------------------------ */
+
+.exo-game__frame {
+  width: 100%;
+  height: 32rem; /* initial; the game posts its real height and this adjusts */
+  border: none;
+  border-radius: 12px;
+  display: block;
+}
+
+.exo-game__slot {
+  text-align: center;
+  font-family: var(--j-font-display);
+  font-size: 1.6rem;
+  color: var(--j-ochre);
+  padding: 2.5rem 1rem;
+  border: 2px dashed rgba(160, 131, 80, 0.5);
+  border-radius: 14px;
+  background: repeating-linear-gradient(45deg, rgba(160, 131, 80, 0.08) 0 10px, transparent 10px 20px);
+  line-height: 1.5;
+}
+
+.exo-game__slot span {
+  font-size: 1rem;
+  color: var(--j-khaki);
+}
+
+@media (orientation: portrait) {
+  .exo-sort__bins {
+    grid-template-columns: 1fr;
+  }
+}
