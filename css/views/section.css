@@ -458,6 +458,59 @@
   box-shadow: 0 0 0 2px rgba(192, 106, 88, 0.4);
 }
 
+/* Picture-description figure (Speaking) — a taped photo above the task */
+.taskcard__figure {
+  margin: 0.2rem 0 1rem;
+}
+.taskcard__figure-frame {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.55);
+  border: 6px solid #fff;
+  box-shadow: 0 8px 20px rgba(60, 50, 30, 0.16);
+  transform: rotate(-0.5deg);
+}
+.taskcard__figure-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.taskcard__figure-frame--pending {
+  aspect-ratio: 16 / 10;
+  border-style: dashed;
+  border-color: rgba(138, 125, 99, 0.5);
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(214, 197, 158, 0.18),
+    rgba(214, 197, 158, 0.18) 12px,
+    rgba(214, 197, 158, 0.32) 12px,
+    rgba(214, 197, 158, 0.32) 24px
+  );
+}
+.taskcard__figure-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-family: var(--j-font-display);
+  font-size: 1.35rem;
+  color: var(--j-khaki);
+}
+.taskcard__figure-placeholder span:first-child {
+  font-size: 2.4rem;
+}
+.taskcard__figure-cap {
+  margin-top: 0.5rem;
+  font-family: var(--j-font-display);
+  font-size: 1.15rem;
+  color: var(--j-khaki);
+  text-align: center;
+}
+
 /* Real vocabulary photo in the postcard stamp */
 .wordcard__stamp-img {
   width: 100%;

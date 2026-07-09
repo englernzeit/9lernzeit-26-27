@@ -638,6 +638,11 @@ function buildCard(step, data, index, taskNo, ctx) {
     body.appendChild(createAudioPlayer(data.audio));
   }
 
+  // Optional picture above the task body (e.g. Speaking picture-description).
+  if (data.image) {
+    body.appendChild(buildTaskFigure(data.image, data.imageAlt, data.imageCaption));
+  }
+
   switch (data.type) {
     case "text":
       body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs) }));
@@ -748,6 +753,43 @@ function buildCard(step, data, index, taskNo, ctx) {
   }
 
   return card;
+}
+
+/**
+ * A framed picture inside a task card. If the image is missing (e.g. the
+ * artwork hasn't been added yet), it degrades to a labelled placeholder so
+ * the slot is still visible and the page never shows a broken image.
+ */
+function buildTaskFigure(src, alt, caption) {
+  const figure = document.createElement("figure");
+  figure.className = "taskcard__figure";
+
+  const frame = document.createElement("div");
+  frame.className = "taskcard__figure-frame";
+
+  const img = document.createElement("img");
+  img.className = "taskcard__figure-img";
+  img.src = src;
+  img.alt = alt ?? "";
+  img.loading = "lazy";
+  img.addEventListener("error", () => {
+    frame.classList.add("taskcard__figure-frame--pending");
+    img.remove();
+    const ph = document.createElement("div");
+    ph.className = "taskcard__figure-placeholder";
+    ph.innerHTML = "<span>📷</span><span>Picture coming soon</span>";
+    frame.appendChild(ph);
+  });
+  frame.appendChild(img);
+  figure.appendChild(frame);
+
+  if (caption) {
+    const cap = document.createElement("figcaption");
+    cap.className = "taskcard__figure-cap";
+    cap.textContent = caption;
+    figure.appendChild(cap);
+  }
+  return figure;
 }
 
 /** Written-task content: optional bullet/check lines + a saved answer field. */

@@ -87,6 +87,8 @@ export const UNITS = [
       { id: "if-clauses", label: "Grammar · If-Clauses" },
       { id: "written-discussion", label: "Writing · Written Discussion" },
       { id: "vocabulary", label: "Vocabulary" },
+      { id: "speaking", label: "Speaking · Describe the Picture" },
+      { id: "revision", label: "Revision" },
     ],
   },
 ];
