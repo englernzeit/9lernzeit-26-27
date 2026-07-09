@@ -18,6 +18,28 @@ const AUD = "assets/audio";
 export default {
   title: "Jerome the Influencer",
 
+  newWords: {
+    subtitle: "15 words for this unit",
+    stampLabel: "ON AIR",
+    words: [
+      { en: "influencer", de: "der Influencer", ex: "Jerome is a gaming influencer." },
+      { en: "follower", de: "der Follower / Abonnent", ex: "He has thousands of followers." },
+      { en: "channel", de: "der Kanal", ex: "She started a cooking channel." },
+      { en: "account", de: "das Konto / der Account", ex: "Keep your account safe." },
+      { en: "review", de: "die Rezension / bewerten", ex: "He writes a review of every new game." },
+      { en: "subscribe to", de: "abonnieren", ex: "I subscribe to three channels.", image: `${IMG}/vocab2-subscribe.jpg` },
+      { en: "follow", de: "folgen", ex: "Follow me for daily tips!", image: `${IMG}/vocab2-follow.jpg` },
+      { en: "post", de: "posten / hochladen", ex: "She posts a photo every day.", image: `${IMG}/vocab2-post.jpg` },
+      { en: "comment on", de: "kommentieren", ex: "Fans comment on his videos.", image: `${IMG}/vocab2-comment-on.jpg` },
+      { en: "vlog", de: "das Videoblog / vloggen", ex: "He likes to vlog about his day.", image: `${IMG}/vocab2-vlog.jpg` },
+      { en: "delete", de: "löschen", ex: "He deleted his first video.", image: `${IMG}/vocab2-delete.jpg` },
+      { en: "switch on", de: "einschalten", ex: "Switch on your camera.", image: `${IMG}/vocab2-switch-on.jpg` },
+      { en: "switch off", de: "ausschalten", ex: "Switch off your phone at night.", image: `${IMG}/vocab2-switch-off.jpg` },
+      { en: "shut down", de: "herunterfahren", ex: "He nearly shut down his account.", image: `${IMG}/vocab2-shut-down.jpg` },
+      { en: "build up", de: "aufbauen", ex: "It takes time to build up a channel.", image: `${IMG}/vocab2-build-up.jpg` },
+    ],
+  },
+
   steps: [
     /* ============ STEP 1 — LE ============ */
     {
@@ -104,6 +126,27 @@ export default {
             "Someone I follow on social media: …",
           ],
           help: "Hilfe: subscribe = abonnieren · delete = löschen · follow = folgen",
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro: "Guess the social-media word, letter by letter — and save the hero!",
+          words: [
+            { word: "INFLUENCER", hint: "Someone with many online followers" },
+            { word: "FOLLOWER", hint: "A person who subscribes to you" },
+            { word: "CHANNEL", hint: "Where a YouTuber posts videos" },
+            { word: "SUBSCRIBE", hint: "Agree to get someone's videos" },
+            { word: "FOLLOW", hint: "Choose to see what someone posts" },
+            { word: "COMMENT", hint: "Write your opinion under a post" },
+            { word: "VLOG", hint: "A video diary" },
+            { word: "DELETE", hint: "Remove something online" },
+            { word: "ACCOUNT", hint: "Your personal profile on an app" },
+            { word: "REVIEW", hint: "Say what you think of a new game" },
+            { word: "POST", hint: "Put a message or image online" },
+            { word: "UPLOAD", hint: "Put a file onto the internet" },
+          ],
         },
       ],
     },
