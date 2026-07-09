@@ -875,6 +875,8 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   margin-top: 0.2rem;
 }
 
+.exo-args__note:empty { display: none; }
+
 .exo-args__row--good { background: rgba(109, 143, 78, 0.16); border-color: var(--j-olive); }
 .exo-args__row--good .exo-args__note { color: var(--j-olive); font-style: normal; font-weight: 600; }
 .exo-args__row--miss { background: rgba(160, 131, 80, 0.16); border-color: var(--j-ochre); }

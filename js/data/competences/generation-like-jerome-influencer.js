@@ -40,6 +40,27 @@ export default {
     ],
   },
 
+  wordMaster: {
+    subtitle: "Complete each sentence with the right English word.",
+    items: [
+      { de: "Jerome ist ein Gaming-**Influencer**.", en: "Jerome is a gaming ___.", answer: "influencer" },
+      { de: "Er hat tausende **Follower**.", en: "He has thousands of ___s.", answer: "follower" },
+      { de: "Sie hat einen Koch-**Kanal** gestartet.", en: "She started a cooking ___.", answer: "channel" },
+      { de: "Halte dein **Konto** sicher.", en: "Keep your ___ safe.", answer: "account" },
+      { de: "Er schreibt eine **Rezension** zu jedem neuen Spiel.", en: "He writes a ___ of every new game.", answer: "review" },
+      { de: "Ich **abonniere** drei Kanäle.", en: "I ___ to three channels.", answer: "subscribe", accept: ["subscribe to"] },
+      { de: "**Folge** mir für tägliche Tipps!", en: "___ me for daily tips!", answer: "follow" },
+      { de: "Sie **postet** jeden Tag ein Foto.", en: "She ___s a photo every day.", answer: "post" },
+      { de: "Fans **kommentieren** seine Videos.", en: "Fans ___ on his videos.", answer: "comment", accept: ["comment on"] },
+      { de: "Er **vloggt** gern über seinen Tag.", en: "He likes to ___ about his day.", answer: "vlog" },
+      { de: "Er hat sein erstes Video **gelöscht**.", en: "He ___d his first video.", answer: "delete" },
+      { de: "**Schalte** deine Kamera **ein**.", en: "___ on your camera.", answer: "switch" },
+      { de: "**Schalte** nachts dein Handy **aus**.", en: "___ off your phone at night.", answer: "switch" },
+      { de: "Er hat sein Konto fast **heruntergefahren**.", en: "He nearly ___ down his account.", answer: "shut" },
+      { de: "Es dauert, einen Kanal **aufzubauen**.", en: "It takes time to ___ up a channel.", answer: "build" },
+    ],
+  },
+
   steps: [
     /* ============ STEP 1 — LE ============ */
     {

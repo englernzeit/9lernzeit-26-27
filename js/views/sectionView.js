@@ -477,10 +477,11 @@ function buildNewWordsSection(newWords) {
       img.draggable = false;
       stamp.appendChild(img);
     } else {
-      const stampArt = document.createElement("div");
-      stampArt.className = "journal-artslot journal-artslot--teal";
-      stampArt.textContent = "акварель: слово";
-      stamp.appendChild(stampArt);
+      // No photo for this word → a clean monogram stamp (its initial)
+      const mono = document.createElement("div");
+      mono.className = "wordcard__stamp-mono";
+      mono.textContent = (word.en.replace(/^to\s+/i, "").trim()[0] ?? "?").toUpperCase();
+      stamp.appendChild(mono);
     }
 
     const postmark = document.createElement("div");

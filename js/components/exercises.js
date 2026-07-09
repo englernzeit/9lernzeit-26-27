@@ -896,9 +896,9 @@ export function createArgumentPick({ args }) {
     const text = document.createElement("p");
     text.className = "exo-args__text";
     text.textContent = arg.text;
+    // No hint before checking — just the argument text.
     const note = document.createElement("p");
     note.className = "exo-args__note";
-    note.textContent = arg.correct ? `🇩🇪 ${arg.hint}` : "🤔 Is this really relevant?";
     body.append(text, note);
     label.append(box, body);
     wrap.appendChild(label);
@@ -913,16 +913,16 @@ export function createArgumentPick({ args }) {
       r.label.classList.remove("exo-args__row--good", "exo-args__row--miss", "exo-args__row--bad");
       if (r.arg.correct && ticked) {
         r.label.classList.add("exo-args__row--good");
-        r.note.textContent = "✓ A suitable argument.";
+        r.note.textContent = "A suitable argument.";
         right += 1;
       } else if (r.arg.correct && !ticked) {
         r.label.classList.add("exo-args__row--miss");
-        r.note.textContent = "⚠ You missed this suitable argument.";
+        r.note.textContent = "You missed this suitable argument.";
       } else if (!r.arg.correct && ticked) {
         r.label.classList.add("exo-args__row--bad");
-        r.note.textContent = "✗ Absurd — not a suitable argument.";
+        r.note.textContent = "Not a suitable argument.";
       } else {
-        r.note.textContent = "✓ Correctly ignored.";
+        r.note.textContent = "Correctly ignored.";
         right += 1;
       }
     }
