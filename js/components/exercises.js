@@ -306,6 +306,472 @@ export function createGame(data) {
   return wrap;
 }
 
+/* ---------- Audio player (listening) --------------------------- */
+
+/**
+ * Compact journal-styled audio player: round play/pause, seekable
+ * progress bar and a running time. Wraps a native <audio> element.
+ *
+ * @param {{ src: string, label?: string }} data
+ */
+export function createAudioPlayer({ src, label }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo-audio";
+
+  const audio = document.createElement("audio");
+  audio.src = src;
+  audio.preload = "metadata";
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "exo-audio__btn";
+  btn.setAttribute("aria-label", "Play");
+  btn.textContent = "▶";
+
+  const body = document.createElement("div");
+  body.className = "exo-audio__body";
+
+  const cap = document.createElement("div");
+  cap.className = "exo-audio__label";
+  cap.textContent = label ?? "Listen";
+
+  const bar = document.createElement("div");
+  bar.className = "exo-audio__bar";
+  const fill = document.createElement("div");
+  fill.className = "exo-audio__fill";
+  bar.appendChild(fill);
+
+  const time = document.createElement("div");
+  time.className = "exo-audio__time";
+  time.textContent = "0:00 / 0:00";
+
+  body.append(cap, bar, time);
+  wrap.append(btn, body, audio);
+
+  const fmt = (s) => {
+    if (!isFinite(s)) return "0:00";
+    const m = Math.floor(s / 60);
+    const ss = String(Math.floor(s % 60)).padStart(2, "0");
+    return `${m}:${ss}`;
+  };
+  const paint = () => {
+    fill.style.width = audio.duration ? `${(audio.currentTime / audio.duration) * 100}%` : "0%";
+    time.textContent = `${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
+  };
+
+  btn.addEventListener("click", () => {
+    if (audio.paused) audio.play();
+    else audio.pause();
+  });
+  audio.addEventListener("play", () => {
+    btn.textContent = "❚❚";
+    btn.setAttribute("aria-label", "Pause");
+    wrap.classList.add("exo-audio--playing");
+  });
+  audio.addEventListener("pause", () => {
+    btn.textContent = "▶";
+    btn.setAttribute("aria-label", "Play");
+    wrap.classList.remove("exo-audio--playing");
+  });
+  audio.addEventListener("timeupdate", paint);
+  audio.addEventListener("loadedmetadata", paint);
+  audio.addEventListener("ended", () => {
+    btn.textContent = "▶";
+    wrap.classList.remove("exo-audio--playing");
+  });
+  bar.addEventListener("click", (e) => {
+    if (!audio.duration) return;
+    const rect = bar.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+    paint();
+  });
+
+  return wrap;
+}
+
+/* ---------- Image ↔ word match (vocabulary) -------------------- */
+
+/**
+ * Tap a picture, then tap the word that matches it. Correct pairs lock
+ * green with the word overlaid; a wrong pick flashes and clears. No
+ * answer is revealed — the learner keeps trying.
+ *
+ * @param {{ pairs: Array<{ word: string, image: string }> }} data
+ */
+export function createImageMatch({ pairs }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-imatch";
+
+  const grid = document.createElement("div");
+  grid.className = "exo-imatch__grid";
+
+  let selected = null; // the chosen tile element
+  const solvedWords = new Set();
+
+  const tiles = pairs.map((p) => {
+    const tile = document.createElement("button");
+    tile.type = "button";
+    tile.className = "exo-imatch__tile";
+    tile.dataset.word = p.word;
+    const img = document.createElement("img");
+    img.className = "exo-imatch__img";
+    img.src = p.image;
+    img.alt = "";
+    img.draggable = false;
+    const badge = document.createElement("span");
+    badge.className = "exo-imatch__badge";
+    badge.textContent = p.word;
+    tile.append(img, badge);
+    tile.addEventListener("click", () => {
+      if (tile.classList.contains("exo-imatch__tile--done")) return;
+      grid.querySelectorAll(".exo-imatch__tile--sel").forEach((t) =>
+        t.classList.remove("exo-imatch__tile--sel"),
+      );
+      selected = selected === tile ? null : tile;
+      if (selected) tile.classList.add("exo-imatch__tile--sel");
+    });
+    grid.appendChild(tile);
+    return tile;
+  });
+
+  const tray = document.createElement("div");
+  tray.className = "exo-imatch__tray";
+  // Stable shuffle of the words so they don't sit under their picture
+  const words = pairs.map((p) => p.word);
+  for (let i = 0; i < words.length; i++) {
+    const j = (i * 7 + 3) % words.length;
+    [words[i], words[j]] = [words[j], words[i]];
+  }
+  words.forEach((word) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "exo-imatch__word";
+    chip.textContent = word;
+    chip.addEventListener("click", () => {
+      if (!selected || chip.disabled) return;
+      if (selected.dataset.word === word) {
+        selected.classList.remove("exo-imatch__tile--sel");
+        selected.classList.add("exo-imatch__tile--done");
+        chip.disabled = true;
+        solvedWords.add(word);
+        selected = null;
+      } else {
+        const bad = selected;
+        bad.classList.add("exo-imatch__tile--wrong");
+        setTimeout(() => bad.classList.remove("exo-imatch__tile--wrong"), 550);
+        bad.classList.remove("exo-imatch__tile--sel");
+        selected = null;
+      }
+    });
+    tray.appendChild(chip);
+  });
+
+  wrap.append(grid, tray);
+  return wrap;
+}
+
+/* ---------- Event order (sequence 1..N) ------------------------ */
+
+/**
+ * Number the events 1..N in the correct order, then Check. Right rows
+ * lock green; wrong rows go red but keep their number for another try.
+ *
+ * @param {{ events: Array<{ text: string }> }} data  (events are given IN correct order)
+ */
+export function createEventOrder({ events }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-order";
+
+  const n = events.length;
+  // Present the events in a stable shuffled order (not the answer order)
+  const shown = events.map((e, i) => ({ text: e.text, correct: i + 1 }));
+  for (let i = 0; i < shown.length; i++) {
+    const j = (i * 3 + 2) % shown.length;
+    [shown[i], shown[j]] = [shown[j], shown[i]];
+  }
+
+  const rows = shown.map((e) => {
+    const row = document.createElement("div");
+    row.className = "exo-order__row";
+    const input = document.createElement("input");
+    input.type = "number";
+    input.min = "1";
+    input.max = String(n);
+    input.className = "exo-order__num";
+    input.addEventListener("input", () =>
+      row.classList.remove("exo-order__row--right", "exo-order__row--wrong"),
+    );
+    const text = document.createElement("span");
+    text.className = "exo-order__text";
+    text.textContent = e.text;
+    row.append(input, text);
+    wrap.appendChild(row);
+    return { row, input, correct: e.correct };
+  });
+
+  const checkBtn = checkButton(wrap, () => {
+    let right = 0;
+    for (const r of rows) {
+      const val = parseInt(r.input.value, 10);
+      const ok = val === r.correct;
+      r.row.classList.toggle("exo-order__row--right", ok);
+      r.row.classList.toggle("exo-order__row--wrong", !ok && !!r.input.value);
+      if (ok) right += 1;
+    }
+    checkBtn.result(`${right} / ${n} in order`);
+  });
+
+  return wrap;
+}
+
+/* ---------- Inline choice (pronoun select / dialogue fill) ----- */
+
+/**
+ * A passage with inline gaps; each gap offers a few options and the
+ * learner picks one per gap, then Checks. ≤3 options render as buttons,
+ * more as a dropdown. Right locks green, wrong goes red (no reveal).
+ * `segments`: string (literal) or { gap: index }. `gaps`: [{options, answer}].
+ *
+ * @param {{ layout?: "prose"|"dialogue", bank?: string[], segments: Array, gaps: Array<{options:string[], answer:string}>, lines?: Array<{speaker?:string, segments:Array}> }} data
+ */
+export function createInlineChoice(data) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-inline";
+
+  if (data.bank?.length) {
+    const bank = document.createElement("div");
+    bank.className = "exo-inline__bank";
+    const cap = document.createElement("span");
+    cap.className = "exo-inline__bank-cap";
+    cap.textContent = "Useful language";
+    bank.appendChild(cap);
+    data.bank.forEach((p) => {
+      const pill = document.createElement("span");
+      pill.className = "exo-inline__bank-pill";
+      pill.textContent = p;
+      bank.appendChild(pill);
+    });
+    wrap.appendChild(bank);
+  }
+
+  const controls = [];
+
+  const renderGap = (gapIndex) => {
+    const gap = data.gaps[gapIndex];
+    const holder = document.createElement("span");
+    holder.className = "exo-inline__gap";
+    const sup = document.createElement("sup");
+    sup.className = "exo-inline__sup";
+    sup.textContent = gapIndex + 1;
+    holder.appendChild(sup);
+
+    let getValue;
+    if (gap.options.length <= 3) {
+      const btns = gap.options.map((opt) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "exo-inline__opt";
+        b.textContent = opt;
+        b.addEventListener("click", () => {
+          if (holder.dataset.locked) return;
+          holder.querySelectorAll(".exo-inline__opt").forEach((x) =>
+            x.classList.remove("exo-inline__opt--sel"),
+          );
+          b.classList.add("exo-inline__opt--sel");
+          holder.dataset.value = opt;
+        });
+        holder.appendChild(b);
+        return b;
+      });
+      getValue = () => holder.dataset.value ?? "";
+      controls.push({ holder, getValue, answer: gap.answer, btns });
+    } else {
+      const sel = document.createElement("select");
+      sel.className = "exo-inline__select";
+      const blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = "—";
+      sel.appendChild(blank);
+      gap.options.forEach((opt) => {
+        const o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        sel.appendChild(o);
+      });
+      holder.appendChild(sel);
+      getValue = () => sel.value;
+      controls.push({ holder, getValue, answer: gap.answer, select: sel });
+    }
+    return holder;
+  };
+
+  const renderSegments = (segments, parent) => {
+    for (const seg of segments) {
+      if (typeof seg === "string") {
+        const s = document.createElement("span");
+        s.textContent = seg;
+        parent.appendChild(s);
+      } else {
+        parent.appendChild(renderGap(seg.gap));
+      }
+    }
+  };
+
+  if (data.layout === "dialogue" && data.lines) {
+    const table = document.createElement("div");
+    table.className = "exo-inline__dialogue";
+    data.lines.forEach((line) => {
+      const row = document.createElement("div");
+      row.className = "exo-inline__dline";
+      const who = document.createElement("span");
+      who.className = "exo-inline__speaker";
+      who.textContent = line.speaker ?? "";
+      const said = document.createElement("span");
+      said.className = "exo-inline__said";
+      renderSegments(line.segments, said);
+      row.append(who, said);
+      table.appendChild(row);
+    });
+    wrap.appendChild(table);
+  } else {
+    const para = document.createElement("p");
+    para.className = "exo-inline__para";
+    renderSegments(data.segments ?? [], para);
+    wrap.appendChild(para);
+  }
+
+  const checkBtn = checkButton(wrap, () => {
+    let right = 0;
+    for (const c of controls) {
+      const ok = norm(c.getValue()) === norm(c.answer);
+      c.holder.classList.toggle("exo-inline__gap--right", ok);
+      c.holder.classList.toggle("exo-inline__gap--wrong", !ok && !!c.getValue());
+      if (ok) {
+        c.holder.dataset.locked = "1";
+        if (c.select) c.select.disabled = true;
+        c.btns?.forEach((b) => (b.disabled = true));
+        right += 1;
+      }
+      // mark which button the learner picked, when wrong
+      if (!ok && c.btns) {
+        c.btns.forEach((b) =>
+          b.classList.toggle(
+            "exo-inline__opt--miss",
+            b.classList.contains("exo-inline__opt--sel"),
+          ),
+        );
+      }
+    }
+    checkBtn.result(`${right} / ${controls.length} correct`);
+  });
+
+  return wrap;
+}
+
+/* ---------- Caption builder (Sell It! challenge) --------------- */
+
+const CAPTION_CHECKS = [
+  { key: "hook", label: "Catchy opening line", test: (c) => c.trim().split(/[.!?\n]/)[0].trim().length > 5 },
+  { key: "indef", label: "Indefinite pronoun (everyone, nothing…)", test: (c) => /\b(everyone|everybody|someone|somebody|anyone|anybody|no one|nobody|everything|something|anything|nothing)\b/i.test(c) },
+  { key: "reflex", label: "Reflexive / reciprocal pronoun (yourself, each other…)", test: (c) => /\b(myself|yourself|himself|herself|itself|ourselves|yourselves|themselves|each other|one another)\b/i.test(c) },
+  { key: "fomo", label: "FOMO language (don't miss, limited, only…)", test: (c) => /missing out|don't miss|do not miss|limited|only|now|today|last chance|hurry|everyone is talking/i.test(c) },
+  { key: "tags", label: "3–5 hashtags", test: (c) => { const n = (c.match(/#\w+/g) || []).length; return n >= 3 && n <= 5; } },
+];
+
+/**
+ * "Sell It!" — write a persuasive Instagram caption; a live checklist
+ * ticks each of the five requirements automatically as you type. Product
+ * and caption persist and go to the PDF.
+ *
+ * @param {{ values: {product:string, caption:string}, keyFor:(f:string)=>string, onChange:(f:string,v:string)=>void }} opts
+ */
+export function createCaptionBuilder({ values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-caption";
+
+  const grid = document.createElement("div");
+  grid.className = "exo-caption__grid";
+
+  const form = document.createElement("div");
+  form.className = "exo-caption__form";
+
+  const mkField = (key, labelText, el) => {
+    const label = document.createElement("label");
+    label.className = "exo-caption__field";
+    const cap = document.createElement("span");
+    cap.className = "exo-caption__label";
+    cap.textContent = labelText;
+    el.className = "exo-caption__input";
+    el.value = values?.[key] ?? "";
+    el.dataset.answerKey = keyFor(key);
+    el.addEventListener("input", () => {
+      onChange(key, el.value);
+      update();
+    });
+    label.append(cap, el);
+    return label;
+  };
+
+  const productInput = document.createElement("input");
+  productInput.type = "text";
+  productInput.placeholder = "e.g. wireless headphones, skincare, an energy drink…";
+  const captionArea = document.createElement("textarea");
+  captionArea.rows = 8;
+  captionArea.placeholder = "✨ Stop what you're doing — everyone needs to try this!\n\n#YourHashtags #Here";
+
+  form.append(
+    mkField("product", "Your product", productInput),
+    mkField("caption", "Your Instagram caption", captionArea),
+  );
+
+  const panel = document.createElement("div");
+  panel.className = "exo-caption__panel";
+  const head = document.createElement("div");
+  head.className = "exo-caption__panel-head";
+  const title = document.createElement("span");
+  title.textContent = "Requirements";
+  const count = document.createElement("span");
+  count.className = "exo-caption__count";
+  head.append(title, count);
+  panel.appendChild(head);
+
+  const rows = CAPTION_CHECKS.map((c) => {
+    const row = document.createElement("div");
+    row.className = "exo-caption__req";
+    const dot = document.createElement("span");
+    dot.className = "exo-caption__dot";
+    const text = document.createElement("span");
+    text.className = "exo-caption__req-label";
+    text.textContent = c.label;
+    row.append(dot, text);
+    panel.appendChild(row);
+    return { row, def: c };
+  });
+
+  const done = document.createElement("div");
+  done.className = "exo-caption__done";
+  done.textContent = "All five requirements met! 🎉";
+  panel.appendChild(done);
+
+  grid.append(form, panel);
+  wrap.appendChild(grid);
+
+  function update() {
+    const c = captionArea.value;
+    let n = 0;
+    for (const r of rows) {
+      const ok = r.def.test(c);
+      r.row.classList.toggle("exo-caption__req--ok", ok);
+      if (ok) n += 1;
+    }
+    count.textContent = `${n}/5`;
+    wrap.classList.toggle("exo-caption--complete", n === 5);
+  }
+
+  update();
+  return wrap;
+}
+
 /* ---------- Gap fill (type the correct form) ------------------- */
 
 /**

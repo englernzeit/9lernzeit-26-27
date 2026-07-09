@@ -9,11 +9,13 @@
 import readingReef from "./australia-reading-reef.js";
 import digitalFootprint from "./generation-like-digital-footprint.js";
 import ifClauses from "./generation-like-if-clauses.js";
+import jeromeInfluencer from "./generation-like-jerome-influencer.js";
 
 const CONTENT = {
   "australia/reading-reef": readingReef,
   "generation-like/digital-footprint": digitalFootprint,
   "generation-like/if-clauses": ifClauses,
+  "generation-like/jerome-influencer": jeromeInfluencer,
 };
 
 /**

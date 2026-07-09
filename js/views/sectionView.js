@@ -26,6 +26,11 @@ import {
   createGame,
   createProfileBuilder,
   createGapFill,
+  createAudioPlayer,
+  createImageMatch,
+  createEventOrder,
+  createInlineChoice,
+  createCaptionBuilder,
 } from "../components/exercises.js";
 import {
   getName,
@@ -48,6 +53,10 @@ const PROFILE_LABELS = {
   post3: "Post 3",
   nevershare: "Never share",
 };
+
+/** The two fields of the "Sell It!" caption builder, in PDF order. */
+const CAPTION_FIELDS = ["product", "caption"];
+const CAPTION_LABELS = { product: "Product", caption: "Instagram caption" };
 
 /** Fallback shape for pages whose lesson content is not written yet. */
 function comingSoonContent() {
@@ -276,6 +285,12 @@ function downloadAnswerSheet(view, unit, section, content, name) {
           return PROFILE_FIELDS.map((f) => ({
             label: `${card.title} — ${PROFILE_LABELS[f]}`,
             answer: answers[`${base}-profile-${f}`] ?? "",
+          }));
+        }
+        if (card.type === "caption-builder") {
+          return CAPTION_FIELDS.map((f) => ({
+            label: `${card.title} — ${CAPTION_LABELS[f]}`,
+            answer: answers[`${base}-caption-${f}`] ?? "",
           }));
         }
         if (card.starters?.length) {
@@ -602,6 +617,11 @@ function buildCard(step, data, index, taskNo, ctx) {
     }
   }
 
+  // Optional listening track above the task body.
+  if (data.audio) {
+    body.appendChild(createAudioPlayer(data.audio));
+  }
+
   switch (data.type) {
     case "text":
       body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs) }));
@@ -618,6 +638,15 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "gap-fill":
       body.appendChild(createGapFill({ items: data.items }));
       break;
+    case "image-match":
+      body.appendChild(createImageMatch({ pairs: data.pairs }));
+      break;
+    case "event-order":
+      body.appendChild(createEventOrder({ events: data.events }));
+      break;
+    case "inline-choice":
+      body.appendChild(createInlineChoice(data));
+      break;
     case "game":
       body.appendChild(createGame(data));
       break;
@@ -628,6 +657,21 @@ function buildCard(step, data, index, taskNo, ctx) {
       for (const f of PROFILE_FIELDS) values[f] = saved[`${base}-${f}`] ?? "";
       body.appendChild(
         createProfileBuilder({
+          values,
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) =>
+            ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "caption-builder": {
+      const base = `step${step.step}-task${index + 1}-caption`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const values = {};
+      for (const f of CAPTION_FIELDS) values[f] = saved[`${base}-${f}`] ?? "";
+      body.appendChild(
+        createCaptionBuilder({
           values,
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) =>
