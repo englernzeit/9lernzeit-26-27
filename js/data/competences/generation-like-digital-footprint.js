@@ -269,12 +269,11 @@ export default {
       layout: "single",
       cards: [
         {
-          type: "written",
+          type: "profile-builder",
           kind: "Kreativ · Challenge",
           title: "Design your dream profile",
           intro:
-            "You're building a brand-new profile you'd be proud of for the next ten years. Describe it: your username, your bio, the first three things you'd post, and one thing you'd NEVER share. Explain your choices.",
-          answer: true,
+            "You're building a brand-new profile you'd be proud of for the next ten years. Fill it in below — username, bio, your first three posts, and one thing you'd NEVER share.",
           help: "Tip: make it 'you' — your real hobbies and interests, not a fake perfect person.",
         },
       ],

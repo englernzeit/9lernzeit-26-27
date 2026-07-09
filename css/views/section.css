@@ -292,6 +292,140 @@
   content: counter(tip);
 }
 
+/* --- Grammar guide (3 types + infographic) --------------------- */
+
+.grammar-guide {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 2.9rem;
+}
+
+.grammar-guide__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.grammar-guide__video {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 56rem; /* ≈ native 854px — avoids upscaling blur and side bars */
+  background: var(--j-paper-2);
+  border: 1px solid rgba(120, 105, 80, 0.22);
+  border-radius: 16px;
+  padding: 0.5rem;
+  box-shadow: var(--j-shadow-card);
+}
+
+.grammar-guide__video video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  display: block;
+  background: #000;
+}
+
+.grammar-guide__types {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.grammar-guide__type {
+  background: var(--j-paper-2);
+  border: 1px solid rgba(120, 105, 80, 0.22);
+  border-left-width: 6px;
+  border-radius: 12px 16px 12px 16px / 16px 12px 16px 12px;
+  padding: 0.85rem 1.1rem 0.95rem;
+  box-shadow: 0 8px 20px -14px rgba(70, 60, 110, 0.5);
+}
+
+.grammar-guide__type--olive { border-left-color: var(--j-olive); }
+.grammar-guide__type--ochre { border-left-color: var(--j-ochre); }
+.grammar-guide__type--coral { border-left-color: var(--j-coral); }
+
+.grammar-guide__type-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.grammar-guide__dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.grammar-guide__type--olive .grammar-guide__dot { background: var(--j-olive); }
+.grammar-guide__type--ochre .grammar-guide__dot { background: var(--j-ochre); }
+.grammar-guide__type--coral .grammar-guide__dot { background: var(--j-coral); }
+
+.grammar-guide__type-name {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--j-ink);
+}
+
+.grammar-guide__tag {
+  margin-left: auto;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.7rem;
+  border-radius: 999px;
+}
+
+.grammar-guide__type--olive .grammar-guide__tag { background: var(--j-olive-bg); color: var(--j-olive); }
+.grammar-guide__type--ochre .grammar-guide__tag { background: var(--j-ochre-bg); color: var(--j-ochre); }
+.grammar-guide__type--coral .grammar-guide__tag { background: rgba(192, 106, 88, 0.2); color: var(--j-coral-deep); }
+
+.grammar-guide__formula {
+  font-family: var(--j-font-body);
+  font-size: 1.05rem;
+  color: var(--j-khaki);
+  margin-top: 0.4rem;
+}
+
+.grammar-guide__example {
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  color: var(--j-ink);
+  margin-top: 0.15rem;
+}
+
+.grammar-guide__figure {
+  margin: 0;
+  background: var(--j-paper-2);
+  border: 1px solid rgba(120, 105, 80, 0.22);
+  border-radius: 14px;
+  padding: 0.5rem;
+  box-shadow: var(--j-shadow-card);
+  transform: rotate(-0.4deg);
+}
+
+.grammar-guide__img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+}
+
+.grammar-guide__caption {
+  font-family: var(--j-font-display);
+  font-size: 1.1rem;
+  color: var(--j-khaki);
+  text-align: center;
+  padding: 0.4rem 0.2rem 0.2rem;
+}
+
 /* --- Answer field on task cards -------------------------------- */
 
 .taskcard__answer {
@@ -422,5 +556,15 @@
 
   .journal__section-head {
     padding: 0 1.2rem;
+  }
+
+  .grammar-guide {
+    padding: 0 1.2rem;
+    gap: 1.1rem;
+  }
+
+  .grammar-guide__grid {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
   }
 }

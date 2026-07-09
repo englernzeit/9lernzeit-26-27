@@ -306,7 +306,313 @@ export function createGame(data) {
   return wrap;
 }
 
+/* ---------- Gap fill (type the correct form) ------------------- */
+
+/**
+ * Type-the-answer gap fill with instant checking. Each item is a line
+ * of segments; a string segment is literal text, an object segment
+ * `{ answer, accept?, size? }` becomes an inline input. Checking marks
+ * every blank right (green, locked) or wrong (red, still editable) —
+ * the correct answer is never shown, matching the multiple-choice rule.
+ *
+ * @param {{ items: Array<{ hint?: string, segments: Array<string|{answer:string, accept?:string[], size?:number}> }> }} data
+ */
+export function createGapFill({ items }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-gap";
+
+  const blanks = [];
+
+  items.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "exo-gap__item";
+
+    const line = document.createElement("div");
+    line.className = "exo-gap__line";
+    for (const seg of item.segments) {
+      if (typeof seg === "string") {
+        const span = document.createElement("span");
+        span.className = "exo-gap__text";
+        span.textContent = seg;
+        line.appendChild(span);
+      } else {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "exo-gap__blank";
+        input.size = seg.size ?? Math.max(6, (seg.answer?.length ?? 6) + 2);
+        input.setAttribute("autocomplete", "off");
+        input.setAttribute("autocapitalize", "off");
+        input.spellcheck = false;
+        const accepted = [seg.answer, ...(seg.accept ?? [])].map(norm);
+        const blank = { input, accepted, done: false };
+        input.addEventListener("input", () => {
+          input.classList.remove("exo-gap__blank--right", "exo-gap__blank--wrong");
+        });
+        blanks.push(blank);
+        line.appendChild(input);
+      }
+    }
+    row.appendChild(line);
+
+    if (item.hint) {
+      const hint = document.createElement("p");
+      hint.className = "exo-gap__hint";
+      hint.textContent = item.hint;
+      row.appendChild(hint);
+    }
+    wrap.appendChild(row);
+  });
+
+  const checkBtn = checkButton(wrap, () => {
+    let right = 0;
+    for (const b of blanks) {
+      if (b.done) {
+        right += 1;
+        continue;
+      }
+      const ok = b.accepted.includes(norm(b.input.value));
+      b.input.classList.toggle("exo-gap__blank--right", ok);
+      b.input.classList.toggle("exo-gap__blank--wrong", !ok);
+      if (ok) {
+        b.done = true;
+        b.input.disabled = true;
+        right += 1;
+      }
+    }
+    checkBtn.result(`${right} / ${blanks.length} correct`);
+  });
+
+  return wrap;
+}
+
+/* ---------- Profile builder (Step 4 challenge) ----------------- */
+
+const PROFILE_FIELDS = ["username", "bio", "post1", "post2", "post3", "nevershare"];
+
+/**
+ * Interactive "Design your dream profile" challenge. A live preview
+ * (avatar · @handle · bio · three post tiles · blurred never-share lock)
+ * updates as the learner fills in a form; a progress bar tracks the six
+ * fields and the "Save my profile" button unlocks once they're all done,
+ * awarding points and flipping to a saved state.
+ *
+ * @param {{
+ *   values: Record<string,string>,
+ *   keyFor: (field: string) => string,
+ *   onChange: (field: string, value: string) => void,
+ * }} opts
+ */
+export function createProfileBuilder({ values, keyFor, onChange }) {
+  const state = {};
+  PROFILE_FIELDS.forEach((f) => (state[f] = values?.[f] ?? ""));
+  let submitted = false;
+  let points = 0;
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-profile";
+
+  const grid = document.createElement("div");
+  grid.className = "exo-profile__grid";
+  wrap.appendChild(grid);
+
+  /* ----- LEFT: live preview + never-share input ----- */
+  const left = document.createElement("div");
+  left.className = "exo-profile__left";
+
+  const preview = document.createElement("article");
+  preview.className = "exo-profile__preview";
+
+  const idRow = document.createElement("div");
+  idRow.className = "exo-profile__idrow";
+  const avatar = document.createElement("div");
+  avatar.className = "exo-profile__avatar";
+  const idText = document.createElement("div");
+  idText.className = "exo-profile__idtext";
+  const handle = document.createElement("div");
+  handle.className = "exo-profile__handle";
+  const bioLine = document.createElement("div");
+  bioLine.className = "exo-profile__bio";
+  idText.append(handle, bioLine);
+  idRow.append(avatar, idText);
+
+  const postsGrid = document.createElement("div");
+  postsGrid.className = "exo-profile__posts";
+  const postTiles = [1, 2, 3].map((n) => {
+    const tile = document.createElement("div");
+    tile.className = `exo-profile__post exo-profile__post--${n}`;
+    const tape = document.createElement("span");
+    tape.className = "exo-profile__tape";
+    const num = document.createElement("span");
+    num.className = "exo-profile__post-num";
+    num.textContent = n;
+    const cap = document.createElement("span");
+    cap.className = "exo-profile__post-cap";
+    tile.append(tape, num, cap);
+    postsGrid.appendChild(tile);
+    return { tile, num, cap };
+  });
+
+  const lockRow = document.createElement("div");
+  lockRow.className = "exo-profile__lock";
+  lockRow.innerHTML =
+    '<span class="exo-profile__lock-icon" aria-hidden="true">🔒</span>';
+  const lockText = document.createElement("span");
+  lockText.className = "exo-profile__lock-text";
+  lockText.title = "Hover to reveal";
+  lockRow.appendChild(lockText);
+
+  preview.append(idRow, postsGrid, lockRow);
+  left.appendChild(preview);
+
+  const neverField = field(
+    "One thing you'd NEVER share",
+    "nevershare",
+    "…and why not?",
+    "exo-profile__field--danger",
+  );
+  left.appendChild(neverField.el);
+
+  /* ----- RIGHT: form / saved state ----- */
+  const right = document.createElement("div");
+  right.className = "exo-profile__right";
+
+  const form = document.createElement("div");
+  form.className = "exo-profile__form";
+
+  const fUser = field("Username", "username", "e.g. quietcomet");
+  const fBio = field("Bio", "bio", "One line about who you are");
+  const fPost1 = field("Post 1 — what's it of, and why?", "post1", "Describe your first post");
+  const twoUp = document.createElement("div");
+  twoUp.className = "exo-profile__twoup";
+  const fPost2 = field("Post 2", "post2", "Your second post");
+  const fPost3 = field("Post 3", "post3", "Your third post");
+  twoUp.append(fPost2.el, fPost3.el);
+
+  const progress = document.createElement("div");
+  progress.className = "exo-profile__progress";
+  const barTrack = document.createElement("div");
+  barTrack.className = "exo-profile__bar";
+  const barFill = document.createElement("div");
+  barFill.className = "exo-profile__bar-fill";
+  barTrack.appendChild(barFill);
+  const progLabel = document.createElement("span");
+  progLabel.className = "exo-profile__prog-label";
+  progress.append(barTrack, progLabel);
+
+  const actions = document.createElement("div");
+  actions.className = "exo-profile__actions";
+  const saveBtn = document.createElement("button");
+  saveBtn.type = "button";
+  saveBtn.className = "exo-profile__save";
+  saveBtn.textContent = "Save my profile";
+  const pop = document.createElement("span");
+  pop.className = "exo-profile__pop";
+  pop.textContent = "+10";
+  saveBtn.appendChild(pop);
+  actions.appendChild(saveBtn);
+
+  form.append(fUser.el, fBio.el, fPost1.el, twoUp, progress, actions);
+
+  const saved = document.createElement("div");
+  saved.className = "exo-profile__saved";
+  saved.innerHTML =
+    '<div class="exo-profile__saved-card">' +
+    '<span class="exo-profile__saved-check" aria-hidden="true">✓</span>' +
+    '<div><div class="exo-profile__saved-title">Profile saved!</div>' +
+    '<p class="exo-profile__saved-text">Your dream profile is complete — check the live preview.</p></div></div>';
+  const editBtn = document.createElement("button");
+  editBtn.type = "button";
+  editBtn.className = "exo-profile__edit";
+  editBtn.textContent = "Edit profile";
+  saved.appendChild(editBtn);
+
+  right.append(form, saved);
+  grid.append(left, right);
+
+  const inputs = [fUser, fBio, fPost1, fPost2, fPost3, neverField];
+
+  /** One labelled input; wires persistence + live preview. */
+  function field(labelText, key, placeholder, extraClass) {
+    const el = document.createElement("label");
+    el.className = "exo-profile__field" + (extraClass ? ` ${extraClass}` : "");
+    const cap = document.createElement("span");
+    cap.className = "exo-profile__label";
+    cap.textContent = labelText;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "exo-profile__input";
+    input.placeholder = placeholder;
+    input.value = state[key];
+    input.dataset.answerKey = keyFor(key);
+    input.addEventListener("input", () => {
+      state[key] = input.value;
+      onChange(key, input.value);
+      update();
+    });
+    el.append(cap, input);
+    return { el, input, key };
+  }
+
+  function update() {
+    const uname = state.username.trim();
+    avatar.textContent = (uname ? uname.slice(0, 2) : "?").toUpperCase();
+    handle.textContent = "@" + (uname || "yourname");
+    bioLine.textContent = state.bio.trim() || "Your bio goes here…";
+
+    [state.post1, state.post2, state.post3].forEach((raw, i) => {
+      const text = raw.trim();
+      const t = postTiles[i];
+      t.tile.classList.toggle("is-filled", text.length > 0);
+      t.cap.textContent = text;
+    });
+
+    lockText.textContent = state.nevershare.trim() || "never-share item";
+
+    const filled = PROFILE_FIELDS.filter((f) => state[f].trim().length > 0).length;
+    barFill.style.width = `${Math.round((filled / 6) * 100)}%`;
+    barFill.dataset.level = String(filled);
+    let msg = "Let's build your profile…";
+    if (filled === 6) msg = "Ready to save!";
+    else if (filled >= 4) msg = "Almost there!";
+    else if (filled >= 2) msg = "Looking good!";
+    else if (filled >= 1) msg = "Nice start!";
+    progLabel.textContent = `${filled}/6 · ${msg}`;
+    saveBtn.disabled = filled < 6 || submitted;
+  }
+
+  function setSubmitted(on) {
+    submitted = on;
+    wrap.classList.toggle("exo-profile--saved", on);
+    neverField.input.disabled = on;
+    inputs.forEach((f) => (f.input.disabled = on));
+    update();
+  }
+
+  saveBtn.addEventListener("click", () => {
+    if (saveBtn.disabled) return;
+    points += 10;
+    pop.classList.remove("exo-profile__pop--go");
+    // reflow so the animation restarts each save
+    void pop.offsetWidth;
+    pop.classList.add("exo-profile__pop--go");
+    setSubmitted(true);
+  });
+  editBtn.addEventListener("click", () => setSubmitted(false));
+
+  update();
+  return wrap;
+}
+
 /* ---------- shared bits ---------------------------------------- */
+
+/** Normalise a typed answer: trim, lowercase, unify apostrophes, collapse spaces. */
+function norm(s) {
+  return (s ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[’‘`]/g, "'")
+    .replace(/\s+/g, " ");
+}
 
 function checkButton(wrap, onCheck) {
   const bar = document.createElement("div");

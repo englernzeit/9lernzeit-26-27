@@ -24,6 +24,8 @@ import {
   createGroupSort,
   createSentenceBuild,
   createGame,
+  createProfileBuilder,
+  createGapFill,
 } from "../components/exercises.js";
 import {
   getName,
@@ -35,6 +37,17 @@ import {
 } from "../state/answersStore.js";
 import { createWordMaster } from "../components/wordMaster.js";
 import { buildAnswerSheetPdf, downloadPdf } from "../utils/pdf.js";
+
+/** The six fields of the Step 4 "dream profile" builder, in PDF order. */
+const PROFILE_FIELDS = ["username", "bio", "post1", "post2", "post3", "nevershare"];
+const PROFILE_LABELS = {
+  username: "Username",
+  bio: "Bio",
+  post1: "Post 1",
+  post2: "Post 2",
+  post3: "Post 3",
+  nevershare: "Never share",
+};
 
 /** Fallback shape for pages whose lesson content is not written yet. */
 function comingSoonContent() {
@@ -102,6 +115,11 @@ export function renderSectionView(root, unitId, sectionId) {
   // --- Reading passage (optional) --------------------------------
   if (content.passage) {
     view.appendChild(buildPassage(content.passage));
+  }
+
+  // --- Grammar guide (optional) ----------------------------------
+  if (content.guide) {
+    view.appendChild(buildGuideSection(content.guide));
   }
 
   // --- New words (optional) --------------------------------------
@@ -254,6 +272,12 @@ function downloadAnswerSheet(view, unit, section, content, name) {
       heading: `Step ${s.step} — ${s.subtitle}`,
       items: s.cards.flatMap((card, i) => {
         const base = `step${s.step}-task${i + 1}`;
+        if (card.type === "profile-builder") {
+          return PROFILE_FIELDS.map((f) => ({
+            label: `${card.title} — ${PROFILE_LABELS[f]}`,
+            answer: answers[`${base}-profile-${f}`] ?? "",
+          }));
+        }
         if (card.starters?.length) {
           return card.starters.map((starter, k) => ({
             label: `${card.title}: ${starter}`,
@@ -287,6 +311,97 @@ function downloadAnswerSheet(view, unit, section, content, name) {
 
   const safe = (s) => s.replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "");
   downloadPdf(blob, `${safe(section.label)}_${safe(name)}.pdf`);
+}
+
+/* ================= Grammar guide =============================== */
+
+/**
+ * Reference panel shown once at the top of a grammar page: the three
+ * conditional types (formula + example) plus an optional infographic.
+ *
+ * @param {{ subtitle?: string, label?: string, types: Array<{n:number,name:string,tag:string,accent:string,formula:string,example:string}>, infographic?: {src:string, alt:string, caption?:string} }} guide
+ */
+function buildGuideSection(guide) {
+  const section = sectionShell("ochre", guide.label ?? "The 3 Types", guide.subtitle ?? "");
+
+  const article = document.createElement("article");
+  article.className = "grammar-guide";
+
+  // Optional teaching video, full width above the reference cards.
+  if (guide.video) {
+    const figure = document.createElement("figure");
+    figure.className = "grammar-guide__video";
+    const video = document.createElement("video");
+    video.controls = true;
+    video.preload = "metadata";
+    video.playsInline = true;
+    if (guide.video.poster) video.poster = guide.video.poster;
+    video.src = guide.video.src;
+    figure.appendChild(video);
+    if (guide.video.caption) {
+      const cap = document.createElement("figcaption");
+      cap.className = "grammar-guide__caption";
+      cap.textContent = guide.video.caption;
+      figure.appendChild(cap);
+    }
+    article.appendChild(figure);
+  }
+
+  const grid = document.createElement("div");
+  grid.className = "grammar-guide__grid";
+
+  const types = document.createElement("div");
+  types.className = "grammar-guide__types";
+  for (const t of guide.types) {
+    const card = document.createElement("div");
+    card.className = `grammar-guide__type grammar-guide__type--${t.accent}`;
+
+    const head = document.createElement("div");
+    head.className = "grammar-guide__type-head";
+    const dot = document.createElement("span");
+    dot.className = "grammar-guide__dot";
+    const name = document.createElement("span");
+    name.className = "grammar-guide__type-name";
+    name.textContent = `Type ${t.n} — ${t.name}`;
+    const tag = document.createElement("span");
+    tag.className = "grammar-guide__tag";
+    tag.textContent = t.tag;
+    head.append(dot, name, tag);
+
+    const formula = document.createElement("p");
+    formula.className = "grammar-guide__formula";
+    formula.textContent = t.formula;
+
+    const example = document.createElement("p");
+    example.className = "grammar-guide__example";
+    example.textContent = `“${t.example}”`;
+
+    card.append(head, formula, example);
+    types.appendChild(card);
+  }
+  grid.appendChild(types);
+
+  if (guide.infographic) {
+    const figure = document.createElement("figure");
+    figure.className = "grammar-guide__figure";
+    const img = document.createElement("img");
+    img.className = "grammar-guide__img";
+    img.src = guide.infographic.src;
+    img.alt = guide.infographic.alt ?? "";
+    img.loading = "lazy";
+    figure.appendChild(img);
+    if (guide.infographic.caption) {
+      const cap = document.createElement("figcaption");
+      cap.className = "grammar-guide__caption";
+      cap.textContent = guide.infographic.caption;
+      figure.appendChild(cap);
+    }
+    grid.appendChild(figure);
+  }
+
+  article.appendChild(grid);
+  section.appendChild(article);
+  return section;
 }
 
 /* ================= New words section =========================== */
@@ -500,9 +615,27 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "sentence-build":
       body.appendChild(createSentenceBuild({ sentences: data.sentences }));
       break;
+    case "gap-fill":
+      body.appendChild(createGapFill({ items: data.items }));
+      break;
     case "game":
       body.appendChild(createGame(data));
       break;
+    case "profile-builder": {
+      const base = `step${step.step}-task${index + 1}-profile`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const values = {};
+      for (const f of PROFILE_FIELDS) values[f] = saved[`${base}-${f}`] ?? "";
+      body.appendChild(
+        createProfileBuilder({
+          values,
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) =>
+            ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
     default:
       appendWrittenBody(body, step, data, index, ctx);
   }
