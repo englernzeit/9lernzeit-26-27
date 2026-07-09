@@ -772,6 +772,356 @@ export function createCaptionBuilder({ values, keyFor, onChange }) {
   return wrap;
 }
 
+/* ---------- Phrase reference (writing) ------------------------- */
+
+/**
+ * A colour-coded reference panel of English ↔ German phrase pairs,
+ * grouped into sections (Introduction, Arguments For, …).
+ *
+ * @param {{ sections: Array<{ label: string, accent: string, pairs: Array<[string,string]> }> }} data
+ */
+export function createPhraseReference({ sections }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-phrases";
+  for (const sec of sections) {
+    const block = document.createElement("div");
+    block.className = `exo-phrases__sec exo-phrases__sec--${sec.accent}`;
+    const label = document.createElement("div");
+    label.className = "exo-phrases__label";
+    label.textContent = sec.label;
+    block.appendChild(label);
+    const grid = document.createElement("div");
+    grid.className = "exo-phrases__grid";
+    for (const [en, de] of sec.pairs) {
+      const enEl = document.createElement("span");
+      enEl.className = "exo-phrases__en";
+      enEl.textContent = en;
+      const deEl = document.createElement("span");
+      deEl.className = "exo-phrases__de";
+      deEl.textContent = de;
+      grid.append(enEl, deEl);
+    }
+    block.appendChild(grid);
+    wrap.appendChild(block);
+  }
+  return wrap;
+}
+
+/* ---------- Match up (dropdown matching) ----------------------- */
+
+/**
+ * Match each left item to the right option via a dropdown, then Check.
+ * Right locks green, wrong goes red (no reveal).
+ *
+ * @param {{ options: string[], items: Array<{ left: string, answer: string }> }} data
+ */
+export function createMatchUp({ options, items }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-match";
+
+  const rows = items.map((item) => {
+    const row = document.createElement("div");
+    row.className = "exo-match__row";
+    const left = document.createElement("span");
+    left.className = "exo-match__left";
+    left.textContent = item.left;
+    const sel = document.createElement("select");
+    sel.className = "exo-match__select";
+    const blank = document.createElement("option");
+    blank.value = "";
+    blank.textContent = "—";
+    sel.appendChild(blank);
+    for (const opt of options) {
+      const o = document.createElement("option");
+      o.value = opt;
+      o.textContent = opt;
+      sel.appendChild(o);
+    }
+    sel.addEventListener("change", () =>
+      row.classList.remove("exo-match__row--right", "exo-match__row--wrong"),
+    );
+    row.append(left, sel);
+    wrap.appendChild(row);
+    return { row, sel, answer: item.answer };
+  });
+
+  const checkBtn = checkButton(wrap, () => {
+    let right = 0;
+    for (const r of rows) {
+      if (r.row.classList.contains("exo-match__row--right")) {
+        right += 1;
+        continue;
+      }
+      const ok = norm(r.sel.value) === norm(r.answer);
+      r.row.classList.toggle("exo-match__row--right", ok);
+      r.row.classList.toggle("exo-match__row--wrong", !ok && !!r.sel.value);
+      if (ok) {
+        r.sel.disabled = true;
+        right += 1;
+      }
+    }
+    checkBtn.result(`${right} / ${rows.length} correct`);
+  });
+
+  return wrap;
+}
+
+/* ---------- Argument pick (spot the suitable ones) ------------- */
+
+/**
+ * Tick the suitable arguments and ignore the absurd ones, then Check.
+ * Each argument shows a German hint (suitable) or a "think about it"
+ * nudge (absurd) before checking, and clear feedback after.
+ *
+ * @param {{ args: Array<{ text: string, hint: string, correct: boolean }> }} data
+ */
+export function createArgumentPick({ args }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-args";
+
+  const suitable = args.filter((a) => a.correct).length;
+  const lead = document.createElement("p");
+  lead.className = "exo-args__lead";
+  lead.textContent = `Tick the ${suitable} suitable arguments — ignore the absurd ones.`;
+  wrap.appendChild(lead);
+
+  const rows = args.map((arg) => {
+    const label = document.createElement("label");
+    label.className = "exo-args__row";
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.className = "exo-args__box";
+    const body = document.createElement("div");
+    body.className = "exo-args__body";
+    const text = document.createElement("p");
+    text.className = "exo-args__text";
+    text.textContent = arg.text;
+    const note = document.createElement("p");
+    note.className = "exo-args__note";
+    note.textContent = arg.correct ? `🇩🇪 ${arg.hint}` : "🤔 Is this really relevant?";
+    body.append(text, note);
+    label.append(box, body);
+    wrap.appendChild(label);
+    return { label, box, note, arg };
+  });
+
+  const checkBtn = checkButton(wrap, () => {
+    let right = 0;
+    for (const r of rows) {
+      const ticked = r.box.checked;
+      r.box.disabled = true;
+      r.label.classList.remove("exo-args__row--good", "exo-args__row--miss", "exo-args__row--bad");
+      if (r.arg.correct && ticked) {
+        r.label.classList.add("exo-args__row--good");
+        r.note.textContent = "✓ A suitable argument.";
+        right += 1;
+      } else if (r.arg.correct && !ticked) {
+        r.label.classList.add("exo-args__row--miss");
+        r.note.textContent = "⚠ You missed this suitable argument.";
+      } else if (!r.arg.correct && ticked) {
+        r.label.classList.add("exo-args__row--bad");
+        r.note.textContent = "✗ Absurd — not a suitable argument.";
+      } else {
+        r.note.textContent = "✓ Correctly ignored.";
+        right += 1;
+      }
+    }
+    checkBtn.result(`${right} / ${rows.length} correct`);
+  });
+
+  return wrap;
+}
+
+/* ---------- Paragraph builder (guided writing) ----------------- */
+
+/**
+ * Guided paragraph: a coloured header (title + goal) and one row per
+ * sentence — a fixed starter, an input (persisted), a German hint, and a
+ * collapsible model example. Feeds the PDF.
+ *
+ * @param {{
+ *   paragraph: { title: string, goal: string, sentences: Array<{label:string, starter:string, placeholder?:string, hint?:string, example?:string}> },
+ *   values: Record<string,string>, keyFor: (i:number)=>string, onChange: (i:number, v:string)=>void,
+ * }} opts
+ */
+export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-para";
+
+  const goal = document.createElement("p");
+  goal.className = "exo-para__goal";
+  goal.textContent = `Goal: ${paragraph.goal}`;
+  wrap.appendChild(goal);
+
+  paragraph.sentences.forEach((s, i) => {
+    const row = document.createElement("div");
+    row.className = "exo-para__row";
+
+    const head = document.createElement("div");
+    head.className = "exo-para__head";
+    const label = document.createElement("span");
+    label.className = "exo-para__label";
+    label.textContent = s.label;
+    head.appendChild(label);
+
+    let exBox = null;
+    if (s.example) {
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "exo-para__toggle";
+      toggle.textContent = "Show example";
+      exBox = document.createElement("div");
+      exBox.className = "exo-para__example";
+      exBox.textContent = s.example;
+      exBox.hidden = true;
+      toggle.addEventListener("click", () => {
+        exBox.hidden = !exBox.hidden;
+        toggle.textContent = exBox.hidden ? "Show example" : "Hide example";
+      });
+      head.appendChild(toggle);
+    }
+    row.appendChild(head);
+    if (exBox) row.appendChild(exBox);
+
+    const line = document.createElement("div");
+    line.className = "exo-para__line";
+    const starter = document.createElement("span");
+    starter.className = "exo-para__starter";
+    starter.textContent = s.starter;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "exo-para__input";
+    input.placeholder = s.placeholder ?? "";
+    input.dataset.answerKey = keyFor(i);
+    input.value = values?.[keyFor(i)] ?? "";
+    input.addEventListener("input", () => onChange(i, input.value));
+    line.append(starter, input);
+    row.appendChild(line);
+
+    if (s.hint) {
+      const hint = document.createElement("p");
+      hint.className = "exo-para__hint";
+      hint.textContent = `🇩🇪 ${s.hint}`;
+      row.appendChild(hint);
+    }
+    wrap.appendChild(row);
+  });
+
+  return wrap;
+}
+
+/* ---------- Essay editor (final written discussion) ------------ */
+
+/**
+ * A big writing area with a live word count and a target bar, plus an
+ * optional self-check list. Persists to the PDF.
+ *
+ * @param {{
+ *   min?: number, max?: number, placeholder?: string, checklist?: string[],
+ *   value: string, answerKey: string, onChange: (v:string)=>void,
+ * }} opts
+ */
+export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, value, answerKey, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-essay";
+
+  const area = document.createElement("textarea");
+  area.className = "exo-essay__area";
+  area.rows = 12;
+  area.placeholder = placeholder ?? `Write your written discussion here (${min}–${max} words)…`;
+  area.dataset.answerKey = answerKey;
+  area.value = value ?? "";
+
+  const meter = document.createElement("div");
+  meter.className = "exo-essay__meter";
+  const label = document.createElement("div");
+  label.className = "exo-essay__meter-label";
+  const count = document.createElement("span");
+  count.className = "exo-essay__count";
+  const msg = document.createElement("span");
+  msg.className = "exo-essay__msg";
+  label.append(count, msg);
+  const track = document.createElement("div");
+  track.className = "exo-essay__track";
+  const fill = document.createElement("div");
+  fill.className = "exo-essay__fill";
+  track.appendChild(fill);
+  const target = document.createElement("p");
+  target.className = "exo-essay__target";
+  target.textContent = `Target: ${min}–${max} words`;
+  meter.append(label, track, target);
+
+  const paint = () => {
+    const words = area.value.trim() ? area.value.trim().split(/\s+/).filter(Boolean).length : 0;
+    count.textContent = `${words} words`;
+    fill.style.width = `${Math.min((words / max) * 100, 100)}%`;
+    let level = "low", m = "Keep going…";
+    if (words > max) { level = "over"; m = "Over the limit — trim a little."; }
+    else if (words >= min) { level = "ok"; m = "Target reached!"; }
+    else if (words >= min - 40) { level = "near"; m = "Almost there!"; }
+    fill.dataset.level = level;
+    count.dataset.level = level;
+    msg.textContent = m;
+  };
+
+  area.addEventListener("input", () => {
+    onChange(area.value);
+    paint();
+  });
+
+  wrap.append(area, meter);
+
+  if (checklist?.length) {
+    wrap.appendChild(createChecklist({ items: checklist, title: "Self-check" }));
+  }
+
+  paint();
+  return wrap;
+}
+
+/* ---------- Checklist (tick + count) --------------------------- */
+
+/**
+ * @param {{ items: string[], title?: string }} data
+ */
+export function createChecklist({ items, title }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo-check";
+  const head = document.createElement("div");
+  head.className = "exo-check__head";
+  const cap = document.createElement("span");
+  cap.textContent = title ?? "Checklist";
+  const count = document.createElement("span");
+  count.className = "exo-check__count";
+  head.append(cap, count);
+  wrap.appendChild(head);
+
+  let done = 0;
+  const boxes = [];
+  items.forEach((item) => {
+    const label = document.createElement("label");
+    label.className = "exo-check__row";
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.className = "exo-check__box";
+    const text = document.createElement("span");
+    text.className = "exo-check__text";
+    text.textContent = item;
+    box.addEventListener("change", () => {
+      done += box.checked ? 1 : -1;
+      count.textContent = `${done}/${items.length}`;
+      wrap.classList.toggle("exo-check--done", done === items.length);
+      label.classList.toggle("exo-check__row--on", box.checked);
+    });
+    label.append(box, text);
+    wrap.appendChild(label);
+    boxes.push(box);
+  });
+  count.textContent = `0/${items.length}`;
+
+  return wrap;
+}
+
 /* ---------- Gap fill (type the correct form) ------------------- */
 
 /**

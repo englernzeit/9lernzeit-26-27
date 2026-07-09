@@ -31,6 +31,11 @@ import {
   createEventOrder,
   createInlineChoice,
   createCaptionBuilder,
+  createPhraseReference,
+  createMatchUp,
+  createArgumentPick,
+  createParagraphBuilder,
+  createEssayEditor,
 } from "../components/exercises.js";
 import {
   getName,
@@ -293,6 +298,15 @@ function downloadAnswerSheet(view, unit, section, content, name) {
             answer: answers[`${base}-caption-${f}`] ?? "",
           }));
         }
+        if (card.type === "paragraph-builder") {
+          return card.paragraph.sentences.map((sentence, k) => ({
+            label: `${card.paragraph.title} — ${sentence.starter}`,
+            answer: answers[`${base}-para-s${k}`] ?? "",
+          }));
+        }
+        if (card.type === "essay-editor") {
+          return [{ label: card.title, answer: answers[`${base}-essay`] ?? "" }];
+        }
         if (card.starters?.length) {
           return card.starters.map((starter, k) => ({
             label: `${card.title}: ${starter}`,
@@ -545,7 +559,7 @@ function buildStepSection(step, ctx) {
   // Task numbering skips text/game cards so writing tasks read 1, 2, 3…
   let taskNo = 0;
   const cards = step.cards.map((data, i) => {
-    if (data.type !== "text" && data.type !== "game") taskNo += 1;
+    if (data.type !== "text" && data.type !== "game" && data.type !== "phrase-reference") taskNo += 1;
     return buildCard(step, data, i, taskNo, ctx);
   });
 
@@ -596,7 +610,8 @@ function buildCard(step, data, index, taskNo, ctx) {
     head.className = "taskcard__head";
     const num = document.createElement("span");
     num.className = "taskcard__num";
-    num.textContent = data.type === "text" ? "Text" : `Task ${taskNo}`;
+    num.textContent =
+      data.type === "text" ? "Text" : data.type === "phrase-reference" ? "Words" : `Task ${taskNo}`;
     const kind = document.createElement("span");
     kind.className = "taskcard__kind";
     kind.textContent = data.kind ?? "";
@@ -647,6 +662,46 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "inline-choice":
       body.appendChild(createInlineChoice(data));
       break;
+    case "phrase-reference":
+      body.appendChild(createPhraseReference({ sections: data.sections }));
+      break;
+    case "match-up":
+      body.appendChild(createMatchUp({ options: data.options, items: data.items }));
+      break;
+    case "argument-pick":
+      body.appendChild(createArgumentPick({ args: data.args }));
+      break;
+    case "paragraph-builder": {
+      const base = `step${step.step}-task${index + 1}`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const keyFor = (k) => `${base}-para-s${k}`;
+      body.appendChild(
+        createParagraphBuilder({
+          paragraph: data.paragraph,
+          values: saved,
+          keyFor,
+          onChange: (k, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(k), v),
+        }),
+      );
+      break;
+    }
+    case "essay-editor": {
+      const base = `step${step.step}-task${index + 1}`;
+      const key = `${base}-essay`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createEssayEditor({
+          min: data.min,
+          max: data.max,
+          placeholder: data.placeholder,
+          checklist: data.checklist,
+          value: saved[key] ?? "",
+          answerKey: key,
+          onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),
+        }),
+      );
+      break;
+    }
     case "game":
       body.appendChild(createGame(data));
       break;
