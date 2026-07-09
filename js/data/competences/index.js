@@ -11,6 +11,7 @@ import digitalFootprint from "./generation-like-digital-footprint.js";
 import ifClauses from "./generation-like-if-clauses.js";
 import jeromeInfluencer from "./generation-like-jerome-influencer.js";
 import writtenDiscussion from "./generation-like-written-discussion.js";
+import vocabulary from "./generation-like-vocabulary.js";
 
 const CONTENT = {
   "australia/reading-reef": readingReef,
@@ -18,6 +19,7 @@ const CONTENT = {
   "generation-like/if-clauses": ifClauses,
   "generation-like/jerome-influencer": jeromeInfluencer,
   "generation-like/written-discussion": writtenDiscussion,
+  "generation-like/vocabulary": vocabulary,
 };
 
 /**
