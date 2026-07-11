@@ -11,53 +11,53 @@
  * dedicated formatted word file will replace this list.
  */
 
-const IMG = "assets/images/unit4/vocab";
-
 export default {
   title: "Digital Footprint",
 
   newWords: {
     subtitle: "15 words for this text",
-    stampLabel: "SAFE NET",
+    stampLabel: "ME ONLINE",
     words: [
-      { en: "footprint", de: "der Fußabdruck", ex: "Your digital footprint reveals where you've been.", image: `${IMG}/vocab-footprint.jpg` },
-      { en: "identity", de: "die Identität", ex: "Protect your identity online.", image: `${IMG}/vocab-identity.jpg` },
-      { en: "password", de: "das Passwort", ex: "Make your password complex.", image: `${IMG}/vocab-password.jpg` },
-      { en: "nickname", de: "der Spitzname", ex: "Invent a nickname when you post.", image: `${IMG}/vocab-nickname.jpg` },
-      { en: "email", de: "die E-Mail", ex: "Think twice before sharing your email.", image: `${IMG}/vocab-email.jpg` },
-      { en: "adult", de: "der/die Erwachsene", ex: "Tell an adult if something worries you.", image: `${IMG}/vocab-adult.jpg` },
-      { en: "trail", de: "die Spur", ex: "You leave a trail every time you go online." },
-      { en: "to register", de: "sich anmelden", ex: "You register for an online service." },
-      { en: "to download", de: "herunterladen", ex: "He downloads a video." },
-      { en: "to upload", de: "hochladen", ex: "She uploads a photo." },
-      { en: "browser history", de: "der Browserverlauf", ex: "Clear your browser history regularly." },
-      { en: "bookmark", de: "das Lesezeichen", ex: "Use bookmarks to find favourite sites." },
-      { en: "recruiter", de: "der Personalvermittler", ex: "A recruiter checks your online profile." },
-      { en: "candidate", de: "der/die Bewerber/in", ex: "Employers check the profiles of candidates." },
-      { en: "punctuation", de: "die Satzzeichen", ex: "Add punctuation to make a password complex." },
+      { en: "average", de: "durchschnittlich", ex: "The average teenager checks their phone over a hundred times a day." },
+      { en: "at the same time", de: "zur selben Zeit / gleichzeitig", ex: "She was texting, watching a video and doing homework all at the same time." },
+      { en: "habit", de: "die (An-)Gewohnheit", ex: "Scrolling before sleep had become a habit he just couldn't break." },
+      { en: "to convince", de: "überzeugen", ex: "It took three influencers to convince me that I really needed those trainers." },
+      { en: "imaginative", de: "einfallsreich / kreativ", ex: "Her feed is so imaginative that every photo looks like a tiny piece of art." },
+      { en: "in other words", de: "mit anderen Worten", ex: "He never likes, never comments — in other words, he's basically a ghost online." },
+      { en: "although", de: "obwohl", ex: "Although the photo looked perfect, it had taken fifty tries to get right." },
+      { en: "be a drifter", de: "sich treiben lassen", ex: "Online he's a bit of a drifter, jumping from trend to trend without ever settling." },
+      { en: "arty", de: "(gewollt) künstlerisch", ex: "The black-and-white filter gives her selfies a deliberately arty look." },
+      { en: "pair", de: "das Paar", ex: "In the picture a pair of friends are sharing one set of earphones." },
+      { en: "depressing", de: "deprimierend", ex: "Comparing yourself to perfect online lives can be really depressing." },
+      { en: "put sth. up (on social media)", de: "etwas (in sozialen Medien) (ein)stellen", ex: "Think twice before you put a photo up on social media — it never truly disappears." },
+      { en: "argument", de: "der Streit", ex: "A silly comment online turned into a huge argument between the two of them." },
+      { en: "the pros and cons", de: "das Für und Wider", ex: "Before deleting her account, she wrote down all the pros and cons." },
+      { en: "vain", de: "eitel", ex: "Posting a hundred selfies a week, he slowly started to seem a little vain." },
     ],
   },
 
   // Word Master — 15 gap-fill sentences on this text's vocabulary.
   // German prompt (bold word) → type the missing English word.
+  // Deliberately SHUFFLED (order ≠ the word-card order) so it isn't
+  // guessable, and the gaps don't give the answer away.
   wordMaster: {
     subtitle: "Complete each sentence with the right English word.",
     items: [
-      { de: "Dein digitaler **Fußabdruck** zeigt, wo du warst.", en: "Your digital ___ shows where you have been.", answer: "footprint" },
-      { de: "Schütze deine **Identität** im Internet.", en: "Protect your ___ online.", answer: "identity" },
-      { de: "Verrate niemandem dein **Passwort**.", en: "Never tell anyone your ___.", answer: "password" },
-      { de: "Benutze einen **Spitznamen**, wenn du Kommentare postest.", en: "Use a ___ when you post comments.", answer: "nickname" },
-      { de: "Überlege zweimal, bevor du deine **E-Mail** teilst.", en: "Think twice before you share your ___.", answer: "email", accept: ["e-mail"] },
-      { de: "Sag einem **Erwachsenen** Bescheid, wenn dich etwas beunruhigt.", en: "Tell an ___ if something worries you.", answer: "adult" },
-      { de: "Jedes Mal online hinterlässt du eine **Spur**.", en: "Every time you go online you leave a ___.", answer: "trail" },
-      { de: "Du musst dich für den Dienst **anmelden**.", en: "You have to ___ for the service.", answer: "register" },
-      { de: "Er lädt ein Video **herunter**.", en: "He ___s a video.", answer: "download" },
-      { de: "Sie lädt ein Foto **hoch**.", en: "She ___s a photo.", answer: "upload" },
-      { de: "Lösche regelmäßig deinen **Browserverlauf**.", en: "Clear your ___ regularly.", answer: "browser history", accept: ["browsing history", "history"] },
-      { de: "Benutze ein **Lesezeichen**, um deine Lieblingsseite zu finden.", en: "Use a ___ to find your favourite site.", answer: "bookmark" },
-      { de: "Ein **Personalvermittler** prüft dein Onlineprofil.", en: "A ___ checks your online profile.", answer: "recruiter" },
-      { de: "Arbeitgeber prüfen die Profile von **Bewerbern**.", en: "Employers check the profiles of ___s.", answer: "candidate" },
-      { de: "Füge **Satzzeichen** hinzu, um ein Passwort komplex zu machen.", en: "Add ___ to make a password complex.", answer: "punctuation" },
+      { de: "Er liked nie und kommentiert nie — **mit anderen Worten**, online existiert er kaum.", en: "He never likes and never comments — ___, he barely exists online.", answer: "in other words" },
+      { de: "Aus einem dummen Kommentar wurde ein riesiger **Streit**.", en: "A stupid comment grew into a huge ___.", answer: "argument" },
+      { de: "Der **durchschnittliche** Teenager schaut hundertmal am Tag aufs Handy.", en: "The ___ teenager looks at their phone a hundred times a day.", answer: "average" },
+      { de: "Der Schwarz-Weiß-Filter gibt ihren Selfies einen gewollt **künstlerischen** Touch.", en: "The black-and-white filter gives her selfies a deliberately ___ look.", answer: "arty" },
+      { de: "Drei Influencer mussten mich erst **überzeugen**, dass ich die Schuhe brauche.", en: "It took three influencers to ___ me that I needed the shoes.", answer: "convince" },
+      { de: "Mit hundert Selfies pro Woche wirkte er langsam ziemlich **eitel**.", en: "With a hundred selfies a week, he slowly seemed rather ___.", answer: "vain" },
+      { de: "Sie textete, sah ein Video und lernte — alles **gleichzeitig**.", en: "She was texting, watching a video and studying — all ___.", answer: "at the same time" },
+      { de: "Sich ständig mit perfekten Online-Leben zu vergleichen, ist oft **deprimierend**.", en: "Constantly comparing yourself to perfect online lives is often ___.", answer: "depressing" },
+      { de: "Online lässt er sich einfach **treiben** und springt von Trend zu Trend.", en: "Online he's a real ___, jumping from trend to trend.", answer: "drifter" },
+      { de: "Vor dem Löschen ihres Accounts notierte sie das ganze **Für und Wider**.", en: "Before deleting her account, she listed all the pros and ___.", answer: "cons" },
+      { de: "Vor dem Schlafen zu scrollen war zur festen **Gewohnheit** geworden.", en: "Scrolling before sleep had become a fixed ___.", answer: "habit" },
+      { de: "Überlege gut, bevor du ein Foto in sozialen Medien **einstellst**.", en: "Think carefully before you ___ a photo up on social media.", answer: "put" },
+      { de: "Ihr Feed ist so **einfallsreich**, dass jedes Foto wie kleine Kunst wirkt.", en: "Her feed is so ___ that every photo looks like a tiny piece of art.", answer: "imaginative" },
+      { de: "Auf dem Bild teilt sich ein **Paar** Freunde die Kopfhörer.", en: "In the picture, a ___ of friends are sharing earphones.", answer: "pair" },
+      { de: "**Obwohl** das Foto perfekt aussah, hatte es fünfzig Versuche gebraucht.", en: "___ the photo looked perfect, it had taken fifty tries.", answer: "although" },
     ],
   },
 
