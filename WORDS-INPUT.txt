@@ -24,3 +24,30 @@
   15  |   vain					eitel                             
 
 
+
+
+
+------------------------------------------------------------------
+  Unit 4. Listening 
+------------------------------------------------------------------
+
+   №  | English                        | Deutsch
+  ----+--------------------------------+---------------------------------
+ 
+1,target sb.,"auf jn. zielen (in, als Zielgruppe haben/wählen), jn. ins Visier nehmen"
+2,savvy (infml),"versiert, gewieft, erfahren"
+3,fit in,dazugehören; hineinpassen
+4,billboard (AE),"Plakatwand, Werbeplakat"
+5,reduce (by),"reduzieren, verringern (um)"
+6,advertiser,"Werber/in, Werbetreibende/r"
+7,design,"entwerfen, gestalten, entwickeln"
+8,unnatural,unnatürlich
+9,repeat,wiederholen
+10,sample,"Muster, Probe(exemplar)"
+11,advertising,"Werbung, Reklame"
+12,irritate,"(ver)ärgern, irritieren"
+13,gatecrash (a party),(bei einer Party) ungebeten erscheinen
+14,reach (sb./a place),(jn./einen Ort) erreichen
+15,damage (to),"Schaden, Schäden (an)"                    
+
+
