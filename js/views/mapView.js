@@ -50,7 +50,7 @@ export function renderMapView(root) {
 
   const logo = document.createElement("img");
   logo.className = "map-view__logo";
-  logo.src = "assets/images/logo-english-explorer.png";
+  logo.src = "assets/images/logo-english-explorer.webp";
   logo.alt = "English Explorer";
   logo.draggable = false;
   title.appendChild(logo);
@@ -74,7 +74,7 @@ export function renderMapView(root) {
   start.className = "map-view__waypoint map-view__waypoint--start";
   start.insertAdjacentHTML(
     "beforeend",
-    `<img class="map-view__waypoint-art" src="assets/images/scene-start.png" alt="" draggable="false">`
+    `<img class="map-view__waypoint-art" src="assets/images/scene-start.webp" alt="" draggable="false">`
   );
   view.appendChild(start);
 
@@ -82,7 +82,7 @@ export function renderMapView(root) {
   finish.className = "map-view__waypoint map-view__waypoint--finish";
   finish.insertAdjacentHTML(
     "beforeend",
-    `<img class="map-view__waypoint-art" src="assets/images/scene-finish.png" alt="" draggable="false">
+    `<img class="map-view__waypoint-art" src="assets/images/scene-finish.webp" alt="" draggable="false">
      <span class="map-view__waypoint-caption map-view__waypoint-caption--finish">FINISH!</span>`
   );
   view.appendChild(finish);

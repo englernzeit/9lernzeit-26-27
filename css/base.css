@@ -28,7 +28,7 @@ body {
 
 body {
   /* Painted paper texture over the token color fallback */
-  background: var(--color-paper) url("../assets/images/paper-texture.png") center / cover no-repeat;
+  background: var(--color-paper) url("../assets/images/paper-texture.jpg") center / cover no-repeat;
   color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;

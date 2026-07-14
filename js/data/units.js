@@ -28,21 +28,21 @@ export const UNITS = [
     // Percent of map canvas, per reference art (center-bottom)
     mapPosition: { x: 42, y: 74 },
     mapPositionPortrait: { x: 58, y: 22 },
-    sticker: "assets/images/sticker-unit1-australia.png",
-    labelImage: "assets/images/label-unit1.png",
+    sticker: "assets/images/sticker-unit1-australia.webp",
+    labelImage: "assets/images/label-unit1.webp",
     // Unit page art (assets/images/unit1/)
-    pageBackground: "assets/images/unit1/bg-clouds.png",
+    pageBackground: "assets/images/unit1/bg-clouds.jpg",
     banner: "assets/images/unit1/banner-australia.png",
-    centerImage: "assets/images/unit1/island-australia.png",
+    centerImage: "assets/images/unit1/island-australia.webp",
     // 7 locations; pos = % of the unit page (landscape)
     sections: [
-      { id: "reading-reef", label: "Reading Reef", card: "assets/images/unit1/card-reading.png", pos: { x: 21, y: 30 } },
-      { id: "writing-camp", label: "Writing Camp", card: "assets/images/unit1/card-writing.png", pos: { x: 13, y: 57 } },
-      { id: "vocabulary-beach", label: "Vocabulary Beach", card: "assets/images/unit1/card-vocabulary.png", pos: { x: 24, y: 84 } },
-      { id: "grammar-station", label: "Grammar Station", card: "assets/images/unit1/card-grammar.png", pos: { x: 47, y: 88 } },
-      { id: "listening-harbour", label: "Listening Harbour", card: "assets/images/unit1/card-listening.png", pos: { x: 86, y: 60 } },
-      { id: "speaking-lookout", label: "Speaking Lookout", card: "assets/images/unit1/card-speaking.png", pos: { x: 72, y: 87 } },
-      { id: "revision-summit", label: "Revision Summit", card: "assets/images/unit1/card-revision.png", pos: { x: 77, y: 27 } },
+      { id: "reading-reef", label: "Reading Reef", card: "assets/images/unit1/card-reading.webp", pos: { x: 21, y: 30 } },
+      { id: "writing-camp", label: "Writing Camp", card: "assets/images/unit1/card-writing.webp", pos: { x: 13, y: 57 } },
+      { id: "vocabulary-beach", label: "Vocabulary Beach", card: "assets/images/unit1/card-vocabulary.webp", pos: { x: 24, y: 84 } },
+      { id: "grammar-station", label: "Grammar Station", card: "assets/images/unit1/card-grammar.webp", pos: { x: 47, y: 88 } },
+      { id: "listening-harbour", label: "Listening Harbour", card: "assets/images/unit1/card-listening.webp", pos: { x: 86, y: 60 } },
+      { id: "speaking-lookout", label: "Speaking Lookout", card: "assets/images/unit1/card-speaking.webp", pos: { x: 72, y: 87 } },
+      { id: "revision-summit", label: "Revision Summit", card: "assets/images/unit1/card-revision.webp", pos: { x: 77, y: 27 } },
     ],
   },
   {
@@ -53,7 +53,7 @@ export const UNITS = [
     // Left-center (schoolyard scene)
     mapPosition: { x: 18, y: 50 },
     mapPositionPortrait: { x: 34, y: 37 },
-    sticker: "assets/images/sticker-unit2-community.png",
+    sticker: "assets/images/sticker-unit2-community.webp",
     labelImage: "assets/images/label-unit2.png",
     sections: placeholderSections(),
   },
@@ -65,7 +65,7 @@ export const UNITS = [
     // Center-top (mountains / signpost scene)
     mapPosition: { x: 56, y: 24 },
     mapPositionPortrait: { x: 62, y: 52 },
-    sticker: "assets/images/sticker-unit3-forward.png",
+    sticker: "assets/images/sticker-unit3-forward.webp",
     labelImage: "assets/images/label-unit3.png",
     sections: placeholderSections(),
   },
@@ -77,7 +77,7 @@ export const UNITS = [
     // Right (city / phone scene)
     mapPosition: { x: 75, y: 52 },
     mapPositionPortrait: { x: 38, y: 67 },
-    sticker: "assets/images/sticker-unit4-generation.png",
+    sticker: "assets/images/sticker-unit4-generation.webp",
     labelImage: "assets/images/label-unit4.png",
     // Competence pages built from the Unit 4 teaching material.
     // Only Reading has content so far; the rest render "coming soon".
