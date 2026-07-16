@@ -469,13 +469,22 @@ function buildNewWordsSection(newWords) {
 
     const stamp = document.createElement("div");
     stamp.className = "wordcard__stamp";
-    // Vocabulary cards use a clean monogram stamp (the word's initial).
-    // Photos are intentionally not supported here — they take too long to
-    // source; the monogram keeps every card consistent and instant.
-    const mono = document.createElement("div");
-    mono.className = "wordcard__stamp-mono";
-    mono.textContent = (word.en.replace(/^to\s+/i, "").trim()[0] ?? "?").toUpperCase();
-    stamp.appendChild(mono);
+    if (word.image) {
+      // Optional stamp artwork (e.g. cut-out postage stamps per unit).
+      const img = document.createElement("img");
+      img.className = "wordcard__stamp-img";
+      img.src = word.image;
+      img.alt = "";
+      img.draggable = false;
+      stamp.appendChild(img);
+    } else {
+      // Default: a clean monogram stamp (the word's initial) — no photo
+      // sourcing required.
+      const mono = document.createElement("div");
+      mono.className = "wordcard__stamp-mono";
+      mono.textContent = (word.en.replace(/^to\s+/i, "").trim()[0] ?? "?").toUpperCase();
+      stamp.appendChild(mono);
+    }
 
     const postmark = document.createElement("div");
     postmark.className = "wordcard__postmark";
