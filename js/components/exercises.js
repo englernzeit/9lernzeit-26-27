@@ -1497,12 +1497,12 @@ export function createEmailBuilder({ to, values, keyFor, onChange }) {
 
   const form = document.createElement("div");
   form.className = "exo-email__form";
-  const fSubject = field("Subject · Betreff", "subject", "Question about …", false);
-  const fDear = field("Salutation · Anrede", "dear", "Sir or Madam,", false);
-  const fReason = field("I am writing because … · Ich schreibe, weil …", "reason", "I am interested in visiting …", true);
-  const fQ1 = field("Could you please tell me …? · Frage 1", "q1", "the price for a school group?", true);
-  const fQ2 = field("Could you also tell me …? · Frage 2", "q2", "the opening hours?", true);
-  const fName = field("Your full name · Dein voller Name", "name", "e.g. Max Müller", false);
+  const fSubject = field("Subject · Betreff", "subject", "", false);
+  const fDear = field("Salutation · Anrede", "dear", "", false);
+  const fReason = field("I am writing because … · Ich schreibe, weil …", "reason", "", true);
+  const fQ1 = field("Could you please tell me …? · Frage 1", "q1", "", true);
+  const fQ2 = field("Could you also tell me …? · Frage 2", "q2", "", true);
+  const fName = field("Your full name · Dein voller Name", "name", "", false);
 
   const progress = document.createElement("div");
   progress.className = "exo-email__progress";
@@ -1585,12 +1585,12 @@ export function createEmailBuilder({ to, values, keyFor, onChange }) {
   }
 
   const PLACE = {
-    subject: "Question about …",
-    dear: "Sir or Madam,",
-    reason: "I want to visit …",
-    q1: "the price?",
-    q2: "the opening hours?",
-    name: "Your full name",
+    subject: "…",
+    dear: "…",
+    reason: "…",
+    q1: "…",
+    q2: "…",
+    name: "…",
   };
 
   function setVal(node, key) {
