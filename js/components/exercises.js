@@ -1419,6 +1419,229 @@ export function createProfileBuilder({ values, keyFor, onChange }) {
   return wrap;
 }
 
+/* ---------- Email builder (official-email challenge) ----------- */
+
+const EMAIL_FIELDS = ["subject", "dear", "reason", "q1", "q2", "name"];
+
+/**
+ * Interactive "write your own official email" challenge. A form on the
+ * right fills a live email preview on the left (To/Subject header + a
+ * properly laid-out formal email); a progress bar tracks the six parts
+ * and the "Send my email" button unlocks once they're all present,
+ * awarding points and flipping to a sent state.
+ *
+ * @param {{
+ *   to?: string,
+ *   values: Record<string,string>,
+ *   keyFor: (field: string) => string,
+ *   onChange: (field: string, value: string) => void,
+ * }} opts
+ */
+export function createEmailBuilder({ to, values, keyFor, onChange }) {
+  const state = {};
+  EMAIL_FIELDS.forEach((f) => (state[f] = values?.[f] ?? ""));
+  let submitted = false;
+  let points = 0;
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-email";
+
+  const grid = document.createElement("div");
+  grid.className = "exo-email__grid";
+  wrap.appendChild(grid);
+
+  /* ----- LEFT: live email preview ----- */
+  const left = document.createElement("div");
+  left.className = "exo-email__left";
+
+  const pvCap = document.createElement("div");
+  pvCap.className = "exo-email__pv-cap";
+  pvCap.textContent = "Live preview";
+
+  const mail = document.createElement("article");
+  mail.className = "exo-email__mail";
+
+  const head = document.createElement("div");
+  head.className = "exo-email__mail-head";
+  const toLine = document.createElement("div");
+  toLine.innerHTML = `<span>To:</span> ${to ?? "info@example.com.au"}`;
+  const subjLine = document.createElement("div");
+  subjLine.className = "exo-email__subj-line";
+  const subjVal = document.createElement("span");
+  subjLine.innerHTML = "<span>Subject:</span> ";
+  subjLine.appendChild(subjVal);
+  head.append(toLine, subjLine);
+
+  const bodyEl = document.createElement("div");
+  bodyEl.className = "exo-email__mail-body";
+  const lDear = line("Dear ", "dear", ",");
+  const lReason = line("I am writing because ", "reason", "");
+  const lQ1 = line("Could you please tell me ", "q1", "");
+  const lQ2 = line("Could you also tell me ", "q2", "");
+  const lThanks = document.createElement("div");
+  lThanks.textContent = "Thank you very much.";
+  lThanks.className = "exo-email__fixed";
+  const lYours = document.createElement("div");
+  lYours.textContent = "Yours sincerely,";
+  lYours.className = "exo-email__fixed exo-email__fixed--gap";
+  const lName = document.createElement("div");
+  lName.className = "exo-email__name";
+  bodyEl.append(lDear.el, lReason.el, lQ1.el, lQ2.el, lThanks, lYours, lName);
+
+  mail.append(head, bodyEl);
+  left.append(pvCap, mail);
+
+  /* ----- RIGHT: form / sent state ----- */
+  const right = document.createElement("div");
+  right.className = "exo-email__right";
+
+  const form = document.createElement("div");
+  form.className = "exo-email__form";
+  const fSubject = field("Subject · Betreff", "subject", "Question about …", false);
+  const fDear = field("Salutation · Anrede", "dear", "Sir or Madam,", false);
+  const fReason = field("I am writing because … · Ich schreibe, weil …", "reason", "I am interested in visiting …", true);
+  const fQ1 = field("Could you please tell me …? · Frage 1", "q1", "the price for a school group?", true);
+  const fQ2 = field("Could you also tell me …? · Frage 2", "q2", "the opening hours?", true);
+  const fName = field("Your full name · Dein voller Name", "name", "e.g. Max Müller", false);
+
+  const progress = document.createElement("div");
+  progress.className = "exo-email__progress";
+  const barTrack = document.createElement("div");
+  barTrack.className = "exo-email__bar";
+  const barFill = document.createElement("div");
+  barFill.className = "exo-email__bar-fill";
+  barTrack.appendChild(barFill);
+  const progLabel = document.createElement("span");
+  progLabel.className = "exo-email__prog-label";
+  progress.append(barTrack, progLabel);
+
+  const actions = document.createElement("div");
+  actions.className = "exo-email__actions";
+  const saveBtn = document.createElement("button");
+  saveBtn.type = "button";
+  saveBtn.className = "exo-email__save";
+  saveBtn.textContent = "Send my email";
+  const pop = document.createElement("span");
+  pop.className = "exo-email__pop";
+  pop.textContent = "+10";
+  saveBtn.appendChild(pop);
+  actions.appendChild(saveBtn);
+
+  form.append(fSubject.el, fDear.el, fReason.el, fQ1.el, fQ2.el, fName.el, progress, actions);
+
+  const sent = document.createElement("div");
+  sent.className = "exo-email__sent";
+  sent.innerHTML =
+    '<div class="exo-email__sent-card">' +
+    '<span class="exo-email__sent-check" aria-hidden="true">✓</span>' +
+    '<div><div class="exo-email__sent-title">Email ready to send!</div>' +
+    '<p class="exo-email__sent-text">All six parts are there — check the live preview.</p></div></div>';
+  const editBtn = document.createElement("button");
+  editBtn.type = "button";
+  editBtn.className = "exo-email__edit";
+  editBtn.textContent = "Edit email";
+  sent.appendChild(editBtn);
+
+  right.append(form, sent);
+  grid.append(left, right);
+
+  const inputs = [fSubject, fDear, fReason, fQ1, fQ2, fName];
+
+  /** A preview line: fixed prefix + editable value span + suffix. */
+  function line(prefix, key, suffix) {
+    const el = document.createElement("div");
+    el.className = "exo-email__line";
+    const pre = document.createElement("span");
+    pre.textContent = prefix;
+    const val = document.createElement("span");
+    val.className = "exo-email__val";
+    const suf = document.createElement("span");
+    suf.textContent = suffix;
+    el.append(pre, val, suf);
+    return { el, val, suf };
+  }
+
+  /** One labelled input/textarea; wires persistence + live preview. */
+  function field(labelText, key, placeholder, multiline) {
+    const el = document.createElement("label");
+    el.className = "exo-email__field";
+    const cap = document.createElement("span");
+    cap.className = "exo-email__label";
+    cap.textContent = labelText;
+    const input = document.createElement(multiline ? "textarea" : "input");
+    if (!multiline) input.type = "text";
+    else input.rows = 2;
+    input.className = "exo-email__input";
+    input.placeholder = placeholder;
+    input.value = state[key];
+    input.dataset.answerKey = keyFor(key);
+    input.addEventListener("input", () => {
+      state[key] = input.value;
+      onChange(key, input.value);
+      update();
+    });
+    el.append(cap, input);
+    return { el, input, key };
+  }
+
+  const PLACE = {
+    subject: "Question about …",
+    dear: "Sir or Madam,",
+    reason: "I want to visit …",
+    q1: "the price?",
+    q2: "the opening hours?",
+    name: "Your full name",
+  };
+
+  function setVal(node, key) {
+    const v = state[key].trim();
+    node.textContent = v || PLACE[key];
+    node.classList.toggle("exo-email__val--empty", !v);
+  }
+
+  function update() {
+    setVal(subjVal, "subject");
+    setVal(lDear.val, "dear");
+    setVal(lReason.val, "reason");
+    setVal(lQ1.val, "q1");
+    setVal(lQ2.val, "q2");
+    const nm = state.name.trim();
+    lName.textContent = nm || "Your full name";
+    lName.classList.toggle("exo-email__val--empty", !nm);
+
+    const filled = EMAIL_FIELDS.filter((f) => state[f].trim().length > 0).length;
+    barFill.style.width = `${Math.round((filled / 6) * 100)}%`;
+    barFill.dataset.level = String(filled);
+    let msg = "Start your email…";
+    if (filled === 6) msg = "Ready to send!";
+    else if (filled >= 4) msg = "Almost there!";
+    else if (filled >= 2) msg = "Looking good!";
+    else if (filled >= 1) msg = "Nice start!";
+    progLabel.textContent = `${filled}/6 · ${msg}`;
+    saveBtn.disabled = filled < 6 || submitted;
+  }
+
+  function setSubmitted(on) {
+    submitted = on;
+    wrap.classList.toggle("exo-email--sent", on);
+    inputs.forEach((f) => (f.input.disabled = on));
+    update();
+  }
+
+  saveBtn.addEventListener("click", () => {
+    if (saveBtn.disabled) return;
+    points += 10;
+    pop.classList.remove("exo-email__pop--go");
+    void pop.offsetWidth;
+    pop.classList.add("exo-email__pop--go");
+    setSubmitted(true);
+  });
+  editBtn.addEventListener("click", () => setSubmitted(false));
+
+  update();
+  return wrap;
+}
+
 /* ---------- shared bits ---------------------------------------- */
 
 /** Normalise a typed answer: trim, lowercase, unify apostrophes, collapse spaces. */

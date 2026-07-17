@@ -36,6 +36,7 @@ import {
   createArgumentPick,
   createParagraphBuilder,
   createEssayEditor,
+  createEmailBuilder,
 } from "../components/exercises.js";
 import {
   getName,
@@ -62,6 +63,17 @@ const PROFILE_LABELS = {
 /** The two fields of the "Sell It!" caption builder, in PDF order. */
 const CAPTION_FIELDS = ["product", "caption"];
 const CAPTION_LABELS = { product: "Product", caption: "Instagram caption" };
+
+/** The six parts of the official-email builder, in PDF order. */
+const EMAIL_FIELDS = ["subject", "dear", "reason", "q1", "q2", "name"];
+const EMAIL_LABELS = {
+  subject: "Subject",
+  dear: "Dear …",
+  reason: "I am writing because …",
+  q1: "Could you please tell me …?",
+  q2: "Could you also tell me …?",
+  name: "Full name",
+};
 
 /** Fallback shape for pages whose lesson content is not written yet. */
 function comingSoonContent() {
@@ -296,6 +308,12 @@ function downloadAnswerSheet(view, unit, section, content, name) {
           return CAPTION_FIELDS.map((f) => ({
             label: `${card.title} — ${CAPTION_LABELS[f]}`,
             answer: answers[`${base}-caption-${f}`] ?? "",
+          }));
+        }
+        if (card.type === "email-builder") {
+          return EMAIL_FIELDS.map((f) => ({
+            label: `${card.title} — ${EMAIL_LABELS[f]}`,
+            answer: answers[`${base}-email-${f}`] ?? "",
           }));
         }
         if (card.type === "paragraph-builder") {
@@ -735,6 +753,22 @@ function buildCard(step, data, index, taskNo, ctx) {
       for (const f of CAPTION_FIELDS) values[f] = saved[`${base}-${f}`] ?? "";
       body.appendChild(
         createCaptionBuilder({
+          values,
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) =>
+            ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "email-builder": {
+      const base = `step${step.step}-task${index + 1}-email`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const values = {};
+      for (const f of EMAIL_FIELDS) values[f] = saved[`${base}-${f}`] ?? "";
+      body.appendChild(
+        createEmailBuilder({
+          to: data.to,
           values,
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) =>

@@ -1431,6 +1431,175 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 
 .exo-profile__edit:hover { background: rgba(109, 143, 78, 0.14); }
 
+/* ================= Email builder (official-email challenge) ===== */
+.exo-email__grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(17rem, 22rem);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.exo-email__left { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.exo-email__pv-cap,
+.exo-email__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--j-khaki);
+}
+
+/* Preview email card — sticky so it stays visible while typing */
+.exo-email__mail {
+  position: sticky;
+  top: 0.6rem;
+  background: #fff;
+  border: 1px solid rgba(120, 105, 80, 0.28);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 26px -16px rgba(70, 60, 110, 0.5);
+}
+.exo-email__mail-head {
+  background: var(--j-paper-2);
+  border-bottom: 1px solid rgba(120, 105, 80, 0.22);
+  padding: 0.7rem 1rem;
+  font-size: 0.82rem;
+  color: var(--j-slate);
+  line-height: 1.5;
+}
+.exo-email__mail-head span { color: var(--j-khaki); }
+.exo-email__subj-line { margin-top: 0.15rem; }
+.exo-email__mail-body {
+  padding: 1.1rem 1.15rem 1.25rem;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--j-ink);
+}
+.exo-email__line { margin-bottom: 0.5rem; }
+.exo-email__fixed { margin-top: 0.1rem; }
+.exo-email__fixed--gap { margin-top: 0.7rem; }
+.exo-email__name { font-weight: 700; }
+.exo-email__val--empty { color: rgba(90, 100, 120, 0.5); font-style: italic; }
+
+.exo-email__right { display: flex; flex-direction: column; }
+.exo-email__form { display: flex; flex-direction: column; gap: 0.7rem; }
+.exo-email__field { display: block; }
+.exo-email__label { display: block; margin-bottom: 0.3rem; }
+.exo-email__input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px solid rgba(120, 105, 80, 0.3);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  color: var(--j-ink);
+  resize: vertical;
+}
+.exo-email__input:focus-visible {
+  outline: none;
+  border-color: var(--j-coral);
+  box-shadow: 0 0 0 2px rgba(192, 106, 88, 0.28);
+}
+.exo-email__input:disabled { opacity: 0.7; }
+
+.exo-email__progress {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+.exo-email__bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(120, 105, 80, 0.2);
+  overflow: hidden;
+}
+.exo-email__bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 99px;
+  background: var(--j-coral);
+  transition: width 0.4s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+.exo-email__bar-fill[data-level="4"],
+.exo-email__bar-fill[data-level="5"] { background: var(--j-ochre); }
+.exo-email__bar-fill[data-level="6"] { background: var(--j-olive); }
+.exo-email__prog-label {
+  font-size: 0.8rem;
+  color: var(--j-khaki);
+  white-space: nowrap;
+}
+
+.exo-email__actions { margin-top: 0.9rem; }
+.exo-email__save {
+  position: relative;
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  background: var(--j-coral);
+  color: #fff;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.7rem 1.4rem;
+  border-radius: 12px;
+  transition: transform 0.12s, background 0.2s;
+}
+.exo-email__save:hover:not(:disabled) { background: var(--j-coral-deep, #b25a48); }
+.exo-email__save:active:not(:disabled) { transform: scale(0.97); }
+.exo-email__save:disabled { opacity: 0.45; cursor: not-allowed; }
+.exo-email__pop {
+  position: absolute;
+  top: -0.4rem;
+  right: 0.6rem;
+  font-weight: 800;
+  color: var(--j-olive);
+  opacity: 0;
+}
+.exo-email__pop--go { animation: profileFloatUp 1.3s ease forwards; }
+
+.exo-email__sent { display: none; flex-direction: column; gap: 0.9rem; }
+.exo-email--sent .exo-email__form { display: none; }
+.exo-email--sent .exo-email__sent { display: flex; }
+.exo-email__sent-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  background: linear-gradient(180deg, rgba(122, 141, 95, 0.14), rgba(122, 141, 95, 0.06));
+  border: 1px solid rgba(122, 141, 95, 0.4);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+}
+.exo-email__sent-check {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: var(--j-olive);
+  color: #fff;
+  font-weight: 800;
+  flex: none;
+}
+.exo-email__sent-title { font-weight: 700; color: var(--j-olive); }
+.exo-email__sent-text { margin: 0.2rem 0 0; font-size: 0.9rem; color: var(--j-slate); }
+.exo-email__edit {
+  align-self: flex-start;
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(120, 105, 80, 0.35);
+  color: var(--j-khaki);
+  font-family: var(--j-font-body);
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+}
+
 @media (orientation: portrait) {
   .exo-sort__bins {
     grid-template-columns: 1fr;
@@ -1440,4 +1609,13 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
     grid-template-columns: 1fr;
     gap: 1.1rem;
   }
+
+  .exo-email__grid {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+  /* Put the form first, preview second on narrow screens */
+  .exo-email__left { order: 2; }
+  .exo-email__right { order: 1; }
+  .exo-email__mail { position: static; }
 }
