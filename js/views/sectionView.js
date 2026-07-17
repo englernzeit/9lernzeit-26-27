@@ -580,7 +580,13 @@ function buildStepSection(step, ctx) {
   // Task numbering skips text/game cards so writing tasks read 1, 2, 3…
   let taskNo = 0;
   const cards = step.cards.map((data, i) => {
-    if (data.type !== "text" && data.type !== "game" && data.type !== "phrase-reference") taskNo += 1;
+    if (
+      data.type !== "text" &&
+      data.type !== "game" &&
+      data.type !== "phrase-reference" &&
+      data.type !== "video"
+    )
+      taskNo += 1;
     return buildCard(step, data, i, taskNo, ctx);
   });
 
@@ -632,7 +638,13 @@ function buildCard(step, data, index, taskNo, ctx) {
     const num = document.createElement("span");
     num.className = "taskcard__num";
     num.textContent =
-      data.type === "text" ? "Text" : data.type === "phrase-reference" ? "Words" : `Task ${taskNo}`;
+      data.type === "text"
+        ? "Text"
+        : data.type === "video"
+          ? "Video"
+          : data.type === "phrase-reference"
+            ? "Words"
+            : `Task ${taskNo}`;
     const kind = document.createElement("span");
     kind.className = "taskcard__kind";
     kind.textContent = data.kind ?? "";
@@ -663,7 +675,15 @@ function buildCard(step, data, index, taskNo, ctx) {
     body.appendChild(buildTaskFigure(data.image, data.imageAlt, data.imageCaption));
   }
 
+  // Optional teaching video (e.g. Writing "Email Survival Guide" cards).
+  if (data.video) {
+    body.appendChild(buildTaskVideo(data.video));
+  }
+
   switch (data.type) {
+    case "video":
+      break; // the video is rendered above; the card is just the video
+
     case "text":
       body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs) }));
       break;
@@ -823,6 +843,26 @@ function buildTaskFigure(src, alt, caption) {
     const cap = document.createElement("figcaption");
     cap.className = "taskcard__figure-cap";
     cap.textContent = caption;
+    figure.appendChild(cap);
+  }
+  return figure;
+}
+
+/** A teaching video inside a task card (controls, lazy metadata). */
+function buildTaskVideo(video) {
+  const figure = document.createElement("figure");
+  figure.className = "taskcard__video";
+  const el = document.createElement("video");
+  el.controls = true;
+  el.preload = "metadata";
+  el.playsInline = true;
+  if (video.poster) el.poster = video.poster;
+  el.src = video.src;
+  figure.appendChild(el);
+  if (video.caption) {
+    const cap = document.createElement("figcaption");
+    cap.className = "taskcard__video-cap";
+    cap.textContent = video.caption;
     figure.appendChild(cap);
   }
   return figure;

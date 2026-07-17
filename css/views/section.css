@@ -458,6 +458,28 @@
   box-shadow: 0 0 0 2px rgba(192, 106, 88, 0.4);
 }
 
+/* Teaching video inside a task card (Writing "Email Survival Guide") */
+.taskcard__video {
+  margin: 0.3rem 0 0.4rem;
+}
+.taskcard__video video {
+  display: block;
+  width: 100%;
+  max-width: 46rem;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: #000;
+  box-shadow: 0 10px 26px -16px rgba(60, 50, 30, 0.55);
+}
+.taskcard__video-cap {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-family: var(--j-font-display);
+  font-size: 1.15rem;
+  color: var(--j-khaki);
+}
+
 /* Picture-description figure (Speaking) — a taped photo above the task */
 .taskcard__figure {
   margin: 0.2rem 0 1rem;

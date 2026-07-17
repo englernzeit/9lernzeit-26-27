@@ -72,36 +72,11 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "text",
-          kind: "Schreiben · LE",
-          title: "The basics",
-          intro: "Grundlagen — lies das zuerst.",
-          paragraphs: [
-            [
-              "An ",
-              { w: "official email", de: "die formelle E-Mail" },
-              " is a ",
-              { w: "polite", de: "höflich" },
-              " message to someone you do not know well — a hotel, a surf school, a museum or a zoo. It always has FIVE parts.",
-            ],
-            [
-              "1) ",
-              { w: "Subject", de: "der Betreff" },
-              " — a short title (\"Question about a surf course\"). 2) ",
-              { w: "Salutation", de: "die Anrede" },
-              " — \"Dear Sir or Madam,\". 3) First sentence — \"I am writing because …\". 4) Your ",
-              { w: "questions", de: "die Fragen" },
-              " (polite!) — \"Could you please tell me …?\". 5) Ending + your full name — \"Yours sincerely, Lena Wagner\".",
-            ],
-            [
-              "Model email — Lena to a surf school: \"Subject: Question about a surf course. Dear Sir or Madam, I am writing because I am interested in a surf course for beginners. Could you please tell me the price of one week? Thank you very much. Yours sincerely, Lena Wagner.\"",
-            ],
-            [
-              "Golden rules: NO \"Hi!\" or \"Hey!\" → use \"Dear …\". NO smileys or !!! → use please and thank you. NO short forms (I'm, can't) → write I am, cannot. And ALWAYS sign with your ",
-              { w: "full name", de: "der volle Name" },
-              " at the end.",
-            ],
-          ],
+          type: "video",
+          kind: "Video · Email Survival Guide",
+          title: "Watch first: the Email Survival Guide",
+          intro: "Schau dir das Video an — es zeigt dir alle Teile einer formellen E-Mail.",
+          video: { src: "assets/videos/writing-email-step1.mp4" },
         },
         {
           type: "event-order",
@@ -172,14 +147,11 @@ export default {
       layout: "spread",
       cards: [
         {
-          type: "text",
-          kind: "Schreiben · G-Kurs",
-          title: "The structure of an official email",
-          paragraphs: [
-            "An official email always follows the same plan. 1 — Subject: a short title that explains your email (Subject: School Trip to Australia). 2 — Greeting: always begin politely (Dear Sir or Madam, / Dear Mr Brown,). 3 — Introduction: say who you are and why you are writing (My name is Julia Meyer, and I am a student from Germany. I am writing because …). 4 — Main part: ask your questions politely, one at a time (Could you please tell me …? I would also like to know …). 5 — Closing: thank the reader (Thank you very much for your help. I look forward to your reply.). 6 — Ending: Kind regards, + your full name.",
-            "Formal language makes the difference. Instead of 'I want information' write 'I would like some information'. Instead of 'Tell me the price' write 'Could you please tell me the price?'. Instead of 'Bye' write 'Kind regards'. Read this model email and find all six parts:",
-            "Subject: English Course in Sydney — Dear Sir or Madam, — My name is Emma Fischer, and I am a student from Germany. I am writing because I would like to learn English in Australia during my summer holidays. — Could you please tell me when your English courses start? I would also like to know how much the course costs and if accommodation is available for students. — Thank you very much for your help. I look forward to your reply. — Kind regards, Emma Fischer",
-          ],
+          type: "video",
+          kind: "Video · Email Survival Guide",
+          title: "Watch first: the six parts in detail",
+          intro: "Dieses Video erklärt die sechs Teile und die formelle Sprache Schritt für Schritt.",
+          video: { src: "assets/videos/writing-email-step2.mp4" },
         },
         {
           type: "match-up",
