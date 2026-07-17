@@ -228,14 +228,12 @@ export default {
       layout: "spread",
       cards: [
         {
-          type: "text",
-          kind: "Schreiben · E-Kurs",
+          type: "image",
+          kind: "Beispiel · Modelltext",
           title: "A strong official email",
-          paragraphs: [
-            "At this level your email should not only be polite — it should be well organised and sound natural. Study this model. Notice the precise subject, the paragraph for each idea, the variety of question forms, and the confident closing:",
-            "Subject: Information about School Group Visits — Dear Sir or Madam, — My name is Hannah Weber, and I am a Year 9 student from Germany. I am writing because my class is planning a school trip to Australia next spring. We are very interested in visiting Australia Zoo and would like to learn more about your programme for school groups. — Could you please tell me whether guided tours are available for international students? I would also like to know the entrance fee for school classes and whether educational workshops are offered. Finally, could you tell me if students can book lunch at the zoo? — Thank you very much for your time and support. I look forward to your reply. — Kind regards, Hannah Weber",
-            "Strong writers also upgrade their phrases: 'I would like to enquire about …' instead of 'I want to ask about …'; 'Would it be possible to …?' for careful requests; 'I would appreciate some information about …' for very polite questions; and linking words (First, In addition, Finally) to organise the main part.",
-          ],
+          intro: "Read this real example carefully — a well-organised, polite email. Then do the tasks below.",
+          image: "assets/images/unit1/writing-model-email.jpg",
+          imageAlt: "Model email: Hannah Weber to Australia Zoo about school group visits",
         },
         {
           type: "match-up",

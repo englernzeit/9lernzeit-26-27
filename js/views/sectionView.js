@@ -584,7 +584,8 @@ function buildStepSection(step, ctx) {
       data.type !== "text" &&
       data.type !== "game" &&
       data.type !== "phrase-reference" &&
-      data.type !== "video"
+      data.type !== "video" &&
+      data.type !== "image"
     )
       taskNo += 1;
     return buildCard(step, data, i, taskNo, ctx);
@@ -642,9 +643,11 @@ function buildCard(step, data, index, taskNo, ctx) {
         ? "Text"
         : data.type === "video"
           ? "Video"
-          : data.type === "phrase-reference"
-            ? "Words"
-            : `Task ${taskNo}`;
+          : data.type === "image"
+            ? "Model"
+            : data.type === "phrase-reference"
+              ? "Words"
+              : `Task ${taskNo}`;
     const kind = document.createElement("span");
     kind.className = "taskcard__kind";
     kind.textContent = data.kind ?? "";
@@ -682,7 +685,8 @@ function buildCard(step, data, index, taskNo, ctx) {
 
   switch (data.type) {
     case "video":
-      break; // the video is rendered above; the card is just the video
+    case "image":
+      break; // the video/image is rendered above; the card is just that
 
     case "text":
       body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs) }));
