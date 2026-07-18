@@ -93,6 +93,7 @@ export default {
           kind: "Interaktiv · Quiz",
           title: "Creature quiz — amazing facts",
           intro: "Read each fact and choose the animal it is about. Ten questions, ten animals!",
+          columns: 2,
           questions: [
             { q: "About twenty swimmers in Australia are killed by this animal every year.", options: ["Cassowary", "Great White Shark", "Koala", "Tiger Snake", "Wombat"], correct: 1 },
             { q: "This spider's venom can kill a person in about fifteen minutes.", options: ["Funnel-web Spider", "Quokka", "Kookaburra", "Possum", "Wallaby"], correct: 0 },

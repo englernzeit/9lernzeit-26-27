@@ -111,6 +111,17 @@
   gap: 0.45rem;
 }
 
+/* Two-column layout for long quizzes (questions flow into 2 columns) */
+.exo-mc--cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.8rem;
+  align-items: start;
+}
+@media (orientation: portrait) {
+  .exo-mc--cols { grid-template-columns: 1fr; }
+}
+
 .exo-mc__q {
   display: flex;
   flex-direction: column;

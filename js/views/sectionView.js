@@ -703,7 +703,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs) }));
       break;
     case "multiple-choice":
-      body.appendChild(createMultipleChoice({ questions: data.questions }));
+      body.appendChild(createMultipleChoice({ questions: data.questions, columns: data.columns }));
       break;
     case "group-sort":
       body.appendChild(createGroupSort({ groups: data.groups }));

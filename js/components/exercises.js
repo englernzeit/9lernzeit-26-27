@@ -66,9 +66,10 @@ export function createGlossaryText({ paragraphs }) {
 /**
  * @param {{ questions: Array<{q: string, options: string[], correct: number}> }} data
  */
-export function createMultipleChoice({ questions }) {
+export function createMultipleChoice({ questions, columns }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-mc";
+  if (columns === 2) wrap.classList.add("exo-mc--cols");
 
   questions.forEach((question, qi) => {
     const block = document.createElement("div");
