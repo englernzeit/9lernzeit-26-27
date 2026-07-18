@@ -8,6 +8,7 @@
 
 import readingReef from "./australia-reading-reef.js";
 import writingCamp from "./australia-writing-camp.js";
+import listeningHarbour from "./australia-listening-harbour.js";
 import digitalFootprint from "./generation-like-digital-footprint.js";
 import ifClauses from "./generation-like-if-clauses.js";
 import jeromeInfluencer from "./generation-like-jerome-influencer.js";
@@ -19,6 +20,7 @@ import revision from "./generation-like-revision.js";
 const CONTENT = {
   "australia/reading-reef": readingReef,
   "australia/writing-camp": writingCamp,
+  "australia/listening-harbour": listeningHarbour,
   "generation-like/digital-footprint": digitalFootprint,
   "generation-like/if-clauses": ifClauses,
   "generation-like/jerome-influencer": jeromeInfluencer,
