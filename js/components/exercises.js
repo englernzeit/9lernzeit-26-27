@@ -1021,9 +1021,24 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
  *   value: string, answerKey: string, onChange: (v:string)=>void,
  * }} opts
  */
-export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, value, answerKey, onChange }) {
+export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, value, answerKey, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-essay";
+
+  // Optional requirement chips (numbered "must include" points).
+  if (chips?.length) {
+    const chipRow = document.createElement("div");
+    chipRow.className = "exo-essay__chips";
+    chips.forEach((chip, i) => {
+      const c = document.createElement("span");
+      c.className = "exo-essay__chip";
+      const n = typeof chip === "string" ? String(i + 1).padStart(2, "0") : chip.n;
+      const label = typeof chip === "string" ? chip : chip.label;
+      c.innerHTML = `<span class="exo-essay__chip-n">${n}</span>${label}`;
+      chipRow.appendChild(c);
+    });
+    wrap.appendChild(chipRow);
+  }
 
   const area = document.createElement("textarea");
   area.className = "exo-essay__area";
@@ -1031,6 +1046,24 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   area.placeholder = placeholder ?? `Write your written discussion here (${min}–${max} words)…`;
   area.dataset.answerKey = answerKey;
   area.value = value ?? "";
+
+  // Optional mail-window chrome: traffic lights + a fixed subject line
+  // above the textarea (turns the essay box into a compose window).
+  if (subject) {
+    const mail = document.createElement("div");
+    mail.className = "exo-essay__mail";
+    const bar = document.createElement("div");
+    bar.className = "exo-essay__mail-bar";
+    bar.innerHTML =
+      '<span class="exo-essay__dot"></span><span class="exo-essay__dot"></span>' +
+      '<span class="exo-essay__dot"></span><span class="exo-essay__mail-cap">Compose your reply</span>';
+    const subj = document.createElement("div");
+    subj.className = "exo-essay__subject";
+    subj.innerHTML = `<span>Subject:</span> ${subject}`;
+    area.classList.add("exo-essay__area--mail");
+    mail.append(bar, subj, area);
+    wrap.appendChild(mail);
+  }
 
   const meter = document.createElement("div");
   meter.className = "exo-essay__meter";
@@ -1043,9 +1076,13 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   label.append(count, msg);
   const track = document.createElement("div");
   track.className = "exo-essay__track";
+  const zone = document.createElement("div");
+  zone.className = "exo-essay__zone";
+  zone.style.left = `${Math.min((min / max) * 100, 100)}%`;
+  zone.style.right = "0";
   const fill = document.createElement("div");
   fill.className = "exo-essay__fill";
-  track.appendChild(fill);
+  track.append(zone, fill);
   const target = document.createElement("p");
   target.className = "exo-essay__target";
   target.textContent = `Target: ${min}–${max} words`;
@@ -1069,7 +1106,8 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
     paint();
   });
 
-  wrap.append(area, meter);
+  if (!subject) wrap.appendChild(area);
+  wrap.appendChild(meter);
 
   if (checklist?.length) {
     wrap.appendChild(createChecklist({ items: checklist, title: "Self-check" }));
@@ -1639,6 +1677,176 @@ export function createEmailBuilder({ to, values, keyFor, onChange }) {
   editBtn.addEventListener("click", () => setSubmitted(false));
 
   update();
+  return wrap;
+}
+
+/* ---------- Email fixer (spot the problems + rewrite) ---------- */
+
+const FIXER_FIELDS = ["subject", "body"];
+
+/**
+ * "Fix the bad email" task. The left panel shows a messy draft as an
+ * email card whose lines can each be tapped to flag a problem (a live
+ * counter tracks how many were found). The right panel is a clean
+ * compose window (To fixed, Subject input, body textarea) where the
+ * learner rewrites the email formally; a word count + status pill give
+ * feedback. Flags and both text fields persist.
+ *
+ * @param {{
+ *   draft: { from?: string, initial?: string, time?: string, to?: string, lines: string[] },
+ *   to?: string,
+ *   subjectPlaceholder?: string,
+ *   bodyPlaceholder?: string,
+ *   values: Record<string,string>,
+ *   keyFor: (field: string) => string,
+ *   onChange: (field: string, value: string) => void,
+ * }} opts
+ */
+export function createEmailFixer({ draft, to, subjectPlaceholder, bodyPlaceholder, values, keyFor, onChange }) {
+  const toAddr = to ?? draft?.to ?? "info@example.com.au";
+  const state = { subject: values?.subject ?? "", body: values?.body ?? "" };
+  const flags = new Set(
+    (values?.flags ?? "")
+      .split(",")
+      .map((s) => parseInt(s, 10))
+      .filter((n) => Number.isInteger(n)),
+  );
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-fix";
+  const grid = document.createElement("div");
+  grid.className = "exo-fix__grid";
+  wrap.appendChild(grid);
+
+  /* ----- LEFT: the messy draft, tap to flag ----- */
+  const left = document.createElement("div");
+  left.className = "exo-fix__left";
+  const capL = document.createElement("div");
+  capL.className = "exo-fix__cap exo-fix__cap--bad";
+  capL.innerHTML = "<span>Ben's draft</span> · tap each problem";
+
+  const mail = document.createElement("article");
+  mail.className = "exo-fix__mail";
+  const mHead = document.createElement("div");
+  mHead.className = "exo-fix__mail-head";
+  const avatar = document.createElement("div");
+  avatar.className = "exo-fix__avatar";
+  avatar.textContent = draft?.initial ?? (draft?.from ?? "B").charAt(0);
+  const fromBox = document.createElement("div");
+  fromBox.className = "exo-fix__from";
+  fromBox.innerHTML =
+    `<div class="exo-fix__from-top"><span class="exo-fix__from-name">${draft?.from ?? "Ben Fischer"}</span>` +
+    `<span class="exo-fix__time">${draft?.time ?? ""}</span></div>` +
+    `<div class="exo-fix__toline">to <span>${toAddr}</span></div>`;
+  mHead.append(avatar, fromBox);
+
+  const linesBox = document.createElement("div");
+  linesBox.className = "exo-fix__lines";
+
+  const count = document.createElement("div");
+  count.className = "exo-fix__count";
+
+  const paintCount = () => {
+    const n = flags.size;
+    count.textContent = n === 0 ? "No problems flagged yet" : `${n} problem${n === 1 ? "" : "s"} flagged`;
+    count.classList.toggle("exo-fix__count--on", n > 0);
+  };
+
+  (draft?.lines ?? []).forEach((text, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "exo-fix__line";
+    const dot = document.createElement("span");
+    dot.className = "exo-fix__dot";
+    const span = document.createElement("span");
+    span.className = "exo-fix__linetext";
+    span.textContent = text;
+    btn.append(dot, span);
+    const paint = () => {
+      const on = flags.has(i);
+      btn.classList.toggle("exo-fix__line--on", on);
+      dot.textContent = on ? "!" : "";
+    };
+    btn.addEventListener("click", () => {
+      if (flags.has(i)) flags.delete(i);
+      else flags.add(i);
+      paint();
+      paintCount();
+      onChange("flags", [...flags].sort((a, b) => a - b).join(","));
+    });
+    paint();
+    linesBox.appendChild(btn);
+  });
+  paintCount();
+
+  mail.append(mHead, linesBox);
+  left.append(capL, mail, count);
+
+  /* ----- RIGHT: clean compose window ----- */
+  const right = document.createElement("div");
+  right.className = "exo-fix__right";
+  const capR = document.createElement("div");
+  capR.className = "exo-fix__cap exo-fix__cap--ok";
+  capR.innerHTML = "<span>Your corrected version</span>";
+
+  const compose = document.createElement("article");
+  compose.className = "exo-fix__compose";
+  const rowTo = document.createElement("div");
+  rowTo.className = "exo-fix__crow";
+  rowTo.innerHTML = `<span class="exo-fix__clabel">To</span><span class="exo-fix__cto">${toAddr}</span>`;
+  const rowSubj = document.createElement("div");
+  rowSubj.className = "exo-fix__crow";
+  const subjLabel = document.createElement("span");
+  subjLabel.className = "exo-fix__clabel";
+  subjLabel.textContent = "Subject";
+  const subject = document.createElement("input");
+  subject.type = "text";
+  subject.className = "exo-fix__subject";
+  subject.placeholder = subjectPlaceholder ?? "Add a subject";
+  subject.spellcheck = false;
+  subject.value = state.subject;
+  subject.dataset.answerKey = keyFor("subject");
+  rowSubj.append(subjLabel, subject);
+  const bodyArea = document.createElement("textarea");
+  bodyArea.className = "exo-fix__body";
+  bodyArea.placeholder = bodyPlaceholder ?? "Dear Sir or Madam,\n\n…";
+  bodyArea.spellcheck = false;
+  bodyArea.value = state.body;
+  bodyArea.dataset.answerKey = keyFor("body");
+  compose.append(rowTo, rowSubj, bodyArea);
+
+  const meter = document.createElement("div");
+  meter.className = "exo-fix__meter";
+  const words = document.createElement("span");
+  words.className = "exo-fix__words";
+  const status = document.createElement("span");
+  status.className = "exo-fix__status";
+  meter.append(words, status);
+
+  const paintMeter = () => {
+    const n = state.body.trim() ? state.body.trim().split(/\s+/).filter(Boolean).length : 0;
+    words.textContent = `${n} word${n === 1 ? "" : "s"}`;
+    let level = "draft", label = "Draft";
+    if (n >= 60) { level = "ok"; label = "Looking good ✓"; }
+    else if (n > 0) { level = "go"; label = "Keep going…"; }
+    status.dataset.level = level;
+    status.textContent = label;
+  };
+
+  subject.addEventListener("input", () => {
+    state.subject = subject.value;
+    onChange("subject", subject.value);
+  });
+  bodyArea.addEventListener("input", () => {
+    state.body = bodyArea.value;
+    onChange("body", bodyArea.value);
+    paintMeter();
+  });
+
+  right.append(capR, compose, meter);
+  grid.append(left, right);
+  paintMeter();
+
   return wrap;
 }
 

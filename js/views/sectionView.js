@@ -37,6 +37,7 @@ import {
   createParagraphBuilder,
   createEssayEditor,
   createEmailBuilder,
+  createEmailFixer,
 } from "../components/exercises.js";
 import {
   getName,
@@ -74,6 +75,10 @@ const EMAIL_LABELS = {
   q2: "Could you also tell me …?",
   name: "Full name",
 };
+
+/** The corrected-email fields of the "Fix the email" task, in PDF order. */
+const FIXER_FIELDS = ["subject", "body"];
+const FIXER_LABELS = { subject: "Subject", body: "Corrected email" };
 
 /** Fallback shape for pages whose lesson content is not written yet. */
 function comingSoonContent() {
@@ -314,6 +319,12 @@ function downloadAnswerSheet(view, unit, section, content, name) {
           return EMAIL_FIELDS.map((f) => ({
             label: `${card.title} — ${EMAIL_LABELS[f]}`,
             answer: answers[`${base}-email-${f}`] ?? "",
+          }));
+        }
+        if (card.type === "email-fixer") {
+          return FIXER_FIELDS.map((f) => ({
+            label: `${card.title} — ${FIXER_LABELS[f]}`,
+            answer: answers[`${base}-fix-${f}`] ?? "",
           }));
         }
         if (card.type === "paragraph-builder") {
@@ -745,6 +756,8 @@ function buildCard(step, data, index, taskNo, ctx) {
           max: data.max,
           placeholder: data.placeholder,
           checklist: data.checklist,
+          chips: data.chips,
+          subject: data.subject,
           value: saved[key] ?? "",
           answerKey: key,
           onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),
@@ -793,6 +806,26 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(
         createEmailBuilder({
           to: data.to,
+          values,
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) =>
+            ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "email-fixer": {
+      const base = `step${step.step}-task${index + 1}-fix`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const values = {};
+      for (const f of FIXER_FIELDS) values[f] = saved[`${base}-${f}`] ?? "";
+      values.flags = saved[`${base}-flags`] ?? "";
+      body.appendChild(
+        createEmailFixer({
+          draft: data.draft,
+          to: data.to,
+          subjectPlaceholder: data.subjectPlaceholder,
+          bodyPlaceholder: data.bodyPlaceholder,
           values,
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) =>
