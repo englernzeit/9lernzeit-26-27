@@ -84,7 +84,18 @@ export function createMultipleChoice({ questions, columns }) {
     opts.className = "exo-mc__opts";
     let solved = false;
 
-    question.options.forEach((label, oi) => {
+    // Shuffle the options (deterministic per question) so the correct
+    // answer isn't always in the same position. The answer is still never
+    // revealed — only the picked option is marked right or wrong.
+    const order = question.options.map((label, i) => ({ label, correct: i === question.correct }));
+    let seed = (qi + 1) * 2654435761 + 40503; // deterministic PRNG, varies per question
+    const rand = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+
+    order.forEach(({ label, correct }) => {
       const btn = document.createElement("button");
       btn.className = "exo-mc__opt";
       btn.type = "button";
@@ -94,7 +105,7 @@ export function createMultipleChoice({ questions, columns }) {
         // We never reveal the answer — only mark the picked option
         // right or wrong. Wrong picks stay disabled so the learner
         // keeps trying until they find it themselves.
-        if (oi === question.correct) {
+        if (correct) {
           solved = true;
           btn.classList.add("exo-mc__opt--right");
           opts.querySelectorAll("button").forEach((b) => (b.disabled = true));
