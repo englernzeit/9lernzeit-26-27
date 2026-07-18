@@ -308,7 +308,7 @@ export default {
             ],
           },
           subjectPlaceholder: "Add a subject",
-          bodyPlaceholder: "Dear Sir or Madam,\n\nI am writing to enquire about…",
+          bodyPlaceholder: "Write your email here…",
           help: "Watch out for: the greeting · spelling (informations, adress) · capital letters (i, sunday) · too many questions in one sentence · the tone (hurry pls) · the closing.",
         },
       ],
@@ -337,7 +337,7 @@ export default {
           ],
           min: 100,
           max: 130,
-          placeholder: "Dear Sir or Madam,\n\nI am writing to enquire about…",
+          placeholder: "Write your email here…",
           checklist: [
             "I introduced myself and explained why I am writing.",
             "I asked about volunteer opportunities and age requirements.",
