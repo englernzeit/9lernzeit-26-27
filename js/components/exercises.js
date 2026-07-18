@@ -124,24 +124,45 @@ export function createGroupSort({ groups }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-sort";
 
-  // Flatten items with their correct group, then shuffle deterministically
+  // Flatten items with their correct group, then shuffle deterministically.
+  // An item is a plain string, or `{ image, label? }` for a picture chip.
   const items = [];
-  groups.forEach((g, gi) => g.items.forEach((it) => items.push({ text: it, group: gi })));
+  groups.forEach((g, gi) => g.items.forEach((it) => items.push({ item: it, group: gi })));
   for (let i = 0; i < items.length; i++) {
     const j = (i * 7 + 3) % items.length; // stable pseudo-shuffle (no Math.random)
     [items[i], items[j]] = [items[j], items[i]];
   }
 
+  const hasImages = items.some((e) => typeof e.item === "object" && e.item.image);
+
   let selected = null;
 
   const tray = document.createElement("div");
   tray.className = "exo-sort__tray";
-  const chips = items.map((item) => {
+  if (hasImages) tray.classList.add("exo-sort__tray--img");
+  const chips = items.map((entry) => {
     const chip = document.createElement("button");
     chip.className = "exo-sort__chip";
     chip.type = "button";
-    chip.textContent = item.text;
-    chip.dataset.group = String(item.group);
+    const it = entry.item;
+    if (typeof it === "object" && it.image) {
+      chip.classList.add("exo-sort__chip--img");
+      const img = document.createElement("img");
+      img.className = "exo-sort__chip-img";
+      img.src = it.image;
+      img.alt = it.label ?? "";
+      img.loading = "lazy";
+      chip.appendChild(img);
+      if (it.label) {
+        const cap = document.createElement("span");
+        cap.className = "exo-sort__chip-cap";
+        cap.textContent = it.label;
+        chip.appendChild(cap);
+      }
+    } else {
+      chip.textContent = typeof it === "string" ? it : it.text;
+    }
+    chip.dataset.group = String(entry.group);
     chip.addEventListener("click", () => {
       if (chip.classList.contains("exo-sort__chip--locked")) return;
       const isSel = chip === selected;

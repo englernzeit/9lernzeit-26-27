@@ -199,6 +199,31 @@
   border-color: var(--j-coral);
 }
 
+/* Picture chips (image-based group-sort) — small thumbnail + caption */
+.exo-sort__tray--img { gap: 0.55rem; }
+.exo-sort__chip--img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.22rem;
+  padding: 0.3rem;
+  border-radius: 12px;
+}
+.exo-sort__chip-img {
+  display: block;
+  width: 92px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.exo-sort__chip-cap {
+  font-size: 0.72rem;
+  line-height: 1.1;
+  color: var(--j-slate);
+  max-width: 92px;
+  text-align: center;
+}
+
 .exo-sort__bins {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
