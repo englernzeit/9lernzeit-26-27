@@ -976,6 +976,94 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   padding: 0.3rem 0.5rem;
 }
 
+/* --- Tap match (two-column instant matcher) -------------------- */
+.exo-tap__head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.1rem;
+  margin-bottom: 0.4rem;
+}
+.exo-tap__collabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--j-khaki);
+}
+.exo-tap__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.1rem;
+  align-items: start;
+}
+.exo-tap__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.exo-tap__item {
+  font-family: var(--j-font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--j-ink);
+  text-align: left;
+  background: var(--j-paper-1);
+  border: 1.5px solid rgba(120, 105, 80, 0.3);
+  border-radius: 10px;
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.exo-tap__item:hover { border-color: var(--j-teal); }
+.exo-tap__item--sel {
+  background: rgba(109, 143, 78, 0.12);
+  border-color: var(--j-olive);
+  box-shadow: 0 0 0 3px rgba(109, 143, 78, 0.28);
+}
+.exo-tap__item--done {
+  background: rgba(109, 143, 78, 0.2);
+  border-color: var(--j-olive);
+  color: var(--j-olive);
+  cursor: default;
+}
+.exo-tap__item--wrong {
+  background: rgba(192, 106, 88, 0.16);
+  border-color: var(--j-coral);
+  color: var(--j-coral-deep);
+  animation: imatchShake 0.4s;
+}
+
+.exo-tap__footer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.9rem;
+  flex-wrap: wrap;
+}
+.exo-tap__count {
+  font-family: var(--j-font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--j-olive);
+  background: rgba(109, 143, 78, 0.16);
+  border-radius: 999px;
+  padding: 0.1rem 0.8rem;
+}
+.exo-tap__reset {
+  font-family: var(--j-font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--j-khaki);
+  background: transparent;
+  border: 1px solid rgba(120, 105, 80, 0.35);
+  border-radius: 8px;
+  padding: 0.25rem 0.8rem;
+  cursor: pointer;
+}
+.exo-tap__reset:hover { background: rgba(120, 105, 80, 0.1); }
+.exo-tap__done { display: none; font-weight: 700; color: var(--j-olive); }
+.exo-tap--done .exo-tap__done { display: inline; }
+
 /* --- Argument pick ---------------------------------------------- */
 
 .exo-args__lead {

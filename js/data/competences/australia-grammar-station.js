@@ -150,18 +150,17 @@ export default {
           ],
         },
         {
-          type: "match-up",
+          type: "tap-match",
           kind: "Interaktiv · Zuordnen",
           title: "Match the modals",
-          intro: "Tap a modal verb, then tap its German meaning. Then Check.",
-          options: ["können", "müssen", "sollen / sollte", "dürfen (höflich)", "(es) schaffen", "die Erlaubnis haben"],
-          items: [
-            { left: "can / can't", answer: "können" },
-            { left: "must / have to", answer: "müssen" },
-            { left: "should", answer: "sollen / sollte" },
-            { left: "may", answer: "dürfen (höflich)" },
-            { left: "be able to", answer: "(es) schaffen" },
-            { left: "be allowed to", answer: "die Erlaubnis haben" },
+          intro: "Tap a modal verb, then tap its German meaning. Correct pairs lock in green; a wrong pair shakes and clears.",
+          pairs: [
+            { left: "can / can't", right: "können" },
+            { left: "must / have to", right: "müssen" },
+            { left: "should", right: "sollen / sollte" },
+            { left: "may", right: "dürfen (höflich)" },
+            { left: "be able to", right: "(es) schaffen" },
+            { left: "be allowed to", right: "die Erlaubnis haben" },
           ],
         },
         {

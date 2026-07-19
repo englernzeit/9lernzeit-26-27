@@ -1081,6 +1081,135 @@ export function createMatchUp({ options, items }) {
 
 /* ---------- Argument pick (spot the suitable ones) ------------- */
 
+/* ---------- Tap-match (two-column instant matcher) ------------- */
+
+/**
+ * Two columns of chips: tap a left item, then tap its partner on the
+ * right. A correct pair locks in green immediately; a wrong pair shakes
+ * red and clears. A running counter + Reset; a "well done" line at the
+ * end. The right column is shuffled deterministically.
+ *
+ * @param {{ pairs: Array<{left: string, right: string}>, leftLabel?: string, rightLabel?: string }} data
+ */
+export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deutsch" }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-tap";
+
+  const head = document.createElement("div");
+  head.className = "exo-tap__head";
+  const hl = document.createElement("span");
+  hl.className = "exo-tap__collabel";
+  hl.textContent = leftLabel;
+  const hr = document.createElement("span");
+  hr.className = "exo-tap__collabel";
+  hr.textContent = rightLabel;
+  head.append(hl, hr);
+  wrap.appendChild(head);
+
+  const grid = document.createElement("div");
+  grid.className = "exo-tap__grid";
+  const leftCol = document.createElement("div");
+  leftCol.className = "exo-tap__col";
+  const rightCol = document.createElement("div");
+  rightCol.className = "exo-tap__col";
+  grid.append(leftCol, rightCol);
+  wrap.appendChild(grid);
+
+  // Deterministic shuffle of the right column (no Math.random).
+  const order = pairs.map((_, i) => i);
+  for (let i = 0; i < order.length; i++) {
+    const j = (i * 3 + 2) % order.length;
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+
+  const leftBtns = new Map();
+  const rightBtns = new Map();
+  const matched = new Set();
+  let selLeft = null;
+
+  const footer = document.createElement("div");
+  footer.className = "exo-tap__footer";
+  const countPill = document.createElement("span");
+  countPill.className = "exo-tap__count";
+  const reset = document.createElement("button");
+  reset.type = "button";
+  reset.className = "exo-tap__reset";
+  reset.textContent = "Reset";
+  const done = document.createElement("span");
+  done.className = "exo-tap__done";
+  done.textContent = "✓ Well done — all matched!";
+  footer.append(countPill, reset, done);
+
+  const paint = () => {
+    countPill.textContent = `${matched.size} / ${pairs.length}`;
+    wrap.classList.toggle("exo-tap--done", matched.size === pairs.length);
+  };
+
+  const clearSel = () => {
+    if (selLeft != null) leftBtns.get(selLeft).classList.remove("exo-tap__item--sel");
+    selLeft = null;
+  };
+
+  pairs.forEach((p, id) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "exo-tap__item";
+    b.textContent = p.left;
+    b.addEventListener("click", () => {
+      if (matched.has(id)) return;
+      const wasSel = selLeft === id;
+      clearSel();
+      if (!wasSel) {
+        selLeft = id;
+        b.classList.add("exo-tap__item--sel");
+      }
+    });
+    leftBtns.set(id, b);
+    leftCol.appendChild(b);
+  });
+
+  order.forEach((id) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "exo-tap__item";
+    b.textContent = pairs[id].right;
+    b.addEventListener("click", () => {
+      if (matched.has(id) || selLeft == null) return;
+      if (selLeft === id) {
+        matched.add(id);
+        leftBtns.get(id).classList.remove("exo-tap__item--sel");
+        leftBtns.get(id).classList.add("exo-tap__item--done");
+        b.classList.add("exo-tap__item--done");
+        selLeft = null;
+        paint();
+      } else {
+        const lb = leftBtns.get(selLeft);
+        lb.classList.add("exo-tap__item--wrong");
+        b.classList.add("exo-tap__item--wrong");
+        selLeft = null;
+        setTimeout(() => {
+          lb.classList.remove("exo-tap__item--wrong", "exo-tap__item--sel");
+          b.classList.remove("exo-tap__item--wrong");
+        }, 450);
+      }
+    });
+    rightBtns.set(id, b);
+    rightCol.appendChild(b);
+  });
+
+  reset.addEventListener("click", () => {
+    matched.clear();
+    selLeft = null;
+    leftBtns.forEach((b) => b.classList.remove("exo-tap__item--sel", "exo-tap__item--done", "exo-tap__item--wrong"));
+    rightBtns.forEach((b) => b.classList.remove("exo-tap__item--done", "exo-tap__item--wrong"));
+    paint();
+  });
+
+  wrap.appendChild(footer);
+  paint();
+  return wrap;
+}
+
 /**
  * Tick the suitable arguments and ignore the absurd ones, then Check.
  * Each argument shows a German hint (suitable) or a "think about it"
