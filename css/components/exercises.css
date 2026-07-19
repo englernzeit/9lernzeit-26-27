@@ -145,23 +145,46 @@
   box-shadow: 0 0 0 2px rgba(60, 54, 40, 0.18);
 }
 
-/* pen dot colours + matching highlight backgrounds */
-.exo-hl__pen--present .exo-hl__dot { background: var(--j-olive); }
-.exo-hl__pen--past .exo-hl__dot { background: var(--j-ochre); }
-.exo-hl__pen--perfect .exo-hl__dot { background: var(--j-coral); }
-.exo-hl__pen--progressive .exo-hl__dot { background: var(--j-teal); }
+/* pen dot colours (match the marking colours) */
+.exo-hl__pen--present .exo-hl__dot { background: #3f9150; }
+.exo-hl__pen--past .exo-hl__dot { background: #c07e1f; }
+.exo-hl__pen--perfect .exo-hl__dot { background: #c34329; }
+.exo-hl__pen--progressive .exo-hl__dot { background: #3f5fb0; }
 .exo-hl__pen--erase .exo-hl__dot {
   background: repeating-linear-gradient(45deg, #fff, #fff 3px, #e7dcc6 3px, #e7dcc6 6px);
 }
 
-.hl-word { border-radius: 4px; transition: background 0.12s ease; }
+.hl-word { border-radius: 4px; padding: 0 2px; transition: color 0.12s ease; }
 .exo-glossary--penning .hl-word,
 .exo-glossary--penning .glossary-word { cursor: crosshair; }
-.hl-on { padding: 0.02em 0.16em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-.hl--present { background: rgba(122, 141, 95, 0.42); }
-.hl--past { background: rgba(201, 150, 47, 0.42); }
-.hl--perfect { background: rgba(192, 106, 88, 0.38); }
-.hl--progressive { background: rgba(74, 111, 120, 0.34); }
+
+/* Marked verb form: coloured, bold, with a matching underline */
+.hl-on { font-weight: 700; border-bottom: 2.5px solid currentColor; }
+.hl--present { color: #3f9150; }
+.hl--past { color: #c07e1f; }
+.hl--perfect { color: #c34329; }
+.hl--progressive { color: #3f5fb0; }
+
+.exo-hl__footer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+.exo-hl__clear {
+  font-family: var(--j-font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--j-khaki);
+  background: transparent;
+  border: 1px solid rgba(120, 105, 80, 0.35);
+  border-radius: 8px;
+  padding: 0.25rem 0.8rem;
+  cursor: pointer;
+}
+.exo-hl__clear:hover { background: rgba(120, 105, 80, 0.1); }
+.exo-hl__count { font-size: 0.85rem; color: var(--j-khaki); }
 
 /* --- Multiple choice ------------------------------------------- */
 

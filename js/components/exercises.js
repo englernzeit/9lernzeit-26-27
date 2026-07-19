@@ -31,19 +31,26 @@ export function createGlossaryText({ paragraphs, highlight }) {
   const hlColors = highlight?.colors ?? [];
   const hlKeys = hlColors.map((c) => c.key);
   let activePen = null;
+  const marked = new Set();
+  let updateCount = () => {};
 
   const applyHighlight = (el) => {
     if (!activePen) return false;
     hlKeys.forEach((k) => el.classList.remove(`hl--${k}`));
     if (activePen === "erase") {
       el.classList.remove("hl-on");
+      el.dataset.hl = "";
+      marked.delete(el);
     } else if (el.dataset.hl === activePen) {
       el.classList.remove("hl-on"); // tapping the same colour again clears it
       el.dataset.hl = "";
+      marked.delete(el);
     } else {
       el.classList.add(`hl--${activePen}`, "hl-on");
       el.dataset.hl = activePen;
+      marked.add(el);
     }
+    updateCount();
     return true;
   };
 
@@ -142,6 +149,35 @@ export function createGlossaryText({ paragraphs, highlight }) {
     }
     wrap.appendChild(p);
   }
+
+  // Footer: clear-all + a running count of marked words.
+  if (hlColors.length) {
+    const footer = document.createElement("div");
+    footer.className = "exo-hl__footer";
+    const clear = document.createElement("button");
+    clear.type = "button";
+    clear.className = "exo-hl__clear";
+    clear.textContent = "Clear all";
+    const count = document.createElement("span");
+    count.className = "exo-hl__count";
+    updateCount = () => {
+      const n = marked.size;
+      count.textContent = n === 0 ? "Nothing marked yet" : `${n} word${n === 1 ? "" : "s"} marked`;
+    };
+    clear.addEventListener("click", () => {
+      marked.forEach((el) => {
+        hlKeys.forEach((k) => el.classList.remove(`hl--${k}`));
+        el.classList.remove("hl-on");
+        el.dataset.hl = "";
+      });
+      marked.clear();
+      updateCount();
+    });
+    updateCount();
+    footer.append(clear, count);
+    wrap.appendChild(footer);
+  }
+
   return wrap;
 }
 

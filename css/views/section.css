@@ -334,6 +334,13 @@
   flex-direction: column;
   gap: 0.8rem;
 }
+/* Full-width guide (no infographic): tile the reference cards in a grid */
+.grammar-guide__grid--full { grid-template-columns: 1fr; }
+.grammar-guide__grid--full .grammar-guide__types {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+  align-content: start;
+}
 
 .grammar-guide__type {
   background: var(--j-paper-2);
@@ -347,6 +354,9 @@
 .grammar-guide__type--olive { border-left-color: var(--j-olive); }
 .grammar-guide__type--ochre { border-left-color: var(--j-ochre); }
 .grammar-guide__type--coral { border-left-color: var(--j-coral); }
+.grammar-guide__type--teal { border-left-color: var(--j-teal); }
+.grammar-guide__type--slate { border-left-color: var(--j-slate); }
+.grammar-guide__type--violet { border-left-color: #8a6bb0; }
 
 .grammar-guide__type-head {
   display: flex;
@@ -365,40 +375,67 @@
 .grammar-guide__type--olive .grammar-guide__dot { background: var(--j-olive); }
 .grammar-guide__type--ochre .grammar-guide__dot { background: var(--j-ochre); }
 .grammar-guide__type--coral .grammar-guide__dot { background: var(--j-coral); }
+.grammar-guide__type--teal .grammar-guide__dot { background: var(--j-teal); }
+.grammar-guide__type--slate .grammar-guide__dot { background: var(--j-slate); }
+.grammar-guide__type--violet .grammar-guide__dot { background: #8a6bb0; }
 
 .grammar-guide__type-name {
   font-family: var(--j-font-display);
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   color: var(--j-ink);
 }
 
 .grammar-guide__tag {
   margin-left: auto;
-  font-size: 0.85rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 0.18rem 0.7rem;
+  padding: 0.18rem 0.55rem;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 .grammar-guide__type--olive .grammar-guide__tag { background: var(--j-olive-bg); color: var(--j-olive); }
 .grammar-guide__type--ochre .grammar-guide__tag { background: var(--j-ochre-bg); color: var(--j-ochre); }
 .grammar-guide__type--coral .grammar-guide__tag { background: rgba(192, 106, 88, 0.2); color: var(--j-coral-deep); }
+.grammar-guide__type--teal .grammar-guide__tag { background: rgba(74, 111, 120, 0.16); color: var(--j-teal); }
+.grammar-guide__type--slate .grammar-guide__tag { background: rgba(90, 100, 120, 0.16); color: var(--j-slate); }
+.grammar-guide__type--violet .grammar-guide__tag { background: rgba(138, 107, 176, 0.18); color: #6f539a; }
 
 .grammar-guide__formula {
   font-family: var(--j-font-body);
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   color: var(--j-khaki);
   margin-top: 0.4rem;
 }
 
+/* German meaning line with a small DE badge */
+.grammar-guide__de {
+  font-family: var(--j-font-body);
+  font-size: 0.98rem;
+  color: var(--j-khaki);
+  margin-top: 0.3rem;
+}
+.grammar-guide__de-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--j-slate);
+  background: rgba(120, 105, 80, 0.16);
+  border-radius: 5px;
+  padding: 0.05rem 0.35rem;
+  margin-right: 0.45rem;
+  vertical-align: 0.08em;
+}
+
 .grammar-guide__example {
   font-family: var(--j-font-display);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   color: var(--j-ink);
-  margin-top: 0.15rem;
+  margin-top: 0.35rem;
 }
 
 .grammar-guide__figure {
@@ -453,7 +490,22 @@
   font-weight: 700;
   color: var(--j-slate);
 }
-.grammar-guide__tense-use { color: var(--j-ink); }
+.grammar-guide__tense-use {
+  color: var(--j-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.grammar-guide__tense-ex {
+  font-family: var(--j-font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.grammar-guide__tense-ex--olive { color: var(--j-olive); }
+.grammar-guide__tense-ex--ochre { color: #b07d2b; }
+.grammar-guide__tense-ex--coral { color: var(--j-coral-deep); }
+.grammar-guide__tense-ex--slate,
+.grammar-guide__tense-ex--progressive { color: #4a5fa0; }
 .grammar-guide__tense-sig {
   font-style: italic;
   color: var(--j-khaki);

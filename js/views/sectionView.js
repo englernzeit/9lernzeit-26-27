@@ -406,7 +406,8 @@ function buildGuideSection(guide) {
   }
 
   const grid = document.createElement("div");
-  grid.className = "grammar-guide__grid";
+  // Without an infographic the reference cards tile across the full width.
+  grid.className = guide.infographic ? "grammar-guide__grid" : "grammar-guide__grid grammar-guide__grid--full";
 
   const types = document.createElement("div");
   types.className = "grammar-guide__types";
@@ -430,11 +431,24 @@ function buildGuideSection(guide) {
     formula.className = "grammar-guide__formula";
     formula.textContent = t.formula;
 
+    card.append(head, formula);
+
+    // Optional German meaning line (with a DE badge).
+    if (t.de) {
+      const de = document.createElement("p");
+      de.className = "grammar-guide__de";
+      const badge = document.createElement("span");
+      badge.className = "grammar-guide__de-badge";
+      badge.textContent = "DE";
+      de.append(badge, document.createTextNode(t.de));
+      card.appendChild(de);
+    }
+
     const example = document.createElement("p");
     example.className = "grammar-guide__example";
     example.textContent = `“${t.example}”`;
+    card.appendChild(example);
 
-    card.append(head, formula, example);
     types.appendChild(card);
   }
   grid.appendChild(types);
@@ -477,6 +491,12 @@ function buildGuideSection(guide) {
       const use = document.createElement("span");
       use.className = "grammar-guide__tense-use";
       use.textContent = t.use;
+      if (t.example) {
+        const ex = document.createElement("span");
+        ex.className = `grammar-guide__tense-ex grammar-guide__tense-ex--${t.accent ?? "olive"}`;
+        ex.textContent = `“${t.example}”`;
+        use.appendChild(ex);
+      }
       const sig = document.createElement("span");
       sig.className = "grammar-guide__tense-sig";
       sig.textContent = t.signals;
