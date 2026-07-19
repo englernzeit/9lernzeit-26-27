@@ -728,7 +728,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       break; // the video/image is rendered above; the card is just that
 
     case "text":
-      body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs) }));
+      body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs), highlight: data.highlight }));
       break;
     case "multiple-choice":
       body.appendChild(createMultipleChoice({ questions: data.questions, columns: data.columns }));

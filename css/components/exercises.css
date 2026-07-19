@@ -105,6 +105,64 @@
   transform: translateX(-50%) scale(1);
 }
 
+/* --- Colour highlighter ("marker pen" per tense) --------------- */
+.exo-hl__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.7rem;
+}
+.exo-hl__label {
+  font-size: 0.95rem;
+  color: var(--j-khaki);
+  font-style: italic;
+  margin-right: 0.2rem;
+}
+.exo-hl__pen {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--j-font-body);
+  font-size: 0.92rem;
+  color: var(--j-ink);
+  background: var(--j-paper-2);
+  border: 1.5px solid rgba(120, 105, 80, 0.3);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+  transition: border-color var(--motion-micro), transform var(--motion-micro), box-shadow var(--motion-micro);
+}
+.exo-hl__dot {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.exo-hl__pen--active {
+  border-color: var(--j-ink);
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px rgba(60, 54, 40, 0.18);
+}
+
+/* pen dot colours + matching highlight backgrounds */
+.exo-hl__pen--present .exo-hl__dot { background: var(--j-olive); }
+.exo-hl__pen--past .exo-hl__dot { background: var(--j-ochre); }
+.exo-hl__pen--perfect .exo-hl__dot { background: var(--j-coral); }
+.exo-hl__pen--progressive .exo-hl__dot { background: var(--j-teal); }
+.exo-hl__pen--erase .exo-hl__dot {
+  background: repeating-linear-gradient(45deg, #fff, #fff 3px, #e7dcc6 3px, #e7dcc6 6px);
+}
+
+.hl-word { border-radius: 4px; transition: background 0.12s ease; }
+.exo-glossary--penning .hl-word,
+.exo-glossary--penning .glossary-word { cursor: crosshair; }
+.hl-on { padding: 0.02em 0.16em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.hl--present { background: rgba(122, 141, 95, 0.42); }
+.hl--past { background: rgba(201, 150, 47, 0.42); }
+.hl--perfect { background: rgba(192, 106, 88, 0.38); }
+.hl--progressive { background: rgba(74, 111, 120, 0.34); }
+
 /* --- Multiple choice ------------------------------------------- */
 
 .exo-mc {

@@ -16,7 +16,7 @@
  *
  * @param {{ paragraphs: Array<Array<string|{w:string,de:string}>> }} data
  */
-export function createGlossaryText({ paragraphs }) {
+export function createGlossaryText({ paragraphs, highlight }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-glossary";
 
@@ -24,19 +24,100 @@ export function createGlossaryText({ paragraphs }) {
   const hasGlossary = paragraphs.some((para) =>
     para.some((seg) => typeof seg !== "string"),
   );
-  if (hasGlossary) {
+
+  // ----- Optional colour highlighter (a "marker pen" per tense) -----
+  // A study aid, not a checked exercise: pick a colour, then tap words to
+  // mark them. Tapping again (or the eraser) removes the mark.
+  const hlColors = highlight?.colors ?? [];
+  const hlKeys = hlColors.map((c) => c.key);
+  let activePen = null;
+
+  const applyHighlight = (el) => {
+    if (!activePen) return false;
+    hlKeys.forEach((k) => el.classList.remove(`hl--${k}`));
+    if (activePen === "erase") {
+      el.classList.remove("hl-on");
+    } else if (el.dataset.hl === activePen) {
+      el.classList.remove("hl-on"); // tapping the same colour again clears it
+      el.dataset.hl = "";
+    } else {
+      el.classList.add(`hl--${activePen}`, "hl-on");
+      el.dataset.hl = activePen;
+    }
+    return true;
+  };
+
+  if (hlColors.length) {
+    wrap.classList.add("exo-glossary--hl");
+    const bar = document.createElement("div");
+    bar.className = "exo-hl__bar";
+    if (highlight.hint) {
+      const lab = document.createElement("span");
+      lab.className = "exo-hl__label";
+      lab.textContent = highlight.hint;
+      bar.appendChild(lab);
+    }
+    const pens = [];
+    const setPen = (key, btn) => {
+      const on = activePen === key;
+      activePen = on ? null : key;
+      pens.forEach((b) => b.classList.toggle("exo-hl__pen--active", b === btn && !on));
+      wrap.classList.toggle("exo-glossary--penning", activePen !== null);
+    };
+    [...hlColors, { key: "erase", label: "Radiergummi" }].forEach((c) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `exo-hl__pen exo-hl__pen--${c.key}`;
+      const dot = document.createElement("span");
+      dot.className = "exo-hl__dot";
+      btn.append(dot, document.createTextNode(c.label));
+      btn.addEventListener("click", () => setPen(c.key, btn));
+      bar.appendChild(btn);
+      pens.push(btn);
+    });
+    wrap.appendChild(bar);
+  } else if (hasGlossary) {
     const hint = document.createElement("p");
     hint.className = "exo-glossary__hint";
     hint.textContent = "Tippe die unterstrichenen Wörter an ↓";
     wrap.appendChild(hint);
   }
 
+  // Split a plain string into word tokens (highlightable) and the
+  // whitespace/punctuation between them (plain text).
+  const tokenize = (str) => {
+    const out = [];
+    const re = /[A-Za-zÀ-ſ][A-Za-zÀ-ſ'’-]*/g;
+    let last = 0, m;
+    while ((m = re.exec(str))) {
+      if (m.index > last) out.push({ word: false, text: str.slice(last, m.index) });
+      out.push({ word: true, text: m[0] });
+      last = m.index + m[0].length;
+    }
+    if (last < str.length) out.push({ word: false, text: str.slice(last) });
+    return out;
+  };
+
+  const makeWord = (text) => {
+    const s = document.createElement("span");
+    s.className = "hl-word";
+    s.textContent = text;
+    s.addEventListener("click", () => applyHighlight(s));
+    return s;
+  };
+
   for (const para of paragraphs) {
     const p = document.createElement("p");
     p.className = "exo-glossary__para";
     for (const seg of para) {
       if (typeof seg === "string") {
-        p.appendChild(document.createTextNode(seg));
+        if (hlColors.length) {
+          tokenize(seg).forEach((tok) =>
+            p.appendChild(tok.word ? makeWord(tok.text) : document.createTextNode(tok.text)),
+          );
+        } else {
+          p.appendChild(document.createTextNode(seg));
+        }
       } else {
         const btn = document.createElement("button");
         btn.className = "glossary-word";
@@ -47,6 +128,9 @@ export function createGlossaryText({ paragraphs }) {
         pop.textContent = seg.de;
         btn.appendChild(pop);
         btn.addEventListener("click", () => {
+          // With a pen selected, the word gets highlighted; otherwise the
+          // glossary word still reveals its German translation.
+          if (applyHighlight(btn)) return;
           const open = btn.classList.contains("glossary-word--open");
           wrap.querySelectorAll(".glossary-word--open").forEach((b) =>
             b.classList.remove("glossary-word--open"),

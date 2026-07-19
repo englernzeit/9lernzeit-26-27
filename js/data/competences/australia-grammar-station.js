@@ -70,6 +70,15 @@ export default {
           type: "text",
           kind: "Text · Ben's Day in Sydney",
           title: "Ben's Day in Sydney",
+          highlight: {
+            hint: "Wähle eine Farbe und markiere jede Zeitform im Text:",
+            colors: [
+              { label: "Simple Present", key: "present" },
+              { label: "Simple Past", key: "past" },
+              { label: "Present Perfect", key: "perfect" },
+              { label: "Past Progressive", key: "progressive" },
+            ],
+          },
           paragraphs: [
             [
               "Ben lives in Sydney. Every morning he must get up at seven o'clock. He can see the ",
@@ -182,6 +191,15 @@ export default {
           type: "text",
           kind: "Text · Ben's Day in Sydney",
           title: "Ben's Day in Sydney",
+          highlight: {
+            hint: "Wähle eine Farbe und markiere jede Zeitform im Text:",
+            colors: [
+              { label: "Simple Present", key: "present" },
+              { label: "Simple Past", key: "past" },
+              { label: "Present Perfect", key: "perfect" },
+              { label: "Past Progressive", key: "progressive" },
+            ],
+          },
           paragraphs: [
             [
               "Ben lives with his family in Sydney, Australia. On school days he must get up at half past six. From his room he can see the famous Harbour Bridge. Today is Saturday, so he doesn't have to ",
@@ -298,6 +316,15 @@ export default {
           type: "text",
           kind: "Text · Ben's Day in Sydney",
           title: "Ben's Day in Sydney",
+          highlight: {
+            hint: "Wähle eine Farbe und markiere jede Zeitform im Text:",
+            colors: [
+              { label: "Simple Present", key: "present" },
+              { label: "Simple Past", key: "past" },
+              { label: "Present Perfect", key: "perfect" },
+              { label: "Past Progressive", key: "progressive" },
+            ],
+          },
           paragraphs: [
             [
               "Ben has lived in Sydney for three years, but he still discovers something new every week. On weekdays he gets up early because his school is on the other side of the harbour. He usually takes the ferry, and from the deck he watches the Opera House in the morning sun. Today, however, is Saturday.",
