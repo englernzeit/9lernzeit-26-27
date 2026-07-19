@@ -420,7 +420,7 @@ function buildGuideSection(guide) {
     dot.className = "grammar-guide__dot";
     const name = document.createElement("span");
     name.className = "grammar-guide__type-name";
-    name.textContent = `Type ${t.n} — ${t.name}`;
+    name.textContent = guide.numbered === false ? t.name : `Type ${t.n} — ${t.name}`;
     const tag = document.createElement("span");
     tag.className = "grammar-guide__tag";
     tag.textContent = t.tag;
@@ -458,6 +458,34 @@ function buildGuideSection(guide) {
   }
 
   article.appendChild(grid);
+
+  // Optional 4-tenses revision table (tense · use · signal words), shown
+  // below the reference cards.
+  if (guide.tenses?.length) {
+    const tbl = document.createElement("div");
+    tbl.className = "grammar-guide__tenses";
+    const cap = document.createElement("div");
+    cap.className = "grammar-guide__tenses-cap";
+    cap.textContent = guide.tensesLabel ?? "The 4 tenses — quick revision";
+    tbl.appendChild(cap);
+    for (const t of guide.tenses) {
+      const row = document.createElement("div");
+      row.className = "grammar-guide__tense";
+      const nm = document.createElement("span");
+      nm.className = "grammar-guide__tense-name";
+      nm.textContent = t.tense;
+      const use = document.createElement("span");
+      use.className = "grammar-guide__tense-use";
+      use.textContent = t.use;
+      const sig = document.createElement("span");
+      sig.className = "grammar-guide__tense-sig";
+      sig.textContent = t.signals;
+      row.append(nm, use, sig);
+      tbl.appendChild(row);
+    }
+    article.appendChild(tbl);
+  }
+
   section.appendChild(article);
   return section;
 }

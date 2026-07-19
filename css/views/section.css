@@ -426,6 +426,45 @@
   padding: 0.4rem 0.2rem 0.2rem;
 }
 
+/* --- 4-tenses revision table (optional guide block) ------------ */
+.grammar-guide__tenses {
+  margin-top: 1.1rem;
+  border: 1px solid rgba(120, 105, 80, 0.22);
+  border-radius: 14px;
+  background: var(--j-paper-2);
+  overflow: hidden;
+}
+.grammar-guide__tenses-cap {
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+  background: rgba(122, 141, 95, 0.14);
+  padding: 0.5rem 0.9rem;
+}
+.grammar-guide__tense {
+  display: grid;
+  grid-template-columns: 10rem 1fr 1fr;
+  gap: 0.5rem 1rem;
+  padding: 0.55rem 0.9rem;
+  border-top: 1px solid rgba(120, 105, 80, 0.18);
+  align-items: baseline;
+}
+.grammar-guide__tense-name {
+  font-weight: 700;
+  color: var(--j-slate);
+}
+.grammar-guide__tense-use { color: var(--j-ink); }
+.grammar-guide__tense-sig {
+  font-style: italic;
+  color: var(--j-khaki);
+}
+@media (orientation: portrait) {
+  .grammar-guide__tense {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
+
 /* --- Answer field on task cards -------------------------------- */
 
 .taskcard__answer {

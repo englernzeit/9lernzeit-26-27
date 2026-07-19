@@ -10,6 +10,7 @@ import readingReef from "./australia-reading-reef.js";
 import writingCamp from "./australia-writing-camp.js";
 import listeningHarbour from "./australia-listening-harbour.js";
 import vocabularyBeach from "./australia-vocabulary-beach.js";
+import grammarStation from "./australia-grammar-station.js";
 import digitalFootprint from "./generation-like-digital-footprint.js";
 import ifClauses from "./generation-like-if-clauses.js";
 import jeromeInfluencer from "./generation-like-jerome-influencer.js";
@@ -23,6 +24,7 @@ const CONTENT = {
   "australia/writing-camp": writingCamp,
   "australia/listening-harbour": listeningHarbour,
   "australia/vocabulary-beach": vocabularyBeach,
+  "australia/grammar-station": grammarStation,
   "generation-like/digital-footprint": digitalFootprint,
   "generation-like/if-clauses": ifClauses,
   "generation-like/jerome-influencer": jeromeInfluencer,
