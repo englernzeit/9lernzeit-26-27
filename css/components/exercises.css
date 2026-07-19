@@ -61,10 +61,12 @@
 }
 
 .exo-glossary__para {
-  font-size: 1.15rem;
-  line-height: 1.65;
+  font-size: 1.05rem;
+  line-height: 1.5;
   color: var(--j-ink);
+  margin: 0 0 0.5rem;
 }
+.exo-glossary__para:last-child { margin-bottom: 0; }
 
 .glossary-word {
   position: relative;
@@ -185,6 +187,26 @@
 }
 .exo-hl__clear:hover { background: rgba(120, 105, 80, 0.1); }
 .exo-hl__count { font-size: 0.85rem; color: var(--j-khaki); }
+
+.exo-hl__check {
+  font-family: var(--j-font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--j-olive);
+  border: none;
+  border-radius: 8px;
+  padding: 0.28rem 1.1rem;
+  cursor: pointer;
+}
+.exo-hl__check:hover { background: #5f7050; }
+.exo-hl__status { font-size: 0.9rem; font-weight: 600; color: var(--j-khaki); }
+.exo-hl__status[data-tone="ok"] { color: var(--j-olive); }
+.exo-hl__status[data-tone="warn"] { color: var(--j-coral-deep); }
+
+/* Check feedback on the marked words */
+.hl-correct { background: rgba(109, 143, 78, 0.22); border-radius: 4px; }
+.hl-incorrect { background: rgba(192, 106, 88, 0.2); border-radius: 4px; }
 
 /* --- Multiple choice ------------------------------------------- */
 

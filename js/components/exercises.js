@@ -30,12 +30,15 @@ export function createGlossaryText({ paragraphs, highlight }) {
   // mark them. Tapping again (or the eraser) removes the mark.
   const hlColors = highlight?.colors ?? [];
   const hlKeys = hlColors.map((c) => c.key);
+  const hlAnswers = highlight?.answers ?? [];
+  const markables = []; // every span/button that can be marked, in text order
   let activePen = null;
   const marked = new Set();
   let updateCount = () => {};
 
   const applyHighlight = (el) => {
     if (!activePen) return false;
+    el.classList.remove("hl-correct", "hl-incorrect"); // marking again clears Check feedback
     hlKeys.forEach((k) => el.classList.remove(`hl--${k}`));
     if (activePen === "erase") {
       el.classList.remove("hl-on");
@@ -110,6 +113,7 @@ export function createGlossaryText({ paragraphs, highlight }) {
     s.className = "hl-word";
     s.textContent = text;
     s.addEventListener("click", () => applyHighlight(s));
+    markables.push(s);
     return s;
   };
 
@@ -144,37 +148,93 @@ export function createGlossaryText({ paragraphs, highlight }) {
           );
           btn.classList.toggle("glossary-word--open", !open);
         });
+        if (hlColors.length) markables.push(btn);
         p.appendChild(btn);
       }
     }
     wrap.appendChild(p);
   }
 
-  // Footer: clear-all + a running count of marked words.
+  // Assign each verb form its expected tense (in text order) so the marks
+  // can be checked. Non-verb words get no expected tense.
+  if (hlAnswers.length) {
+    const norm2 = (t) => (t ?? "").toLowerCase().replace(/[’‘`]/g, "'").trim();
+    let cur = 0;
+    for (const ans of hlAnswers) {
+      const target = norm2(ans.word);
+      while (cur < markables.length && norm2(markables[cur].textContent) !== target) cur++;
+      if (cur < markables.length) {
+        markables[cur].dataset.expected = ans.tense;
+        cur++;
+      }
+    }
+  }
+
+  // Footer: optional Check + clear-all + a running count / result.
   if (hlColors.length) {
     const footer = document.createElement("div");
     footer.className = "exo-hl__footer";
+
+    const count = document.createElement("span");
+    count.className = "exo-hl__count";
+    let checked = false;
+    updateCount = () => {
+      checked = false;
+      status.textContent = "";
+      const n = marked.size;
+      count.textContent = n === 0 ? "Nothing marked yet" : `${n} word${n === 1 ? "" : "s"} marked`;
+    };
+
+    const status = document.createElement("span");
+    status.className = "exo-hl__status";
+
+    if (hlAnswers.length) {
+      const check = document.createElement("button");
+      check.type = "button";
+      check.className = "exo-hl__check";
+      check.textContent = "Check";
+      check.addEventListener("click", () => {
+        let right = 0, wrong = 0;
+        markables.forEach((el) => {
+          el.classList.remove("hl-correct", "hl-incorrect");
+          if (!el.dataset.hl) return;
+          if (el.dataset.expected && el.dataset.hl === el.dataset.expected) {
+            el.classList.add("hl-correct");
+            right += 1;
+          } else {
+            el.classList.add("hl-incorrect");
+            wrong += 1;
+          }
+        });
+        checked = true;
+        count.textContent = "";
+        if (wrong === 0 && right === hlAnswers.length) {
+          status.textContent = "Perfect — all verb forms found! ✓";
+          status.dataset.tone = "ok";
+        } else {
+          status.textContent = `${right} / ${hlAnswers.length} verb forms correct${wrong ? ` · ${wrong} to fix` : ""}`;
+          status.dataset.tone = wrong ? "warn" : "ok";
+        }
+      });
+      footer.appendChild(check);
+    }
+
     const clear = document.createElement("button");
     clear.type = "button";
     clear.className = "exo-hl__clear";
     clear.textContent = "Clear all";
-    const count = document.createElement("span");
-    count.className = "exo-hl__count";
-    updateCount = () => {
-      const n = marked.size;
-      count.textContent = n === 0 ? "Nothing marked yet" : `${n} word${n === 1 ? "" : "s"} marked`;
-    };
     clear.addEventListener("click", () => {
       marked.forEach((el) => {
         hlKeys.forEach((k) => el.classList.remove(`hl--${k}`));
-        el.classList.remove("hl-on");
+        el.classList.remove("hl-on", "hl-correct", "hl-incorrect");
         el.dataset.hl = "";
       });
       marked.clear();
       updateCount();
     });
+
     updateCount();
-    footer.append(clear, count);
+    footer.append(clear, count, status);
     wrap.appendChild(footer);
   }
 

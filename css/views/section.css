@@ -645,6 +645,15 @@
   text-align: justify;
 }
 
+/* Highlighter text (grammar) stays compact even on a coral Step-1 card —
+   the big justified LE-reading style would stretch it out. */
+.taskcard--coral .exo-glossary--hl { gap: 0.5rem; margin-top: 0.7rem; }
+.taskcard--coral .exo-glossary--hl .exo-glossary__para {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
 /* Sentence starters (five-sentence writing task) */
 .taskcard__starters {
   margin-top: 1.1rem;
