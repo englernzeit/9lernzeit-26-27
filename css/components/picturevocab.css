@@ -1,0 +1,365 @@
+/* ============================================================
+   Picture Vocabulary — the "Vocabulary" hub buttons on the page
+   and the full-screen flashcard deck overlay (chooser + coverflow).
+   The overlay mounts on <body>, so it carries its own palette.
+   ============================================================ */
+
+/* --- Hub on the page (two stacked launcher buttons) ----------- */
+
+.vocab-hub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.4rem 0 0.2rem;
+}
+
+.vocab-hub .journal__wordmaster-btn {
+  margin-left: 0; /* it lives in a centred stack now, not a header row */
+}
+
+.vocab-hub__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--j-coral-deep);
+  background: var(--j-paper-2);
+  border: 2px solid rgba(192, 106, 88, 0.55);
+  border-radius: 20px 12px 22px 12px / 12px 20px 12px 22px;
+  padding: 0.32rem 1.2rem 0.28rem;
+  box-shadow: 0 4px 10px rgba(70, 60, 110, 0.16);
+  transform: rotate(-1.2deg);
+  transition: transform var(--motion-micro), filter var(--motion-micro);
+}
+
+.vocab-hub__btn-ico {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.vocab-hub__btn:hover,
+.vocab-hub__btn:focus-visible {
+  transform: rotate(-1.2deg) translateY(-2px) scale(1.03);
+  filter: brightness(1.03) drop-shadow(0 0 6px rgba(192, 106, 88, 0.4));
+}
+
+.vocab-hub__btn:active {
+  transform: rotate(-1.2deg) scale(0.97);
+}
+
+/* --- Overlay ---------------------------------------------------- */
+
+.picvocab {
+  /* self-contained journal palette (mounted outside .journal) */
+  --pv-ink: #33415c;
+  --pv-khaki: #8a7d63;
+  --pv-accent: #b23a34;
+  --pv-paper: #fffdf8;
+  --pv-display: "Caveat", cursive;
+  --pv-body: "Patrick Hand", cursive;
+
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  overflow: hidden;
+  font-family: var(--pv-body);
+  color: #2b2621;
+  background: #f2dfa8 url("../../assets/images/bg-journal.jpg") center bottom / cover no-repeat;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.picvocab--closing {
+  opacity: 0;
+}
+
+.picvocab__back {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  z-index: 70;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--pv-body);
+  font-size: 15px;
+  color: #4a4236;
+  background: rgba(255, 253, 248, 0.72);
+  border: 1px solid rgba(120, 105, 80, 0.28);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  padding: 9px 18px 9px 14px;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.picvocab__back span {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.picvocab__back:hover,
+.picvocab__back:focus-visible {
+  background: #fffdf8;
+  transform: translateX(-2px);
+}
+
+/* Chooser / deck visibility */
+.picvocab__chooser {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6vh 24px;
+}
+
+.picvocab__deck {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+}
+
+.picvocab--deck .picvocab__chooser {
+  display: none;
+}
+
+.picvocab--deck .picvocab__deck {
+  display: flex;
+}
+
+/* Chooser content */
+.picvocab__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 26px;
+  font-size: 13px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--pv-accent);
+  font-weight: 500;
+}
+
+.picvocab__rule {
+  height: 1px;
+  width: 42px;
+  background: var(--pv-accent);
+  opacity: 0.55;
+}
+
+.picvocab__rule--sm {
+  width: 36px;
+  background: rgba(120, 105, 80, 0.3);
+  opacity: 1;
+}
+
+.picvocab__title {
+  font-family: var(--pv-display);
+  font-weight: 600;
+  font-size: clamp(44px, 8vw, 100px);
+  line-height: 0.98;
+  margin: 0 0 18px;
+  letter-spacing: -0.01em;
+}
+
+.picvocab__lead {
+  font-size: clamp(16px, 1.6vw, 21px);
+  font-style: italic;
+  color: #6f6555;
+  max-width: 560px;
+  margin: 0 0 6px;
+}
+
+.picvocab__hint {
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: #9a8f7c;
+  margin: 0 0 48px;
+}
+
+.picvocab__courses {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 820px;
+}
+
+.picvocab__course {
+  cursor: pointer;
+  background: linear-gradient(180deg, #fffdf8, #f6efe1);
+  border: 1px solid rgba(120, 105, 80, 0.28);
+  border-radius: 18px;
+  padding: 42px 40px;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 18px 40px -22px rgba(70, 55, 30, 0.5), inset 0 1px 0 #fffef9;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.35s;
+}
+
+.picvocab__course:hover,
+.picvocab__course:focus-visible {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px -26px rgba(70, 55, 30, 0.6), inset 0 1px 0 #fffef9;
+}
+
+.picvocab__course-name {
+  font-family: var(--pv-display);
+  font-weight: 600;
+  font-size: 46px;
+  line-height: 1;
+}
+
+.picvocab__course-sub {
+  font-size: 15px;
+  font-style: italic;
+  color: #6f6555;
+}
+
+/* Deck header */
+.picvocab__deckhead {
+  padding: 30px 24px 4px;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.picvocab__tag {
+  font-size: 12px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--pv-accent);
+  margin-bottom: 6px;
+}
+
+.picvocab__coursetitle {
+  font-family: var(--pv-display);
+  font-weight: 600;
+  font-size: clamp(26px, 4vw, 44px);
+  margin: 0;
+  line-height: 1;
+}
+
+/* Deck stage (coverflow) */
+.picvocab__stage {
+  flex: 1 1 auto;
+  position: relative;
+  perspective: 2200px;
+}
+
+.picvocab__cards {
+  position: absolute;
+  inset: 0;
+}
+
+.picvocab__card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(58vw, 640px);
+  padding: 12px;
+  background: var(--pv-paper);
+  border: 1px solid rgba(120, 105, 80, 0.22);
+  border-radius: 16px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  box-shadow: 0 24px 50px -28px rgba(60, 45, 20, 0.5);
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.5s ease,
+    filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+.picvocab__card--active {
+  cursor: default;
+  box-shadow: 0 40px 80px -30px rgba(60, 45, 20, 0.6), 0 8px 24px -12px rgba(60, 45, 20, 0.4);
+}
+
+.picvocab__card-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Nav arrows */
+.picvocab__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  cursor: pointer;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.82);
+  border: 1px solid rgba(120, 105, 80, 0.28);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 26px -14px rgba(70, 55, 30, 0.6);
+  color: #4a4236;
+  font-size: 22px;
+  font-family: serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s, background 0.3s, opacity 0.3s;
+}
+
+.picvocab__nav--prev {
+  left: max(20px, 4vw);
+}
+
+.picvocab__nav--next {
+  right: max(20px, 4vw);
+}
+
+.picvocab__nav:hover,
+.picvocab__nav:focus-visible {
+  background: #fffdf8;
+  transform: translateY(-50%) scale(1.07);
+}
+
+.picvocab__nav:disabled {
+  opacity: 0.32;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Counter */
+.picvocab__counter {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 24px 30px;
+  color: #9a8f7c;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+}
+
+.picvocab__count {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (orientation: portrait) {
+  .picvocab__card {
+    width: min(82vw, 560px);
+  }
+
+  .picvocab__courses {
+    gap: 18px;
+  }
+
+  .picvocab__course {
+    width: min(80vw, 260px);
+    padding: 34px 32px;
+  }
+}

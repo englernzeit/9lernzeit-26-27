@@ -37,6 +37,19 @@ export default {
     ],
   },
 
+  // Picture Vocabulary — hand-painted flashcard deck (English word +
+  // German + example, painted into each image), split by course. Images
+  // live under assets/images/picvocab/<unit>-<section>/<course>/NN.jpg;
+  // bump `count` as more cards are added to each course folder.
+  pictureVocab: {
+    intro: "Unit 1 · Reading — a hand-painted deck of English words with their German translations.",
+    base: "assets/images/picvocab/australia-reading-reef",
+    courses: [
+      { key: "gkurs", name: "Grundkurs", tag: "GKurs · Unit 1 Reading", count: 15 },
+      { key: "ekurs", name: "Erweiterungskurs", tag: "EKurs · Unit 1 Reading", count: 15 },
+    ],
+  },
+
   // Word Master — 15 gap-fills. Higher level + SHUFFLED (order ≠ the word
   // cards) so it isn't guessable, with non-give-away gaps.
   wordMaster: {

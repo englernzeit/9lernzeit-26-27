@@ -49,6 +49,7 @@ import {
   setWordMasterScore,
 } from "../state/answersStore.js";
 import { createWordMaster } from "../components/wordMaster.js";
+import { createPictureVocab } from "../components/pictureVocab.js";
 import { buildAnswerSheetPdf, downloadPdf } from "../utils/pdf.js";
 
 /** The six fields of the Step 4 "dream profile" builder, in PDF order. */
@@ -154,13 +155,9 @@ export function renderSectionView(root, unitId, sectionId) {
     view.appendChild(buildGuideSection(content.guide));
   }
 
-  // --- New words (optional) --------------------------------------
-  if (content.newWords) {
-    const wordsSection = buildNewWordsSection(content.newWords);
-    if (content.wordMaster?.items?.length) {
-      addWordMasterButton(wordsSection, content.wordMaster, ctx);
-    }
-    view.appendChild(wordsSection);
+  // --- Vocabulary hub (Picture Vocabulary + Word Master) ---------
+  if (content.pictureVocab || content.wordMaster?.items?.length) {
+    view.appendChild(buildVocabHub(content, ctx));
   }
 
   // --- Steps ------------------------------------------------------
@@ -511,121 +508,84 @@ function buildGuideSection(guide) {
   return section;
 }
 
-/* ================= New words section =========================== */
-
-/** @param {{subtitle: string, stampLabel: string, words: Array}} newWords */
-function buildNewWordsSection(newWords) {
-  const section = sectionShell("teal", "New words", newWords.subtitle);
-
-  const cards = newWords.words.map((word, i) => {
-    const card = document.createElement("article");
-    card.className = "wordcard";
-
-    const main = document.createElement("div");
-    main.className = "wordcard__main";
-
-    const eyebrow = document.createElement("div");
-    eyebrow.className = "wordcard__eyebrow";
-    eyebrow.textContent = `Word ${i + 1}`;
-
-    const en = document.createElement("div");
-    en.className = "wordcard__en";
-    en.textContent = word.en;
-
-    const de = document.createElement("div");
-    de.className = "wordcard__de";
-    de.textContent = word.de;
-
-    const ex = document.createElement("div");
-    ex.className = "wordcard__ex";
-    ex.textContent = word.ex;
-
-    main.append(eyebrow, en, de, ex);
-
-    const side = document.createElement("div");
-    side.className = "wordcard__side";
-
-    const stamp = document.createElement("div");
-    stamp.className = "wordcard__stamp";
-    if (word.image) {
-      // Optional stamp artwork (e.g. cut-out postage stamps per unit).
-      const img = document.createElement("img");
-      img.className = "wordcard__stamp-img";
-      img.src = word.image;
-      img.alt = "";
-      img.draggable = false;
-      stamp.appendChild(img);
-    } else {
-      // Default: a clean monogram stamp (the word's initial) — no photo
-      // sourcing required.
-      const mono = document.createElement("div");
-      mono.className = "wordcard__stamp-mono";
-      mono.textContent = (word.en.replace(/^to\s+/i, "").trim()[0] ?? "?").toUpperCase();
-      stamp.appendChild(mono);
-    }
-
-    const postmark = document.createElement("div");
-    postmark.className = "wordcard__postmark";
-    const pmLabel = document.createElement("span");
-    pmLabel.className = "wordcard__postmark-label";
-    pmLabel.textContent = newWords.stampLabel;
-    const pmNum = document.createElement("span");
-    pmNum.className = "wordcard__postmark-num";
-    pmNum.textContent = `№ ${i + 1}`;
-    postmark.append(pmLabel, pmNum);
-
-    side.append(stamp, postmark);
-    card.append(main, side);
-    return card;
-  });
-
-  section.appendChild(createJournalCarousel({ mode: "stack", accent: "teal", cards }));
-  return section;
-}
+/* ================= Vocabulary hub ============================== */
 
 /**
- * "Word Master" button — symmetric to the New words swatch, on the
- * right of the same header row. Opens the full-screen vocabulary drill;
- * its score is saved and printed in the PDF.
+ * The "Vocabulary" section: a centred stack of launcher buttons —
+ * "Picture Vocabulary" (a full-screen hand-painted flashcard deck)
+ * above "Word Master" (the gap-fill drill). Either button appears only
+ * when the page supplies its data.
  *
- * @param {HTMLElement} wordsSection
- * @param {{subtitle?: string, items: Array}} wordMaster
+ * @param {{pictureVocab?: object, wordMaster?: {subtitle?: string, items: Array}, vocab?: {subtitle?: string}}} content
  * @param {{unitId: string, sectionId: string}} ctx
  */
-function addWordMasterButton(wordsSection, wordMaster, ctx) {
-  const head = wordsSection.querySelector(".journal__section-head");
-  if (!head) return;
+function buildVocabHub(content, ctx) {
+  const section = sectionShell(
+    "teal",
+    "Vocabulary",
+    content.vocab?.subtitle ?? "Learn the words for this page — browse the picture deck, then test yourself.",
+  );
 
-  const btn = document.createElement("button");
-  btn.className = "journal__wordmaster-btn";
-  btn.textContent = "Word Master";
-  btn.setAttribute("aria-label", "Open the Word Master vocabulary game");
+  const hub = document.createElement("div");
+  hub.className = "vocab-hub";
 
-  const badge = document.createElement("span");
-  badge.className = "journal__wordmaster-badge";
-  const paintBadge = () => {
-    const s = getWordMasterScore(ctx.unitId, ctx.sectionId);
-    badge.textContent = s ? `${s.correct}/${s.total}` : "";
-    badge.style.display = s ? "" : "none";
-  };
-  paintBadge();
-  btn.appendChild(badge);
-
-  btn.addEventListener("click", () => {
-    const overlay = createWordMaster({
-      title: "Word Master",
-      subtitle: wordMaster.subtitle ?? "Complete the sentences with the right English word.",
-      items: wordMaster.items,
-      onScore: (correct, total) => {
-        setWordMasterScore(ctx.unitId, ctx.sectionId, { correct, total });
-      },
-      onClose: paintBadge,
+  // Picture Vocabulary — sits above Word Master.
+  if (content.pictureVocab?.courses?.some((c) => c.count > 0)) {
+    const pv = content.pictureVocab;
+    const picBtn = document.createElement("button");
+    picBtn.className = "vocab-hub__btn";
+    picBtn.setAttribute("aria-label", "Open the Picture Vocabulary flashcard deck");
+    picBtn.innerHTML = `<span class="vocab-hub__btn-ico">🖼</span>Picture Vocabulary`;
+    picBtn.addEventListener("click", () => {
+      const overlay = createPictureVocab({
+        title: pv.title ?? "Picture Vocabulary",
+        intro: pv.intro,
+        base: pv.base,
+        courses: pv.courses,
+        onClose: () => {},
+      });
+      document.body.appendChild(overlay);
+      overlay.focus();
     });
-    document.body.appendChild(overlay);
-    overlay.focus();
-  });
+    hub.appendChild(picBtn);
+  }
 
-  head.appendChild(btn);
+  // Word Master — the gap-fill drill; score is saved and printed in the PDF.
+  if (content.wordMaster?.items?.length) {
+    const btn = document.createElement("button");
+    btn.className = "journal__wordmaster-btn";
+    btn.textContent = "Word Master";
+    btn.setAttribute("aria-label", "Open the Word Master vocabulary game");
+
+    const badge = document.createElement("span");
+    badge.className = "journal__wordmaster-badge";
+    const paintBadge = () => {
+      const s = getWordMasterScore(ctx.unitId, ctx.sectionId);
+      badge.textContent = s ? `${s.correct}/${s.total}` : "";
+      badge.style.display = s ? "" : "none";
+    };
+    paintBadge();
+    btn.appendChild(badge);
+
+    btn.addEventListener("click", () => {
+      const overlay = createWordMaster({
+        title: "Word Master",
+        subtitle: content.wordMaster.subtitle ?? "Complete the sentences with the right English word.",
+        items: content.wordMaster.items,
+        onScore: (correct, total) => {
+          setWordMasterScore(ctx.unitId, ctx.sectionId, { correct, total });
+        },
+        onClose: paintBadge,
+      });
+      document.body.appendChild(overlay);
+      overlay.focus();
+    });
+
+    hub.appendChild(btn);
+  }
+
+  section.appendChild(hub);
+  return section;
 }
 
 /* ================= Step sections ================================ */

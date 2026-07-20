@@ -16,6 +16,7 @@
 @import url("components/journal-carousel.css");
 @import url("components/exercises.css");
 @import url("components/wordmaster.css");
+@import url("components/picturevocab.css");
 
 /* Views */
 @import url("views/map.css");
