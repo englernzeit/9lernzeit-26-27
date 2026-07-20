@@ -262,6 +262,12 @@
   flex: 1 1 auto;
   position: relative;
   perspective: 2200px;
+  touch-action: pan-y; /* let our horizontal swipe drive the deck */
+}
+
+.picvocab__card {
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .picvocab__cards {

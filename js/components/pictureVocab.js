@@ -113,6 +113,32 @@ export function createPictureVocab({ title = "Picture Vocabulary", intro, base, 
 
   // ---- Behaviour -----------------------------------------------------
   let cardEls = [];
+  let swipeGuard = false; // suppress the card tap that ends a swipe
+
+  // Touch / pointer swipe — the main way to flip cards on an iPad, where
+  // there is no keyboard. A horizontal drag past the threshold advances
+  // the deck; a small movement is treated as a tap (card selection).
+  let sx = 0, sy = 0, dragging = false;
+  const SWIPE = 45;
+  stage.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    swipeGuard = false;
+    sx = e.clientX;
+    sy = e.clientY;
+  });
+  const endDrag = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    const dx = e.clientX - sx;
+    const dy = e.clientY - sy;
+    if (Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(dy)) {
+      swipeGuard = true; // this gesture was a swipe, not a tap
+      go(dx < 0 ? 1 : -1);
+      setTimeout(() => { swipeGuard = false; }, 0);
+    }
+  };
+  stage.addEventListener("pointerup", endDrag);
+  stage.addEventListener("pointercancel", () => { dragging = false; });
 
   function buildCards(course) {
     cardLayer.innerHTML = "";
@@ -129,7 +155,7 @@ export function createPictureVocab({ title = "Picture Vocabulary", intro, base, 
       img.src = `${base}/${course.key}/${String(i + 1).padStart(2, "0")}.jpg`;
       card.appendChild(img);
       card.addEventListener("click", () => {
-        if (i === state.index) return;
+        if (swipeGuard || i === state.index) return;
         state.index = i;
         paintDeck();
       });
