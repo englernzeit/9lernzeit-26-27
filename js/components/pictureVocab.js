@@ -11,8 +11,8 @@
  *
  * @param {{
  *   title?: string,
- *   base: string,                       // folder holding <course.key>/NN.jpg
- *   courses: Array<{ key: string, name: string, tag: string, count: number }>,
+ *   base: string,                       // folder holding <course.dir>/NN.jpg
+ *   courses: Array<{ key: string, dir: string, name: string, tag: string, count: number }>,
  *   gap?: number,                       // px between card centres (deck spread)
  *   onClose?: () => void,
  * }} config
@@ -147,7 +147,7 @@ export function createPictureVocab({ title = "Picture Vocabulary", base, courses
       img.decoding = "async";
       img.alt = "";
       img.draggable = false;
-      img.src = `${base}/${course.key}/${String(i + 1).padStart(2, "0")}.jpg`;
+      img.src = `${base}/${course.dir}/${String(i + 1).padStart(2, "0")}.jpg`;
       card.appendChild(img);
       card.addEventListener("click", () => {
         if (swipeGuard || i === state.index) return;

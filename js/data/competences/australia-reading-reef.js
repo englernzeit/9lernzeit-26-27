@@ -38,14 +38,14 @@ export default {
   },
 
   // Picture Vocabulary — hand-painted flashcard deck (English word +
-  // German + example, painted into each image), split by course. Images
-  // live under assets/images/picvocab/<unit>-<section>/<course>/NN.jpg;
-  // bump `count` as more cards are added to each course folder.
+  // German + example, painted into each image), split by course. Drop
+  // images into assets/images/picvocab/<Course>/<Competence>/ (named
+  // NN.jpg) and bump `count` for that course.
   pictureVocab: {
-    base: "assets/images/picvocab/australia-reading-reef",
+    base: "assets/images/picvocab",
     courses: [
-      { key: "gkurs", name: "Grundkurs", tag: "GKurs · Unit 1 Reading", count: 15 },
-      { key: "ekurs", name: "Erweiterungskurs", tag: "EKurs · Unit 1 Reading", count: 15 },
+      { key: "gkurs", dir: "GKurs/Reading", name: "Grundkurs", tag: "GKurs · Reading", count: 15 },
+      { key: "ekurs", dir: "EKurs/Reading", name: "Erweiterungskurs", tag: "EKurs · Reading", count: 15 },
     ],
   },
 
