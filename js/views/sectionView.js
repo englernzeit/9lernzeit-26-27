@@ -511,21 +511,16 @@ function buildGuideSection(guide) {
 /* ================= Vocabulary hub ============================== */
 
 /**
- * The "Vocabulary" section: a centred stack of launcher buttons —
- * "Picture Vocabulary" (a full-screen hand-painted flashcard deck)
- * above "Word Master" (the gap-fill drill). Either button appears only
- * when the page supplies its data.
+ * Vocabulary launcher buttons — a right-aligned stack of "Picture
+ * Vocabulary" (a full-screen hand-painted flashcard deck) above "Word
+ * Master" (the gap-fill drill), pulled up beside the page header. No
+ * heading/subtitle. Either button appears only when the page supplies
+ * its data.
  *
- * @param {{pictureVocab?: object, wordMaster?: {subtitle?: string, items: Array}, vocab?: {subtitle?: string}}} content
+ * @param {{pictureVocab?: object, wordMaster?: {subtitle?: string, items: Array}}} content
  * @param {{unitId: string, sectionId: string}} ctx
  */
 function buildVocabHub(content, ctx) {
-  const section = sectionShell(
-    "teal",
-    "Vocabulary",
-    content.vocab?.subtitle ?? "Learn the words for this page — browse the picture deck, then test yourself.",
-  );
-
   const hub = document.createElement("div");
   hub.className = "vocab-hub";
 
@@ -584,8 +579,7 @@ function buildVocabHub(content, ctx) {
     hub.appendChild(btn);
   }
 
-  section.appendChild(hub);
-  return section;
+  return hub;
 }
 
 /* ================= Step sections ================================ */
