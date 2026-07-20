@@ -42,7 +42,6 @@ export default {
   // live under assets/images/picvocab/<unit>-<section>/<course>/NN.jpg;
   // bump `count` as more cards are added to each course folder.
   pictureVocab: {
-    intro: "Unit 1 · Reading — a hand-painted deck of English words with their German translations.",
     base: "assets/images/picvocab/australia-reading-reef",
     courses: [
       { key: "gkurs", name: "Grundkurs", tag: "GKurs · Unit 1 Reading", count: 15 },

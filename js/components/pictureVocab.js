@@ -11,7 +11,6 @@
  *
  * @param {{
  *   title?: string,
- *   intro?: string,
  *   base: string,                       // folder holding <course.key>/NN.jpg
  *   courses: Array<{ key: string, name: string, tag: string, count: number }>,
  *   gap?: number,                       // px between card centres (deck spread)
@@ -19,7 +18,7 @@
  * }} config
  * @returns {HTMLElement}
  */
-export function createPictureVocab({ title = "Picture Vocabulary", intro, base, courses, gap = 210, onClose }) {
+export function createPictureVocab({ title = "Picture Vocabulary", base, courses, gap = 210, onClose }) {
   const overlay = document.createElement("div");
   overlay.className = "picvocab";
   overlay.tabIndex = -1;
@@ -37,10 +36,6 @@ export function createPictureVocab({ title = "Picture Vocabulary", intro, base, 
   const h1 = document.createElement("h1");
   h1.className = "picvocab__title";
   h1.textContent = title;
-
-  const lead = document.createElement("p");
-  lead.className = "picvocab__lead";
-  lead.textContent = intro ?? "A hand-painted deck of English words with their German translations.";
 
   const hint = document.createElement("p");
   hint.className = "picvocab__hint";
@@ -63,7 +58,7 @@ export function createPictureVocab({ title = "Picture Vocabulary", intro, base, 
   chooserClose.innerHTML = `<span>←</span> Close`;
   chooserClose.addEventListener("click", () => close());
 
-  chooser.append(chooserClose, eyebrow, h1, lead, hint, courseRow);
+  chooser.append(chooserClose, eyebrow, h1, hint, courseRow);
 
   // ---- Deck ----------------------------------------------------------
   const deck = document.createElement("div");

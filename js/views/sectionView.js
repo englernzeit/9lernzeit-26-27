@@ -534,7 +534,6 @@ function buildVocabHub(content, ctx) {
     picBtn.addEventListener("click", () => {
       const overlay = createPictureVocab({
         title: pv.title ?? "Picture Vocabulary",
-        intro: pv.intro,
         base: pv.base,
         courses: pv.courses,
         onClose: () => {},
