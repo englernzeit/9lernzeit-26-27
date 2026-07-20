@@ -28,15 +28,38 @@ export default {
   pictureVocab: {
     base: "assets/images/picvocab",
     courses: [
-      { key: "gkurs", dir: "GKurs/Vocabulary", name: "Grundkurs", tag: "GKurs · Vocabulary", count: 0 },
+      { key: "gkurs", dir: "GKurs/Vocabulary", name: "Grundkurs", tag: "GKurs · Vocabulary", count: 15 },
       { key: "ekurs", dir: "EKurs/Vocabulary", name: "Erweiterungskurs", tag: "EKurs · Vocabulary", count: 15 },
     ],
   },
 
   // Word Master — the words of the Picture Vocabulary cards, one gap-fill
-  // per card. EKurs only for now (GKurs Vocabulary cards to come).
+  // per card, split by course (GKurs / EKurs).
   wordMaster: {
     courses: [
+      {
+        key: "gkurs",
+        name: "Grundkurs",
+        tag: "GKurs · Vocabulary",
+        subtitle: "Complete each sentence with the right English word.",
+        items: [
+          { de: "Er macht heute seine **Fahrprüfung**.", en: "He takes his ___ today.", answer: "driving test" },
+          { de: "Der **Motor** macht ein lautes Geräusch.", en: "The ___ makes a loud noise.", answer: "engine" },
+          { de: "Sie reisen an einen **unbekannten** Ort.", en: "They travel to an ___ place.", answer: "unknown" },
+          { de: "Der Hund **folgt** dem Jungen.", en: "The dog ___ the boy.", answer: "follows", accept: ["follow"] },
+          { de: "Mein Englisch **verbessert sich** jeden Tag.", en: "My English ___ every day.", answer: "improves", accept: ["improve"] },
+          { de: "Sie **zeigt auf** die Karte.", en: "She ___ at the map.", answer: "points", accept: ["point"] },
+          { de: "Ich **bereite** mich auf den Test **vor**.", en: "I ___ for the test.", answer: "prepare" },
+          { de: "In der **Wüste** ist es sehr heiß.", en: "It is very hot in the ___.", answer: "desert" },
+          { de: "Der Zug ist sehr **schnell**.", en: "The train is very ___.", answer: "fast" },
+          { de: "Der **Anhalter** wartet an der Straße.", en: "The ___ waits by the road.", answer: "hitchhiker", accept: ["hitch-hiker"] },
+          { de: "Das Auto braucht mehr **Treibstoff**.", en: "The car needs more ___.", answer: "fuel" },
+          { de: "Wir **bestellen** Pizza und Saft.", en: "We ___ pizza and juice.", answer: "order" },
+          { de: "Sie hat ihre Prüfung **bestanden**!", en: "She ___ her exam!", answer: "passed", accept: ["pass"] },
+          { de: "Ihr Lied hat alle **beeindruckt**.", en: "Her song ___ everyone.", answer: "impressed", accept: ["impress"] },
+          { de: "Sie hat eine schöne **Stimme**.", en: "She has a beautiful ___.", answer: "voice" },
+        ],
+      },
       {
         key: "ekurs",
         name: "Erweiterungskurs",

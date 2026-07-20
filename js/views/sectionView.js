@@ -537,7 +537,7 @@ function buildVocabHub(content, ctx, { showWordMaster = false } = {}) {
     const picBtn = document.createElement("button");
     picBtn.className = "vocab-hub__btn";
     picBtn.setAttribute("aria-label", "Open the Picture Vocabulary flashcard deck");
-    picBtn.innerHTML = `<span class="vocab-hub__btn-ico">🖼</span>Picture Vocabulary`;
+    picBtn.textContent = "Picture Vocabulary";
     picBtn.addEventListener("click", () => {
       const overlay = createPictureVocab({
         title: pv.title ?? "Picture Vocabulary",

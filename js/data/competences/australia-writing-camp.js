@@ -43,15 +43,38 @@ export default {
   pictureVocab: {
     base: "assets/images/picvocab",
     courses: [
-      { key: "gkurs", dir: "GKurs/Writing", name: "Grundkurs", tag: "GKurs · Writing", count: 0 },
+      { key: "gkurs", dir: "GKurs/Writing", name: "Grundkurs", tag: "GKurs · Writing", count: 15 },
       { key: "ekurs", dir: "EKurs/Writing", name: "Erweiterungskurs", tag: "EKurs · Writing", count: 15 },
     ],
   },
 
   // Word Master — the words of the Picture Vocabulary cards, one gap-fill
-  // per card. EKurs only for now (GKurs Writing cards to come).
+  // per card, split by course (GKurs / EKurs).
   wordMaster: {
     courses: [
+      {
+        key: "gkurs",
+        name: "Grundkurs",
+        tag: "GKurs · Writing",
+        subtitle: "Complete each sentence with the right English word.",
+        items: [
+          { de: "Der **Stich** einer Biene kann wehtun.", en: "A bee ___ can hurt.", answer: "sting" },
+          { de: "Ärzte bekämpfen viele **Krankheiten**.", en: "Doctors fight many ___.", answer: "diseases", accept: ["disease"] },
+          { de: "Wir **sammeln** Holz für das Feuer.", en: "We ___ wood for the fire.", answer: "gather" },
+          { de: "Obst ist gut für deine **Gesundheit**.", en: "Fruit is good for your ___.", answer: "health" },
+          { de: "Der Fluss ist sehr **breit**.", en: "The river is very ___.", answer: "wide" },
+          { de: "Eine **Qualle** schwebt im Wasser.", en: "A ___ floats in the water.", answer: "jellyfish" },
+          { de: "Wo ist das **nächstgelegene** Krankenhaus?", en: "Where is the ___ hospital?", answer: "nearest", accept: ["the nearest"] },
+          { de: "Starke Wellen sind eine **Gefahr**.", en: "Strong waves are a ___.", answer: "danger" },
+          { de: "Man sollte **Sonnencreme auftragen**, bevor man schwimmt.", en: "___ suncream before swimming!", answer: "put on" },
+          { de: "Er hat am Strand einen **Sonnenbrand** bekommen.", en: "He got a ___ at the beach.", answer: "sunburn" },
+          { de: "Wir müssen die **Umwelt** schützen.", en: "We must protect the ___.", answer: "environment" },
+          { de: "Die Sonne kann deiner **Haut** schaden.", en: "The sun can hurt your ___.", answer: "skin" },
+          { de: "Die **Arzthelferin** hilft dem Patienten.", en: "The ___ helps the patient.", answer: "nurse" },
+          { de: "Der **Anfang** des Films ist lustig.", en: "The ___ of the film is funny.", answer: "beginning" },
+          { de: "Ich höre ein seltsames **Geräusch**.", en: "I hear a strange ___.", answer: "sound" },
+        ],
+      },
       {
         key: "ekurs",
         name: "Erweiterungskurs",
