@@ -34,15 +34,15 @@ export const UNITS = [
     pageBackground: "assets/images/unit1/bg-clouds.jpg",
     banner: "assets/images/unit1/banner-australia.png",
     centerImage: "assets/images/unit1/island-australia.webp",
-    // 7 locations; pos = % of the unit page (landscape)
+    // 5 locations; pos = % of the unit page (landscape).
+    // Ringed symmetrically around the central island (mirror about x = 50),
+    // top-center left clear for the banner.
     sections: [
-      { id: "reading-reef", label: "Reading Reef", card: "assets/images/unit1/card-reading.webp", pos: { x: 21, y: 30 } },
-      { id: "writing-camp", label: "Writing Camp", card: "assets/images/unit1/card-writing.webp", pos: { x: 13, y: 57 } },
-      { id: "vocabulary-beach", label: "Vocabulary Beach", card: "assets/images/unit1/card-vocabulary.webp", pos: { x: 24, y: 84 } },
-      { id: "grammar-station", label: "Grammar Station", card: "assets/images/unit1/card-grammar.webp", pos: { x: 47, y: 88 } },
-      { id: "listening-harbour", label: "Listening Harbour", card: "assets/images/unit1/card-listening.webp", pos: { x: 86, y: 60 } },
-      { id: "speaking-lookout", label: "Speaking Lookout", card: "assets/images/unit1/card-speaking.webp", pos: { x: 72, y: 87 } },
-      { id: "revision-summit", label: "Revision Summit", card: "assets/images/unit1/card-revision.webp", pos: { x: 77, y: 27 } },
+      { id: "reading-reef", label: "Reading Reef", card: "assets/images/unit1/card-reading.webp", pos: { x: 17, y: 33 } },
+      { id: "writing-camp", label: "Writing Camp", card: "assets/images/unit1/card-writing.webp", pos: { x: 14, y: 68 } },
+      { id: "vocabulary-beach", label: "Vocabulary Beach", card: "assets/images/unit1/card-vocabulary.webp", pos: { x: 86, y: 68 } },
+      { id: "grammar-station", label: "Grammar Station", card: "assets/images/unit1/card-grammar.webp", pos: { x: 50, y: 88 } },
+      { id: "listening-harbour", label: "Listening Harbour", card: "assets/images/unit1/card-listening.webp", pos: { x: 83, y: 33 } },
     ],
   },
   {

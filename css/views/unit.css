@@ -136,8 +136,8 @@
     transform: scale(0.97);
   }
 
-  /* Odd card count: Revision spans the last row, centered, same size */
-  .unit-map__card--revision-summit {
+  /* Odd card count: last card spans the final row, centered, same size */
+  .unit-map__card--listening-harbour {
     grid-column: 1 / -1;
     justify-self: center;
     width: calc(50% - 1.5vw);
