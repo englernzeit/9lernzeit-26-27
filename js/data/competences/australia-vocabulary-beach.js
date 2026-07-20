@@ -33,6 +33,36 @@ export default {
     ],
   },
 
+  // Word Master — the words of the Picture Vocabulary cards, one gap-fill
+  // per card. EKurs only for now (GKurs Vocabulary cards to come).
+  wordMaster: {
+    courses: [
+      {
+        key: "ekurs",
+        name: "Erweiterungskurs",
+        tag: "EKurs · Vocabulary",
+        subtitle: "Complete each sentence with the right English word.",
+        items: [
+          { de: "Die **Mannschaft** segelt das Schiff.", en: "The ___ sails the ship.", answer: "crew" },
+          { de: "Ärzte bekämpfen viele **Krankheiten**.", en: "Doctors fight many ___.", answer: "diseases", accept: ["disease"] },
+          { de: "Diese **Pflanze** braucht Wasser.", en: "This ___ needs water.", answer: "plant" },
+          { de: "Sport ist gut für deinen **Körper**.", en: "Sport is good for your ___.", answer: "body" },
+          { de: "Das Fahrrad hat einen platten **Reifen**.", en: "The bike has a flat ___.", answer: "tyre", accept: ["tire"] },
+          { de: "Landwirtschaft ist ihre **Lebensweise**.", en: "Farming is their ___.", answer: "way of life" },
+          { de: "Zwei Teams **konkurrieren** miteinander.", en: "Two teams ___ each other.", answer: "compete with", accept: ["compete"] },
+          { de: "Das Bild hängt **verkehrt herum**.", en: "The picture hangs ___.", answer: "upside down", accept: ["upside-down"] },
+          { de: "Beste Freunde **für immer**!", en: "Best friends ___!", answer: "forever" },
+          { de: "Obst ist gut für deine **Gesundheit**.", en: "Fruit is good for your ___.", answer: "health" },
+          { de: "Koalas sind in Australien **einheimisch**.", en: "Koalas are ___ to Australia.", answer: "indigenous" },
+          { de: "Sie leben in einem **abgelegenen** Dorf.", en: "They live in a ___ village.", answer: "remote" },
+          { de: "Sie **meldet sich** zum Rennen **an**.", en: "She ___ the race.", answer: "enters", accept: ["enter"] },
+          { de: "Wo ist das **nächstgelegene** Krankenhaus?", en: "Where is the ___ hospital?", answer: "nearest", accept: ["the nearest"] },
+          { de: "Meine Jacke ist **wasserdicht**.", en: "My jacket is ___.", answer: "waterproof" },
+        ],
+      },
+    ],
+  },
+
   steps: [
     /* ============ STEP 1 — Deadly or safe creatures ============ */
     {

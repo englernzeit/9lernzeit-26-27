@@ -66,19 +66,22 @@ export function setAnswer(unitId, sectionId, key, value) {
 }
 
 /* --- Word Master score (X correct of N sentences) -------------- */
+/* Scores are kept per course (e.g. "gkurs", "ekurs"); an empty course
+   keeps the old single-drill key for backward compatibility. */
 
-function wordMasterKey(unitId, sectionId) {
-  return `explorer:wordmaster:${unitId}:${sectionId}`;
+function wordMasterKey(unitId, sectionId, course = "") {
+  return `explorer:wordmaster:${unitId}:${sectionId}${course ? `:${course}` : ""}`;
 }
 
 /**
  * @param {string} unitId
  * @param {string} sectionId
+ * @param {string} [course]
  * @returns {{correct: number, total: number} | null}
  */
-export function getWordMasterScore(unitId, sectionId) {
+export function getWordMasterScore(unitId, sectionId, course = "") {
   try {
-    const raw = localStorage.getItem(wordMasterKey(unitId, sectionId));
+    const raw = localStorage.getItem(wordMasterKey(unitId, sectionId, course));
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -88,11 +91,12 @@ export function getWordMasterScore(unitId, sectionId) {
 /**
  * @param {string} unitId
  * @param {string} sectionId
+ * @param {string} course
  * @param {{correct: number, total: number}} score
  */
-export function setWordMasterScore(unitId, sectionId, score) {
+export function setWordMasterScore(unitId, sectionId, course, score) {
   try {
-    localStorage.setItem(wordMasterKey(unitId, sectionId), JSON.stringify(score));
+    localStorage.setItem(wordMasterKey(unitId, sectionId, course), JSON.stringify(score));
   } catch {
     /* storage unavailable */
   }

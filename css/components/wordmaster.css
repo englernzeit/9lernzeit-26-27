@@ -84,6 +84,117 @@
   opacity: 0;
 }
 
+/* --- Course chooser (GKurs / EKurs) ---------------------------- */
+
+.wordmaster__chooser {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6vh 1.5rem;
+}
+
+.wordmaster--drill .wordmaster__chooser {
+  display: none;
+}
+
+.wordmaster__drill {
+  display: none;
+  width: min(52rem, 100%);
+}
+
+.wordmaster--drill .wordmaster__drill {
+  display: block;
+}
+
+.wordmaster__back--corner {
+  position: absolute;
+  top: 1.4rem;
+  left: 1.6rem;
+  transform: rotate(-1.5deg);
+}
+
+.wordmaster__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.2rem;
+  font-family: var(--j-font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--j-teal-deep);
+}
+
+.wordmaster__rule {
+  height: 1px;
+  width: 42px;
+  background: var(--j-teal-deep);
+  opacity: 0.5;
+}
+
+.wordmaster__choose-title {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 7vw, 4.5rem);
+  line-height: 1;
+  color: var(--j-teal-deep);
+  margin-bottom: 0.4rem;
+}
+
+.wordmaster__choose-hint {
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--j-khaki);
+  margin-bottom: 2.4rem;
+}
+
+.wordmaster__courses {
+  display: flex;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wordmaster__course {
+  cursor: pointer;
+  background: linear-gradient(180deg, #fffdf8, #f6efe1);
+  border: 1px solid rgba(120, 105, 80, 0.28);
+  border-radius: 16px;
+  padding: 2.4rem 2.6rem;
+  width: 15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 18px 40px -22px rgba(70, 55, 30, 0.5), inset 0 1px 0 #fffef9;
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.3s;
+}
+
+.wordmaster__course:hover,
+.wordmaster__course:focus-visible {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 60px -26px rgba(70, 55, 30, 0.6), inset 0 1px 0 #fffef9;
+}
+
+.wordmaster__course-name {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--j-teal-deep);
+}
+
+.wordmaster__course-sub {
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  color: var(--j-khaki);
+}
+
 .wordmaster__sheet {
   width: min(52rem, 100%);
   height: fit-content;

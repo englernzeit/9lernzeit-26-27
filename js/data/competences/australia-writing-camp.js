@@ -40,8 +40,6 @@ export default {
     ],
   },
 
-  // Word Master — 15 gap-fills. Higher level + SHUFFLED (order ≠ the word
-  // cards) so it isn't guessable, with non-give-away gaps.
   pictureVocab: {
     base: "assets/images/picvocab",
     courses: [
@@ -50,24 +48,33 @@ export default {
     ],
   },
 
+  // Word Master — the words of the Picture Vocabulary cards, one gap-fill
+  // per card. EKurs only for now (GKurs Writing cards to come).
   wordMaster: {
-    subtitle: "Complete each sentence with the right English word.",
-    items: [
-      { de: "Sie packten den Ersatzreifen in den **Kofferraum**.", en: "They packed the spare tyre into the ___.", answer: "boot" },
-      { de: "Er musste **ausweichen**, als ein Känguru auf die Straße sprang.", en: "He had to ___ when a kangaroo jumped onto the road.", answer: "swerve" },
-      { de: "Sie hielten an, um einen **Anhalter** mitzunehmen.", en: "They stopped to pick up a ___.", answer: "hitchhiker", accept: ["hitch-hiker"] },
-      { de: "Niemand erwartete ihn, aber er **tauchte** um Mitternacht **auf**.", en: "Nobody expected him, but he ___ed up at midnight.", answer: "turn" },
-      { de: "Auf halbem Weg mussten sie einen platten **Reifen** wechseln.", en: "Halfway there they had to change a flat ___.", answer: "tyre", accept: ["tire"] },
-      { de: "Dunkle Wolken **bedrohten** die Reisenden am Horizont.", en: "Dark clouds ___ed the travellers on the horizon.", answer: "threaten" },
-      { de: "Der Koala hing **kopfüber** am Ast.", en: "The koala hung ___ from the branch.", answer: "upside down", accept: ["upside-down"] },
-      { de: "Ein Road Train ist viel zu lang, um ihn sicher zu **überholen**.", en: "A road train is far too long to ___ safely.", answer: "overtake" },
-      { de: "Die Anhalterin trug ihr Haar in einem langen **Pferdeschwanz**.", en: "The hitchhiker wore her hair in a long ___.", answer: "ponytail" },
-      { de: "Sie schlugen ihr Zelt auf einer kleinen **Lichtung** auf.", en: "They put up their tent in a small ___.", answer: "clearing" },
-      { de: "Wir beschlossen, bei unserer Route zu **bleiben**.", en: "We decided to ___ with our route.", answer: "stick" },
-      { de: "Der Polizist gab dem Fahrer ein Zeichen **anzuhalten**.", en: "The police officer signalled the driver to ___ over.", answer: "pull" },
-      { de: "Er rieb sich das **Kinn** und studierte die Karte.", en: "He rubbed his ___ and studied the map.", answer: "chin" },
-      { de: "Der alte Mann trug eine staubige **Weste** aus Leder.", en: "The old man wore a dusty leather ___.", answer: "waistcoat" },
-      { de: "Bist du für eine Nachtfahrt durchs Outback **zu haben**?", en: "Are you ___ for a night drive through the outback?", answer: "up" },
+    courses: [
+      {
+        key: "ekurs",
+        name: "Erweiterungskurs",
+        tag: "EKurs · Writing",
+        subtitle: "Complete each sentence with the right English word.",
+        items: [
+          { de: "Der **Rettungsschwimmer** beobachtet den Strand.", en: "The ___ watches the beach.", answer: "lifeguard" },
+          { de: "Diese Stadt ist sehr **lebenswert**.", en: "This city is very ___.", answer: "liveable", accept: ["liveable"] },
+          { de: "Behandle das Glas mit **Vorsicht**.", en: "Handle the glass with ___.", answer: "care" },
+          { de: "Wir **sammeln** Holz für das Feuer.", en: "We ___ wood for the fire.", answer: "gather" },
+          { de: "Der Hund **gräbt** ein tiefes Loch.", en: "The dog ___ a deep hole.", answer: "digs", accept: ["dig"] },
+          { de: "Mein Finger **blutet**.", en: "My finger is ___.", answer: "bleeding", accept: ["bleed"] },
+          { de: "Er **leidet an** Kopfschmerzen.", en: "He ___ from headaches.", answer: "suffers", accept: ["suffer"] },
+          { de: "**Keine** der beiden Antworten ist richtig.", en: "___ answer is right.", answer: "neither" },
+          { de: "Wir sind **landeinwärts** gereist.", en: "We travelled ___.", answer: "inland" },
+          { de: "Sie leben in einem **abgelegenen** Dorf.", en: "They live in a ___ village.", answer: "remote" },
+          { de: "Der Fluss ist sehr **breit**.", en: "The river is very ___.", answer: "wide" },
+          { de: "Mama **misst Fieber** bei mir.", en: "Mum takes my ___.", answer: "temperature" },
+          { de: "Der **Handel** zwischen Ländern ist wichtig.", en: "___ between countries is important.", answer: "trade" },
+          { de: "Wir **kühlen uns** im See **ab**.", en: "We ___ in the lake.", answer: "cool down", accept: ["cool-down"] },
+          { de: "Wir **stehen vor** einem Problem.", en: "We ___ a big problem.", answer: "face" },
+        ],
+      },
     ],
   },
 

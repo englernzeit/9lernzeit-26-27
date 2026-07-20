@@ -158,7 +158,8 @@ export function renderSectionView(root, unitId, sectionId) {
   // --- Vocabulary hub (Picture Vocabulary + Word Master) ---------
   // Word Master is only offered in units that have picture vocabulary.
   const hasPicture = content.pictureVocab?.courses?.some((c) => c.count > 0);
-  const showWordMaster = content.wordMaster?.items?.length && unitHasPictureVocab(unitId);
+  const showWordMaster =
+    Boolean(content.wordMaster?.courses?.some((c) => c.items?.length)) && unitHasPictureVocab(unitId);
   if (hasPicture || showWordMaster) {
     view.appendChild(buildVocabHub(content, ctx, { showWordMaster }));
   }
@@ -351,13 +352,15 @@ function downloadAnswerSheet(view, unit, section, content, name) {
     }))
     .filter((s) => s.items.length);
 
-  // Word Master result, if the learner played it
-  const wm = getWordMasterScore(unit.id, section.id);
-  if (wm) {
-    steps.unshift({
-      heading: "Word Master",
-      items: [{ label: "Sentences correct", answer: `${wm.correct} / ${wm.total}` }],
-    });
+  // Word Master result(s), if the learner played any course
+  const wmItems = [];
+  for (const c of content.wordMaster?.courses ?? []) {
+    if (!c.items?.length) continue;
+    const s = getWordMasterScore(unit.id, section.id, c.key);
+    if (s) wmItems.push({ label: `Sentences correct (${c.key.toUpperCase()})`, answer: `${s.correct} / ${s.total}` });
+  }
+  if (wmItems.length) {
+    steps.unshift({ heading: "Word Master", items: wmItems });
   }
 
   const blob = buildAnswerSheetPdf({
@@ -548,9 +551,11 @@ function buildVocabHub(content, ctx, { showWordMaster = false } = {}) {
     hub.appendChild(picBtn);
   }
 
-  // Word Master — the gap-fill drill; score is saved and printed in the
-  // PDF. Only offered in units that have picture vocabulary.
-  if (showWordMaster && content.wordMaster?.items?.length) {
+  // Word Master — the gap-fill drill, split by course (words match the
+  // Picture Vocabulary cards). Score is saved per course and printed in
+  // the PDF. Only offered in units that have picture vocabulary.
+  const wmCourses = wordMasterCourses(content);
+  if (showWordMaster && wmCourses.length) {
     const btn = document.createElement("button");
     btn.className = "journal__wordmaster-btn";
     btn.textContent = "Word Master";
@@ -559,9 +564,19 @@ function buildVocabHub(content, ctx, { showWordMaster = false } = {}) {
     const badge = document.createElement("span");
     badge.className = "journal__wordmaster-badge";
     const paintBadge = () => {
-      const s = getWordMasterScore(ctx.unitId, ctx.sectionId);
-      badge.textContent = s ? `${s.correct}/${s.total}` : "";
-      badge.style.display = s ? "" : "none";
+      let correct = 0;
+      let total = 0;
+      let played = false;
+      for (const c of wmCourses) {
+        const s = getWordMasterScore(ctx.unitId, ctx.sectionId, c.key);
+        if (s) {
+          played = true;
+          correct += s.correct;
+          total += s.total;
+        }
+      }
+      badge.textContent = played ? `${correct}/${total}` : "";
+      badge.style.display = played ? "" : "none";
     };
     paintBadge();
     btn.appendChild(badge);
@@ -569,10 +584,9 @@ function buildVocabHub(content, ctx, { showWordMaster = false } = {}) {
     btn.addEventListener("click", () => {
       const overlay = createWordMaster({
         title: "Word Master",
-        subtitle: content.wordMaster.subtitle ?? "Complete the sentences with the right English word.",
-        items: content.wordMaster.items,
-        onScore: (correct, total) => {
-          setWordMasterScore(ctx.unitId, ctx.sectionId, { correct, total });
+        courses: wmCourses,
+        onScore: (courseKey, correct, total) => {
+          setWordMasterScore(ctx.unitId, ctx.sectionId, courseKey, { correct, total });
         },
         onClose: paintBadge,
       });
@@ -584,6 +598,11 @@ function buildVocabHub(content, ctx, { showWordMaster = false } = {}) {
   }
 
   return hub;
+}
+
+/** The Word Master courses that actually carry gap-fill items. */
+function wordMasterCourses(content) {
+  return content.wordMaster?.courses?.filter((c) => c.items?.length) ?? [];
 }
 
 /* ================= Step sections ================================ */
