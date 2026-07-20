@@ -334,35 +334,31 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Be the next caller!",
+      subtitle: "Challenge · Transcript detective",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "essay-editor",
-          kind: "Kreativ · Challenge",
-          title: "Be the next caller!",
+          type: "spot-fix",
+          kind: "Interaktiv · Challenge",
+          title: "Transcript detective",
           intro:
-            "At the end of the show the host says: “We have one more caller…” — that's YOU. Write what you would say live on air (100–140 words). Cover every point in the list below, and write it the way you would really speak.",
-          chips: [
-            { n: "01", label: "Who you are (name, age, home)" },
-            { n: "02", label: "Your hobbies" },
-            { n: "03", label: "Your plans for the future" },
-            { n: "04", label: "Same or different?" },
-            { n: "05", label: "Greetings + a song" },
+            "A new caller, Ruby, is on air. Below is a transcript of what she says — but the sound engineer made five mistakes: five words are different from the audio. Listen closely, tap each wrong word and type what Ruby really says, then press Check.",
+          audio: { src: `${AUD}/au-detective.mp3`, label: "Radio phone-in · Ruby" },
+          hint: "Play the clip as often as you like. Exactly five words in the transcript are wrong.",
+          paragraphs: [
+            "Hi, my name's Ruby and I'm sixteen. I live in a small town near Sydney, right by the beach.",
+            "After school I play the piano, and I train for swimming every weekend.",
+            "Next year I want to study marine biology, because I love the sea. I think Aussie teenagers are pretty similar to teenagers everywhere — we just spend more time outside.",
           ],
-          min: 100,
-          max: 140,
-          placeholder: "Write your radio call here…",
-          checklist: [
-            "I introduced myself (name, age, where I live).",
-            "I described at least two hobbies.",
-            "I said what I want to do in the future.",
-            "I gave my opinion: are teenagers the same everywhere?",
-            "I sent greetings and requested a song.",
-            "My text is about 100–140 words.",
+          fixes: [
+            { wrong: "sixteen", correct: "fifteen" },
+            { wrong: "Sydney", correct: "Perth" },
+            { wrong: "piano", correct: "guitar" },
+            { wrong: "swimming", correct: "surfing" },
+            { wrong: "sea", correct: "ocean" },
           ],
-          help: "Tip: start the way the real callers did — “Hi, I'm … and I'm … years old. I live in …”. Then read it aloud like a radio call!",
+          help: "Tip: the wrong words are all facts about Ruby — her age, her town, her hobby, her sport and what she loves.",
         },
       ],
     },

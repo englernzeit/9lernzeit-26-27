@@ -2217,3 +2217,244 @@ function checkButton(wrap, onCheck) {
   wrap.appendChild(bar);
   return { el: btn, result: (text) => (res.textContent = text) };
 }
+
+/* ================= Spot-Fix (find & correct N errors) ============
+ * A text with a fixed number of planted mistakes. Every word is
+ * editable, so which words are wrong is never revealed; the learner
+ * hunts, retypes, and presses Check. Feedback is a COUNT only ("Fixed
+ * 3 / 5") — correctly fixed words lock green, the rest stay untouched,
+ * so answers are never given away. Used for Grammar "Fix the tense"
+ * and Listening "Transcript detective" (with an audio track above).
+ * ============================================================ */
+
+const normSpot = (s) =>
+  (s ?? "").trim().toLowerCase().replace(/[.,!?;:„“”"'»«()]/g, "").replace(/\s+/g, " ");
+
+export function createSpotFix({ paragraphs, fixes, hint, checkLabel = "Check" }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-spot";
+
+  if (hint) {
+    const h = document.createElement("p");
+    h.className = "exo-spot__hint";
+    h.textContent = hint;
+    wrap.appendChild(h);
+  }
+
+  const textEl = document.createElement("div");
+  textEl.className = "exo-spot__text";
+  wrap.appendChild(textEl);
+
+  const words = [];
+
+  const editWord = (span) => {
+    if (span.classList.contains("exo-spot__word--fixed")) return;
+    const input = document.createElement("input");
+    input.className = "exo-spot__input";
+    input.value = span.textContent;
+    input.size = Math.max(3, input.value.length);
+    input.setAttribute("aria-label", "Correct this word");
+    input.addEventListener("input", () => (input.size = Math.max(3, input.value.length)));
+    const commit = () => {
+      span.textContent = input.value;
+      span.classList.toggle(
+        "exo-spot__word--edited",
+        normSpot(input.value) !== normSpot(span.dataset.original),
+      );
+      input.replaceWith(span);
+    };
+    input.addEventListener("blur", commit);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        input.blur();
+      }
+    });
+    span.replaceWith(input);
+    input.focus();
+    input.select();
+  };
+
+  const makeWord = (core) => {
+    const span = document.createElement("span");
+    span.className = "exo-spot__word";
+    span.textContent = core;
+    span.dataset.original = core;
+    span.tabIndex = 0;
+    span.addEventListener("click", () => editWord(span));
+    span.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        editWord(span);
+      }
+    });
+    return span;
+  };
+
+  // Render paragraphs: split each word from its surrounding punctuation so
+  // the editable core stays clean.
+  paragraphs.forEach((para) => {
+    const p = document.createElement("p");
+    p.className = "exo-spot__para";
+    para.split(/(\s+)/).forEach((tok) => {
+      if (tok === "" || /^\s+$/.test(tok)) {
+        p.appendChild(document.createTextNode(tok));
+        return;
+      }
+      const [, lead, core, trail] = tok.match(/^([^0-9A-Za-zÀ-ſ]*)(.*?)([^0-9A-Za-zÀ-ſ]*)$/);
+      if (lead) p.appendChild(document.createTextNode(lead));
+      if (core) {
+        const span = makeWord(core);
+        p.appendChild(span);
+        words.push(span);
+      }
+      if (trail) p.appendChild(document.createTextNode(trail));
+    });
+    textEl.appendChild(p);
+  });
+
+  // Assign each planted fix to the next matching word (order handles
+  // duplicates). The tagging is internal — nothing visible marks a target.
+  fixes.forEach((fix) => {
+    const target = words.find(
+      (s) => !s.dataset.correct && normSpot(s.dataset.original) === normSpot(fix.wrong),
+    );
+    if (!target) return;
+    target.dataset.correct = fix.correct;
+    target.dataset.accept = JSON.stringify([fix.correct, ...(fix.accept ?? [])].map(normSpot));
+  });
+
+  const footer = document.createElement("div");
+  footer.className = "exo-spot__footer";
+  const checkBtn = document.createElement("button");
+  checkBtn.className = "exo-spot__check";
+  checkBtn.textContent = checkLabel;
+  const status = document.createElement("span");
+  status.className = "exo-spot__status";
+  const total = fixes.length;
+  status.textContent = `${total} mistakes are hidden in the text.`;
+  footer.append(checkBtn, status);
+  wrap.appendChild(footer);
+
+  checkBtn.addEventListener("click", () => {
+    let fixed = 0;
+    words.forEach((s) => {
+      if (!s.dataset.correct) return;
+      const accept = JSON.parse(s.dataset.accept);
+      if (accept.includes(normSpot(s.textContent))) {
+        s.classList.add("exo-spot__word--fixed");
+        s.classList.remove("exo-spot__word--edited");
+        fixed += 1;
+      }
+    });
+    if (fixed === total) {
+      status.textContent = `Perfect — you found all ${total}! ✓`;
+      status.classList.add("exo-spot__status--done");
+    } else {
+      status.textContent = `Fixed ${fixed} / ${total} — keep looking, some mistakes are still hidden.`;
+      status.classList.remove("exo-spot__status--done");
+    }
+  });
+
+  return wrap;
+}
+
+/* ================= Poster builder (live preview) ================
+ * A small artifact builder: the learner fills a headline, a subheading,
+ * three tips and an emergency line, and watches a safety poster build
+ * itself live. Product-based (feeds the PDF); no right/wrong. Used for
+ * the Vocabulary "Build the safety poster" challenge.
+ * ============================================================ */
+
+export const POSTER_FIELDS = ["headline", "subhead", "tip1", "tip2", "tip3", "emergency"];
+
+export function createPosterBuilder({ values, keyFor, onChange, prompts = {} }) {
+  const p = {
+    headline: { label: "Poster headline", placeholder: "BUSHFIRE — STAY SAFE" },
+    subhead: { label: "One-line subheading", placeholder: "What to do when a fire is near" },
+    tip1: { label: "Safety tip 1", placeholder: "Pack water, papers and a torch." },
+    tip2: { label: "Safety tip 2", placeholder: "Close all windows and doors." },
+    tip3: { label: "Safety tip 3", placeholder: "Listen to the radio for news." },
+    emergency: { label: "Emergency line", placeholder: "Call 000 · Stay informed" },
+  };
+  POSTER_FIELDS.forEach((f) => Object.assign(p[f], prompts[f] ?? {}));
+
+  const state = {};
+  POSTER_FIELDS.forEach((f) => (state[f] = values?.[f] ?? ""));
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-poster";
+  const grid = document.createElement("div");
+  grid.className = "exo-poster__grid";
+  wrap.appendChild(grid);
+
+  // LEFT: live poster preview
+  const left = document.createElement("div");
+  left.className = "exo-poster__left";
+  const pvCap = document.createElement("div");
+  pvCap.className = "exo-poster__pv-cap";
+  pvCap.textContent = "Live poster";
+  const poster = document.createElement("article");
+  poster.className = "exo-poster__poster";
+  const pHead = document.createElement("h4");
+  pHead.className = "exo-poster__headline";
+  const pSub = document.createElement("p");
+  pSub.className = "exo-poster__subhead";
+  const pList = document.createElement("ul");
+  pList.className = "exo-poster__tips";
+  const tipEls = ["tip1", "tip2", "tip3"].map(() => {
+    const li = document.createElement("li");
+    li.className = "exo-poster__tip";
+    pList.appendChild(li);
+    return li;
+  });
+  const pEmg = document.createElement("div");
+  pEmg.className = "exo-poster__emg";
+  poster.append(pHead, pSub, pList, pEmg);
+  left.append(pvCap, poster);
+
+  // RIGHT: form
+  const right = document.createElement("div");
+  right.className = "exo-poster__right";
+  const form = document.createElement("div");
+  form.className = "exo-poster__form";
+  POSTER_FIELDS.forEach((f) => {
+    const label = document.createElement("label");
+    label.className = "exo-poster__field";
+    const cap = document.createElement("span");
+    cap.className = "exo-poster__flabel";
+    cap.textContent = p[f].label;
+    const el = document.createElement("input");
+    el.type = "text";
+    el.className = "exo-poster__input";
+    el.placeholder = p[f].placeholder;
+    el.value = state[f];
+    el.dataset.answerKey = keyFor(f);
+    el.addEventListener("input", () => {
+      state[f] = el.value;
+      onChange(f, el.value);
+      update();
+    });
+    label.append(cap, el);
+    form.appendChild(label);
+  });
+  right.appendChild(form);
+
+  grid.append(left, right);
+
+  function update() {
+    pHead.textContent = state.headline || p.headline.placeholder;
+    pHead.classList.toggle("exo-poster__ghost", !state.headline);
+    pSub.textContent = state.subhead || p.subhead.placeholder;
+    pSub.classList.toggle("exo-poster__ghost", !state.subhead);
+    ["tip1", "tip2", "tip3"].forEach((f, i) => {
+      tipEls[i].textContent = state[f] || p[f].placeholder;
+      tipEls[i].classList.toggle("exo-poster__ghost", !state[f]);
+    });
+    pEmg.textContent = state.emergency || p.emergency.placeholder;
+    pEmg.classList.toggle("exo-poster__ghost", !state.emergency);
+  }
+  update();
+
+  return wrap;
+}

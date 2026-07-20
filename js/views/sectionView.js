@@ -39,6 +39,8 @@ import {
   createEssayEditor,
   createEmailBuilder,
   createEmailFixer,
+  createSpotFix,
+  createPosterBuilder,
 } from "../components/exercises.js";
 import {
   getName,
@@ -81,6 +83,17 @@ const EMAIL_LABELS = {
 /** The corrected-email fields of the "Fix the email" task, in PDF order. */
 const FIXER_FIELDS = ["subject", "body"];
 const FIXER_LABELS = { subject: "Subject", body: "Corrected email" };
+
+/** The six lines of the safety-poster builder, in PDF order. */
+const POSTER_FIELDS = ["headline", "subhead", "tip1", "tip2", "tip3", "emergency"];
+const POSTER_LABELS = {
+  headline: "Headline",
+  subhead: "Subheading",
+  tip1: "Tip 1",
+  tip2: "Tip 2",
+  tip3: "Tip 3",
+  emergency: "Emergency line",
+};
 
 /** Fallback shape for pages whose lesson content is not written yet. */
 function comingSoonContent() {
@@ -327,6 +340,12 @@ function downloadAnswerSheet(view, unit, section, content, name) {
           return FIXER_FIELDS.map((f) => ({
             label: `${card.title} — ${FIXER_LABELS[f]}`,
             answer: answers[`${base}-fix-${f}`] ?? "",
+          }));
+        }
+        if (card.type === "poster-builder") {
+          return POSTER_FIELDS.map((f) => ({
+            label: `${card.title} — ${POSTER_LABELS[f]}`,
+            answer: answers[`${base}-poster-${f}`] ?? "",
           }));
         }
         if (card.type === "paragraph-builder") {
@@ -859,6 +878,26 @@ function buildCard(step, data, index, taskNo, ctx) {
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) =>
             ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "spot-fix":
+      body.appendChild(
+        createSpotFix({ paragraphs: data.paragraphs, fixes: data.fixes, hint: data.hint, checkLabel: data.checkLabel }),
+      );
+      break;
+    case "poster-builder": {
+      const base = `step${step.step}-task${index + 1}-poster`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const values = {};
+      for (const f of POSTER_FIELDS) values[f] = saved[`${base}-${f}`] ?? "";
+      body.appendChild(
+        createPosterBuilder({
+          values,
+          prompts: data.prompts,
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
         }),
       );
       break;

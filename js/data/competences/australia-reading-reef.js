@@ -365,28 +365,69 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge",
+      subtitle: "Challenge · Survive the outback",
       accent: "ochre",
-      layout: "single",
+      layout: "slide",
       cards: [
         {
-          type: "essay-editor",
-          kind: "Kreativ · Challenge",
-          title: "A day as a Flying Doctor",
-          intro:
-            "You are a Flying Doctor for one day. Write the story of your most dramatic call-out (120–180 words). Where did you fly? What was the emergency? How did it end? Use everything you have learnt.",
-          min: 120,
-          max: 180,
-          placeholder: "The radio call came in just after sunrise …",
-          checklist: [
-            "I said where in the outback I had to fly.",
-            "I described the emergency (an accident, a sting, a bite …).",
-            "I explained how I reached the patient by plane.",
-            "I said what I did to help them.",
-            "I gave the story an ending.",
-            "I used at least six of this unit's new words.",
+          type: "text",
+          kind: "Briefing · Challenge",
+          title: "You are out in the outback",
+          paragraphs: [
+            [
+              "You are on a road trip far from any town. Three things go wrong, one after another. For each one, decide the ",
+              { w: "safest", de: "sicherste" },
+              " first thing to do — think about everything the text taught you about the outback and the Flying Doctors.",
+            ],
           ],
-          help: "Tip: write it like a diary or a short adventure story — make it exciting!",
+        },
+        {
+          type: "multiple-choice",
+          kind: "Interaktiv · Entscheide",
+          title: "What do you do?",
+          intro: "Choose the safest first action in each situation, then Check.",
+          questions: [
+            {
+              q: "1. Your car breaks down, and the next town is hundreds of kilometres away. What do you do first?",
+              options: [
+                "Start walking to find the nearest town.",
+                "Stay with the vehicle and wait for help.",
+                "Leave the car and look for a river.",
+              ],
+              correct: 1,
+            },
+            {
+              q: "2. It is 45 °C, there is no shade, and you must wait for hours. What is most important?",
+              options: [
+                "Keep moving so you don't fall asleep.",
+                "Find or make shade and save your energy and water.",
+                "Take off your hat so your head can cool down.",
+              ],
+              correct: 1,
+            },
+            {
+              q: "3. A friend is badly stung by a box jellyfish at the coast. What do you do?",
+              options: [
+                "Wait a while and see if it gets better.",
+                "Call for emergency help — the Flying Doctors — straight away.",
+                "Rinse it with fresh water and drive home slowly.",
+              ],
+              correct: 1,
+            },
+          ],
+        },
+        {
+          type: "written",
+          kind: "Schreiben · Begründung",
+          title: "Now justify your choices",
+          intro:
+            "For each of the three situations, write one sentence explaining WHY your choice is the safest. Use because and words from the text (outback, vehicle, shade, sting …).",
+          starters: [
+            "1. Staying with the vehicle is safest because …",
+            "2. Finding shade is most important because …",
+            "3. I would call the Flying Doctors at once because …",
+          ],
+          help: "Tip: the text already gives you the reasons — put them into your own words.",
         },
       ],
     },

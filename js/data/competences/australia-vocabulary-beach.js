@@ -333,35 +333,25 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Warn a friend",
+      subtitle: "Challenge · Build the safety poster",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "essay-editor",
+          type: "poster-builder",
           kind: "Kreativ · Challenge",
-          title: "Bushfire alert — message a friend",
+          title: "Build the bushfire safety poster",
           intro:
-            "A bushfire warning has just been issued for your area in Brisbane. Write a calm, clear message (80–120 words) to a friend who has just arrived from Germany and doesn't know what to do. Use the poster to help them stay safe.",
-          chips: [
-            { n: "01", label: "Stay calm — what's happening" },
-            { n: "02", label: "What to pack" },
-            { n: "03", label: "What to do around the house" },
-            { n: "04", label: "If you stay inside" },
-            { n: "05", label: "Emergency number + stay informed" },
-          ],
-          min: 80,
-          max: 120,
-          placeholder: "Write your message here…",
-          checklist: [
-            "I told my friend calmly what is happening.",
-            "I said what to pack if they have to leave.",
-            "I gave two things to do around the house.",
-            "I explained what to do if they stay inside.",
-            "I gave the emergency number and how to stay informed.",
-            "My message is about 80–120 words.",
-          ],
-          help: "Tip: write it like a real text message — short sentences, friendly but clear.",
+            "A bushfire warning has been issued for your area. Design a clear safety poster for people who don't know what to do. Fill each line on the right and watch your poster build itself on the left — use the words and rules from this page.",
+          prompts: {
+            headline: { placeholder: "BUSHFIRE — BE READY" },
+            subhead: { placeholder: "What to do when a fire is near" },
+            tip1: { label: "Do this (1)", placeholder: "Pack water, papers and a torch in a bag." },
+            tip2: { label: "Do this (2)", placeholder: "Close all windows and doors." },
+            tip3: { label: "Do this (3)", placeholder: "Wear long clothes to protect your skin." },
+            emergency: { placeholder: "Emergency: call 000 · Listen to ABC Radio" },
+          },
+          help: "Tip: keep each line short and clear — a poster is read in seconds. Use imperatives (Pack …, Close …, Call …).",
         },
       ],
     },

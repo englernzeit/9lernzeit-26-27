@@ -488,35 +488,30 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Put it all together",
+      subtitle: "Challenge · Fix the tense",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "essay-editor",
-          kind: "Kreativ · Challenge",
-          title: "My unforgettable day Down Under",
+          type: "spot-fix",
+          kind: "Interaktiv · Challenge",
+          title: "Fix the tense",
           intro:
-            "Imagine one amazing day in Australia and write a diary entry about it (100–140 words). Use modals AND all four tenses — tick each requirement off as you go.",
-          chips: [
-            { n: "01", label: "can / could (ability)" },
-            { n: "02", label: "had to (a rule)" },
-            { n: "03", label: "was/were able to (success)" },
-            { n: "04", label: "while + Past Progressive" },
-            { n: "05", label: "Present Perfect ending" },
+            "Ben wrote about his day, but five words have the wrong tense or the wrong modal — the whole story happened yesterday. Tap a word to correct it, then press Check. The app tells you how many you still have to find, but never which ones!",
+          hint: "Everything should be in the past. Watch out for present-tense verbs and the wrong modal.",
+          paragraphs: [
+            "Yesterday Ben have a great day in Sydney. In the morning he can not find his shoes, so he was late for the bus.",
+            "While he waited at the bus stop, it start to rain. At school he must write a difficult test, but he was able to finish it.",
+            "When he came home, his mother has already cooked dinner.",
           ],
-          min: 100,
-          max: 140,
-          placeholder: "Write your diary entry here…",
-          checklist: [
-            "I used can or could (an ability).",
-            "I used had to (a rule or necessity in the past).",
-            "I used was/were able to (something I finally managed).",
-            "I wrote one while + Past Progressive sentence.",
-            "I finished with a Present Perfect sentence (e.g. “What a day it has been!”).",
-            "My text is about 100–140 words.",
+          fixes: [
+            { wrong: "have", correct: "had" },
+            { wrong: "can", correct: "could" },
+            { wrong: "start", correct: "started" },
+            { wrong: "must", correct: "had to" },
+            { wrong: "has", correct: "had" },
           ],
-          help: "Tip: start “Dear diary,” and tell the story as if it really happened today.",
+          help: "Tip: read it out loud — the wrong tense usually sounds wrong. There are exactly five mistakes.",
         },
       ],
     },
