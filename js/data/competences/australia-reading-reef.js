@@ -365,25 +365,23 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Design a fact-file",
+      subtitle: "Challenge · Draw the rescue",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "poster-builder",
+          type: "comic-strip",
           kind: "Projekt · Challenge",
-          title: "Flying Doctors fact-file",
+          title: "Rescue comic strip",
           intro:
-            "Your project: make a fact-file card about the Royal Flying Doctor Service to teach younger students. Fill each line on the right and watch your fact-file build itself on the left.",
-          prompts: {
-            headline: { label: "Title", placeholder: "THE FLYING DOCTORS" },
-            subhead: { label: "One-line intro", placeholder: "Who they are" },
-            tip1: { label: "Fact 1", placeholder: "They fly doctors and nurses across the outback." },
-            tip2: { label: "Fact 2", placeholder: "They reach people far from any hospital." },
-            tip3: { label: "Fact 3", placeholder: "Their help is completely free." },
-            emergency: { label: "Why they matter", placeholder: "In the outback, they save lives every day." },
-          },
-          help: "Tip: use this unit's words (outback, vehicle, citizen, shade, torch …). Keep each line short and clear.",
+            "Your project: turn a Flying Doctors rescue into a four-panel comic. For each panel, write the caption (what happens) and one speech bubble (what someone says). You can draw or add the pictures later.",
+          panels: [
+            { n: 1, prompt: "Panel 1 — the call for help", bubblePlaceholder: "“Help! Our car has broken down!”", capPlaceholder: "Far out in the outback, a family's vehicle breaks down." },
+            { n: 2, prompt: "Panel 2 — the plane takes off", bubblePlaceholder: "“The Flying Doctors are on their way!”", capPlaceholder: "At the base, the doctor jumps into the small plane." },
+            { n: 3, prompt: "Panel 3 — the rescue", bubblePlaceholder: "“Don't worry — we'll help you.”", capPlaceholder: "The plane lands on the red desert road." },
+            { n: 4, prompt: "Panel 4 — safe again", bubblePlaceholder: "“Thank you for saving us!”", capPlaceholder: "Everyone is safe as the desert sun goes down." },
+          ],
+          help: "Tip: use this unit's words (outback, vehicle, shade, sting, citizen …). Keep captions short — a comic is fast!",
         },
       ],
     },

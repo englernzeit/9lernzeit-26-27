@@ -334,25 +334,31 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Design your radio show",
+      subtitle: "Challenge · Transcript detective",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "poster-builder",
-          kind: "Projekt · Challenge",
-          title: "Your own radio show",
+          type: "spot-fix",
+          kind: "Interaktiv · Challenge",
+          title: "Transcript detective",
           intro:
-            "Your project: design a promo poster for your own teen radio show, inspired by the phone-in you heard. Fill each line on the right and watch the poster build on the left.",
-          prompts: {
-            headline: { label: "Show name", placeholder: "TEEN WAVES FM" },
-            subhead: { label: "Slogan", placeholder: "Made by teenagers, for teenagers" },
-            tip1: { label: "We talk about", placeholder: "School, hobbies and the future." },
-            tip2: { label: "Call in about", placeholder: "Anything on your mind." },
-            tip3: { label: "Every show", placeholder: "One song chosen by a caller." },
-            emergency: { label: "Catchphrase", placeholder: "Turn it up — this is your wave!" },
-          },
-          help: "Tip: think about what Charlene and Oscar talked about on the show, then make it your own.",
+            "A new caller, Ruby, is on air. Below is a transcript of what she says — but the sound engineer made five mistakes: five words are different from the audio. Listen closely, tap each wrong word and type what Ruby really says, then press Check.",
+          audio: { src: `${AUD}/au-detective.mp3`, label: "Radio phone-in · Ruby" },
+          hint: "Play the clip as often as you like. Exactly five words in the transcript are wrong.",
+          paragraphs: [
+            "Hi, my name's Ruby and I'm sixteen. I live in a small town near Sydney, right by the beach.",
+            "After school I play the piano, and I train for swimming every weekend.",
+            "Next year I want to study marine biology, because I love the sea. I think Aussie teenagers are pretty similar to teenagers everywhere — we just spend more time outside.",
+          ],
+          fixes: [
+            { wrong: "sixteen", correct: "fifteen" },
+            { wrong: "Sydney", correct: "Perth" },
+            { wrong: "piano", correct: "guitar" },
+            { wrong: "swimming", correct: "surfing" },
+            { wrong: "sea", correct: "ocean" },
+          ],
+          help: "Tip: the wrong words are all facts about Ruby — her age, her town, her hobby, her sport and what she loves.",
         },
       ],
     },

@@ -2458,3 +2458,194 @@ export function createPosterBuilder({ values, keyFor, onChange, prompts = {} }) 
 
   return wrap;
 }
+
+/* ================= Comic strip (storyboard) =====================
+ * A creative mini-project: the learner turns a story into a 3–4 panel
+ * comic. Each panel has an art slot (optional AI-generated frame the
+ * user adds later — placeholder until then), a caption/narration box
+ * and a speech-bubble line that appears live on the panel. Product
+ * task; every text field feeds the PDF.
+ * ============================================================ */
+
+export function createComicStrip({ panels, base, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-comic";
+  const grid = document.createElement("div");
+  grid.className = "exo-comic__grid";
+  wrap.appendChild(grid);
+
+  panels.forEach((panel, i) => {
+    const cell = document.createElement("article");
+    cell.className = "exo-comic__panel";
+
+    const frame = document.createElement("div");
+    frame.className = "exo-comic__frame";
+
+    const bubble = document.createElement("div");
+    bubble.className = "exo-comic__bubble";
+
+    if (base && panel.img) {
+      const img = document.createElement("img");
+      img.className = "exo-comic__art";
+      img.src = `${base}/${panel.img}`;
+      img.alt = "";
+      img.loading = "lazy";
+      img.addEventListener("error", () => {
+        img.remove();
+        frame.classList.add("exo-comic__frame--empty");
+      });
+      frame.appendChild(img);
+    } else {
+      frame.classList.add("exo-comic__frame--empty");
+    }
+
+    const numBadge = document.createElement("span");
+    numBadge.className = "exo-comic__num";
+    numBadge.textContent = String(panel.n ?? i + 1);
+
+    frame.append(numBadge, bubble);
+
+    const prompt = document.createElement("p");
+    prompt.className = "exo-comic__prompt";
+    prompt.textContent = panel.prompt ?? "";
+
+    const bubbleInput = document.createElement("input");
+    bubbleInput.type = "text";
+    bubbleInput.className = "exo-comic__bubble-input";
+    bubbleInput.placeholder = panel.bubblePlaceholder ?? "💬 Speech bubble…";
+    bubbleInput.value = values?.[`p${i}-bubble`] ?? "";
+    bubbleInput.dataset.answerKey = keyFor(`p${i}-bubble`);
+
+    const cap = document.createElement("textarea");
+    cap.className = "exo-comic__cap";
+    cap.rows = 2;
+    cap.placeholder = panel.capPlaceholder ?? "Caption / narration…";
+    cap.value = values?.[`p${i}-cap`] ?? "";
+    cap.dataset.answerKey = keyFor(`p${i}-cap`);
+
+    const paintBubble = () => {
+      bubble.textContent = bubbleInput.value;
+      bubble.classList.toggle("exo-comic__bubble--on", bubbleInput.value.trim().length > 0);
+    };
+    bubbleInput.addEventListener("input", () => {
+      onChange(`p${i}-bubble`, bubbleInput.value);
+      paintBubble();
+    });
+    cap.addEventListener("input", () => onChange(`p${i}-cap`, cap.value));
+    paintBubble();
+
+    cell.append(frame, prompt, bubbleInput, cap);
+    grid.appendChild(cell);
+  });
+
+  return wrap;
+}
+
+/* ================= Bilingual mediation card =====================
+ * A creative mediation project: for each hazard the learner writes the
+ * warning in English and its explanation in German, side by side, and
+ * it renders as a hand-made safety card. Product task; every field
+ * feeds the PDF.
+ * ============================================================ */
+
+export function createBilingualCard({ rows, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-bicard";
+
+  const card = document.createElement("article");
+  card.className = "exo-bicard__card";
+  wrap.appendChild(card);
+
+  const head = document.createElement("div");
+  head.className = "exo-bicard__head";
+  head.innerHTML =
+    '<span class="exo-bicard__col-en">English — warning</span><span class="exo-bicard__col-de">Deutsch — Erklärung</span>';
+  card.appendChild(head);
+
+  rows.forEach((row, i) => {
+    const rowEl = document.createElement("div");
+    rowEl.className = "exo-bicard__row";
+
+    const hazard = document.createElement("div");
+    hazard.className = "exo-bicard__hazard";
+    hazard.innerHTML = `<span class="exo-bicard__icon">${row.icon ?? "⚠️"}</span><span>${row.hazard}</span>`;
+
+    const en = document.createElement("textarea");
+    en.className = "exo-bicard__en";
+    en.rows = 2;
+    en.placeholder = row.en ?? "Stay away from …";
+    en.value = values?.[`r${i}-en`] ?? "";
+    en.dataset.answerKey = keyFor(`r${i}-en`);
+    en.addEventListener("input", () => onChange(`r${i}-en`, en.value));
+
+    const de = document.createElement("textarea");
+    de.className = "exo-bicard__de";
+    de.rows = 2;
+    de.placeholder = row.de ?? "Halte dich fern von …";
+    de.value = values?.[`r${i}-de`] ?? "";
+    de.dataset.answerKey = keyFor(`r${i}-de`);
+    de.addEventListener("input", () => onChange(`r${i}-de`, de.value));
+
+    rowEl.append(hazard, en, de);
+    card.appendChild(rowEl);
+  });
+
+  return wrap;
+}
+
+/* ================= Sign maker (camp rules) ======================
+ * A creative grammar project: the learner writes a set of campsite
+ * rules — each must use a modal — and every line renders live as a
+ * notice-board sign. Optional AI-generated sign art per board (added
+ * later). Product task; every field feeds the PDF.
+ * ============================================================ */
+
+export function createSignMaker({ signs, base, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-signs";
+  const gallery = document.createElement("div");
+  gallery.className = "exo-signs__gallery";
+  wrap.appendChild(gallery);
+
+  signs.forEach((sign, i) => {
+    const cell = document.createElement("div");
+    cell.className = "exo-signs__cell";
+
+    const board = document.createElement("div");
+    board.className = "exo-signs__board";
+    if (base && sign.img) {
+      board.style.backgroundImage = `url("${base}/${sign.img}")`;
+      board.classList.add("exo-signs__board--art");
+    }
+    const boardText = document.createElement("span");
+    boardText.className = "exo-signs__board-text";
+    board.appendChild(boardText);
+
+    const hint = document.createElement("label");
+    hint.className = "exo-signs__hint";
+    hint.textContent = sign.hint ?? `Rule ${i + 1}`;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "exo-signs__input";
+    input.placeholder = sign.placeholder ?? "You must …";
+    input.value = values?.[`s${i}`] ?? "";
+    input.dataset.answerKey = keyFor(`s${i}`);
+
+    const paint = () => {
+      boardText.textContent = input.value || sign.placeholder || "You must …";
+      boardText.classList.toggle("exo-signs__board-text--ghost", !input.value);
+    };
+    input.addEventListener("input", () => {
+      onChange(`s${i}`, input.value);
+      paint();
+    });
+    paint();
+
+    hint.appendChild(input);
+    cell.append(board, hint);
+    gallery.appendChild(cell);
+  });
+
+  return wrap;
+}

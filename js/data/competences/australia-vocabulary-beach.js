@@ -333,25 +333,23 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Build the safety poster",
+      subtitle: "Challenge · Bilingual safety card",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "poster-builder",
-          kind: "Kreativ · Challenge",
-          title: "Build the bushfire safety poster",
+          type: "bilingual-card",
+          kind: "Mediation · Challenge",
+          title: "Safety card for a German friend",
           intro:
-            "A bushfire warning has been issued for your area. Design a clear safety poster for people who don't know what to do. Fill each line on the right and watch your poster build itself on the left — use the words and rules from this page.",
-          prompts: {
-            headline: { placeholder: "BUSHFIRE — BE READY" },
-            subhead: { placeholder: "What to do when a fire is near" },
-            tip1: { label: "Do this (1)", placeholder: "Pack water, papers and a torch in a bag." },
-            tip2: { label: "Do this (2)", placeholder: "Close all windows and doors." },
-            tip3: { label: "Do this (3)", placeholder: "Wear long clothes to protect your skin." },
-            emergency: { placeholder: "Emergency: call 000 · Listen to ABC Radio" },
-          },
-          help: "Tip: keep each line short and clear — a poster is read in seconds. Use imperatives (Pack …, Close …, Call …).",
+            "Your German exchange partner has just arrived in Australia and doesn't know the dangers. Make them a bilingual safety card: for each danger write a short warning in English, then explain it in your own words in German (mediation — not word for word!).",
+          rows: [
+            { hazard: "Box jellyfish", icon: "🪼", en: "Warning in English…", de: "Erklärung auf Deutsch…" },
+            { hazard: "Bushfire", icon: "🔥", en: "Warning in English…", de: "Erklärung auf Deutsch…" },
+            { hazard: "Sun & heat", icon: "☀️", en: "Warning in English…", de: "Erklärung auf Deutsch…" },
+            { hazard: "Snake", icon: "🐍", en: "Warning in English…", de: "Erklärung auf Deutsch…" },
+          ],
+          help: "Tip: the English line is a short warning; the German line explains WHY and what to do, in your own words.",
         },
       ],
     },

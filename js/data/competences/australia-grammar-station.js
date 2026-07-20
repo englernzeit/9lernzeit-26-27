@@ -488,25 +488,24 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Make a survival guide",
+      subtitle: "Challenge · Make the camp signs",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "poster-builder",
+          type: "sign-maker",
           kind: "Projekt · Challenge",
-          title: "Outback survival guide",
+          title: "Outback camp rules",
           intro:
-            "Your project: make a mini survival guide for tourists in Australia. Each rule must use a modal verb (must, should, can / can't) — this is where you show off the grammar from this page.",
-          prompts: {
-            headline: { label: "Title", placeholder: "OUTBACK SURVIVAL GUIDE" },
-            subhead: { label: "One-line intro", placeholder: "Three rules for staying safe" },
-            tip1: { label: "Rule 1 — use must", placeholder: "You must carry plenty of water." },
-            tip2: { label: "Rule 2 — use should", placeholder: "You should stay with your car." },
-            tip3: { label: "Rule 3 — use can / can't", placeholder: "You can't swim during stinger season." },
-            emergency: { label: "Golden rule", placeholder: "Always tell someone where you are going." },
-          },
-          help: "Tip: every rule needs a modal verb — check each line has one before you finish.",
+            "Your project: design the rule signs for an outback campsite. Write one rule on each sign — and every rule must use a modal verb. Watch each sign come to life as you type.",
+          signs: [
+            { hint: "Sign 1 — use must", placeholder: "You must carry water." },
+            { hint: "Sign 2 — use must not / can't", placeholder: "You must not feed the dingoes." },
+            { hint: "Sign 3 — use should", placeholder: "You should stay on the path." },
+            { hint: "Sign 4 — use may / are allowed to", placeholder: "You may swim before dark." },
+            { hint: "Sign 5 — your own rule (any modal)", placeholder: "You can watch the stars at night." },
+          ],
+          help: "Tip: every sign needs a modal (must, must not, should, may, can). Keep it short — signs are read from far away.",
         },
       ],
     },

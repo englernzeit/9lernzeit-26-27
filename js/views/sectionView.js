@@ -41,6 +41,9 @@ import {
   createEmailFixer,
   createSpotFix,
   createPosterBuilder,
+  createComicStrip,
+  createBilingualCard,
+  createSignMaker,
 } from "../components/exercises.js";
 import {
   getName,
@@ -83,6 +86,17 @@ const EMAIL_LABELS = {
 /** The corrected-email fields of the "Fix the email" task, in PDF order. */
 const FIXER_FIELDS = ["subject", "body"];
 const FIXER_LABELS = { subject: "Subject", body: "Corrected email" };
+
+/** Saved answers whose keys start with `${base}-`, re-keyed without the
+ * prefix (e.g. { "step4-task1-comic-p0-cap": "x" } → { "p0-cap": "x" }). */
+function prefix(saved, base) {
+  const out = {};
+  const p = `${base}-`;
+  for (const [k, v] of Object.entries(saved)) {
+    if (k.startsWith(p)) out[k.slice(p.length)] = v;
+  }
+  return out;
+}
 
 /** The six lines of the safety-poster builder, in PDF order. */
 const POSTER_FIELDS = ["headline", "subhead", "tip1", "tip2", "tip3", "emergency"];
@@ -346,6 +360,24 @@ function downloadAnswerSheet(view, unit, section, content, name) {
           return POSTER_FIELDS.map((f) => ({
             label: `${card.title} — ${POSTER_LABELS[f]}`,
             answer: answers[`${base}-poster-${f}`] ?? "",
+          }));
+        }
+        if (card.type === "comic-strip") {
+          return card.panels.flatMap((panel, k) => [
+            { label: `${card.title} — Panel ${panel.n ?? k + 1} caption`, answer: answers[`${base}-comic-p${k}-cap`] ?? "" },
+            { label: `${card.title} — Panel ${panel.n ?? k + 1} speech`, answer: answers[`${base}-comic-p${k}-bubble`] ?? "" },
+          ]);
+        }
+        if (card.type === "bilingual-card") {
+          return card.rows.flatMap((row, k) => [
+            { label: `${card.title} — ${row.hazard} (EN)`, answer: answers[`${base}-bicard-r${k}-en`] ?? "" },
+            { label: `${card.title} — ${row.hazard} (DE)`, answer: answers[`${base}-bicard-r${k}-de`] ?? "" },
+          ]);
+        }
+        if (card.type === "sign-maker") {
+          return card.signs.map((sign, k) => ({
+            label: `${card.title} — ${sign.hint ?? `Sign ${k + 1}`}`,
+            answer: answers[`${base}-signs-s${k}`] ?? "",
           }));
         }
         if (card.type === "paragraph-builder") {
@@ -896,6 +928,47 @@ function buildCard(step, data, index, taskNo, ctx) {
         createPosterBuilder({
           values,
           prompts: data.prompts,
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "comic-strip": {
+      const base = `step${step.step}-task${index + 1}-comic`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createComicStrip({
+          panels: data.panels,
+          base: data.base,
+          values: prefix(saved, base),
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "bilingual-card": {
+      const base = `step${step.step}-task${index + 1}-bicard`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createBilingualCard({
+          rows: data.rows,
+          values: prefix(saved, base),
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "sign-maker": {
+      const base = `step${step.step}-task${index + 1}-signs`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createSignMaker({
+          signs: data.signs,
+          base: data.base,
+          values: prefix(saved, base),
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
         }),
