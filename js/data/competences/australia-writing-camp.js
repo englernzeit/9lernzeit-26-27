@@ -355,18 +355,25 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Write to a wildlife organisation",
+      subtitle: "Challenge · Design a volunteer advert",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "email-builder",
-          kind: "Kreativ · Challenge",
-          title: "Volunteer project down under",
+          type: "poster-builder",
+          kind: "Projekt · Challenge",
+          title: "Volunteer advert",
           intro:
-            "You want to spend your holidays helping an organisation that protects Australian wildlife. Build your own official email of enquiry. Fill each part on the right and watch your email take shape on the left — keep everything formal.",
-          to: "volunteers@australiazoo.com.au",
-          help: "Tip: your reason first, then one clear question per line. Keep it polite and formal.",
+            "Your project: design a recruitment advert to find volunteers for an Australian wildlife organisation. Fill each line on the right and watch your advert build on the left — keep the language clear, polite and correct.",
+          prompts: {
+            headline: { label: "Title", placeholder: "VOLUNTEER DOWN UNDER" },
+            subhead: { label: "Slogan", placeholder: "Help protect Australian wildlife" },
+            tip1: { label: "What you'll do", placeholder: "Feed and care for rescued animals." },
+            tip2: { label: "Who can join", placeholder: "Anyone aged 16 and over." },
+            tip3: { label: "Where & when", placeholder: "Queensland · July and August." },
+            emergency: { label: "How to apply", placeholder: "Email volunteers@australiazoo.com.au" },
+          },
+          help: "Tip: use the polite, formal phrases from this page. An advert must be short but correct.",
         },
       ],
     },

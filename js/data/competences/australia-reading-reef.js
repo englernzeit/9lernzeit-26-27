@@ -365,69 +365,25 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Survive the outback",
+      subtitle: "Challenge · Design a fact-file",
       accent: "ochre",
-      layout: "slide",
+      layout: "single",
       cards: [
         {
-          type: "text",
-          kind: "Briefing · Challenge",
-          title: "You are out in the outback",
-          paragraphs: [
-            [
-              "You are on a road trip far from any town. Three things go wrong, one after another. For each one, decide the ",
-              { w: "safest", de: "sicherste" },
-              " first thing to do — think about everything the text taught you about the outback and the Flying Doctors.",
-            ],
-          ],
-        },
-        {
-          type: "multiple-choice",
-          kind: "Interaktiv · Entscheide",
-          title: "What do you do?",
-          intro: "Choose the safest first action in each situation, then Check.",
-          questions: [
-            {
-              q: "1. Your car breaks down, and the next town is hundreds of kilometres away. What do you do first?",
-              options: [
-                "Start walking to find the nearest town.",
-                "Stay with the vehicle and wait for help.",
-                "Leave the car and look for a river.",
-              ],
-              correct: 1,
-            },
-            {
-              q: "2. It is 45 °C, there is no shade, and you must wait for hours. What is most important?",
-              options: [
-                "Keep moving so you don't fall asleep.",
-                "Find or make shade and save your energy and water.",
-                "Take off your hat so your head can cool down.",
-              ],
-              correct: 1,
-            },
-            {
-              q: "3. A friend is badly stung by a box jellyfish at the coast. What do you do?",
-              options: [
-                "Wait a while and see if it gets better.",
-                "Call for emergency help — the Flying Doctors — straight away.",
-                "Rinse it with fresh water and drive home slowly.",
-              ],
-              correct: 1,
-            },
-          ],
-        },
-        {
-          type: "written",
-          kind: "Schreiben · Begründung",
-          title: "Now justify your choices",
+          type: "poster-builder",
+          kind: "Projekt · Challenge",
+          title: "Flying Doctors fact-file",
           intro:
-            "For each of the three situations, write one sentence explaining WHY your choice is the safest. Use because and words from the text (outback, vehicle, shade, sting …).",
-          starters: [
-            "1. Staying with the vehicle is safest because …",
-            "2. Finding shade is most important because …",
-            "3. I would call the Flying Doctors at once because …",
-          ],
-          help: "Tip: the text already gives you the reasons — put them into your own words.",
+            "Your project: make a fact-file card about the Royal Flying Doctor Service to teach younger students. Fill each line on the right and watch your fact-file build itself on the left.",
+          prompts: {
+            headline: { label: "Title", placeholder: "THE FLYING DOCTORS" },
+            subhead: { label: "One-line intro", placeholder: "Who they are" },
+            tip1: { label: "Fact 1", placeholder: "They fly doctors and nurses across the outback." },
+            tip2: { label: "Fact 2", placeholder: "They reach people far from any hospital." },
+            tip3: { label: "Fact 3", placeholder: "Their help is completely free." },
+            emergency: { label: "Why they matter", placeholder: "In the outback, they save lives every day." },
+          },
+          help: "Tip: use this unit's words (outback, vehicle, citizen, shade, torch …). Keep each line short and clear.",
         },
       ],
     },

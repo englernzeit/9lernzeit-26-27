@@ -488,30 +488,25 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Fix the tense",
+      subtitle: "Challenge · Make a survival guide",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "spot-fix",
-          kind: "Interaktiv · Challenge",
-          title: "Fix the tense",
+          type: "poster-builder",
+          kind: "Projekt · Challenge",
+          title: "Outback survival guide",
           intro:
-            "Ben wrote about his day, but five words have the wrong tense or the wrong modal — the whole story happened yesterday. Tap a word to correct it, then press Check. The app tells you how many you still have to find, but never which ones!",
-          hint: "Everything should be in the past. Watch out for present-tense verbs and the wrong modal.",
-          paragraphs: [
-            "Yesterday Ben have a great day in Sydney. In the morning he can not find his shoes, so he was late for the bus.",
-            "While he waited at the bus stop, it start to rain. At school he must write a difficult test, but he was able to finish it.",
-            "When he came home, his mother has already cooked dinner.",
-          ],
-          fixes: [
-            { wrong: "have", correct: "had" },
-            { wrong: "can", correct: "could" },
-            { wrong: "start", correct: "started" },
-            { wrong: "must", correct: "had to" },
-            { wrong: "has", correct: "had" },
-          ],
-          help: "Tip: read it out loud — the wrong tense usually sounds wrong. There are exactly five mistakes.",
+            "Your project: make a mini survival guide for tourists in Australia. Each rule must use a modal verb (must, should, can / can't) — this is where you show off the grammar from this page.",
+          prompts: {
+            headline: { label: "Title", placeholder: "OUTBACK SURVIVAL GUIDE" },
+            subhead: { label: "One-line intro", placeholder: "Three rules for staying safe" },
+            tip1: { label: "Rule 1 — use must", placeholder: "You must carry plenty of water." },
+            tip2: { label: "Rule 2 — use should", placeholder: "You should stay with your car." },
+            tip3: { label: "Rule 3 — use can / can't", placeholder: "You can't swim during stinger season." },
+            emergency: { label: "Golden rule", placeholder: "Always tell someone where you are going." },
+          },
+          help: "Tip: every rule needs a modal verb — check each line has one before you finish.",
         },
       ],
     },
