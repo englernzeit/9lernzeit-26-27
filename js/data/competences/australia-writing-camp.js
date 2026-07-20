@@ -42,6 +42,14 @@ export default {
 
   // Word Master — 15 gap-fills. Higher level + SHUFFLED (order ≠ the word
   // cards) so it isn't guessable, with non-give-away gaps.
+  pictureVocab: {
+    base: "assets/images/picvocab",
+    courses: [
+      { key: "gkurs", dir: "GKurs/Writing", name: "Grundkurs", tag: "GKurs · Writing", count: 0 },
+      { key: "ekurs", dir: "EKurs/Writing", name: "Erweiterungskurs", tag: "EKurs · Writing", count: 15 },
+    ],
+  },
+
   wordMaster: {
     subtitle: "Complete each sentence with the right English word.",
     items: [

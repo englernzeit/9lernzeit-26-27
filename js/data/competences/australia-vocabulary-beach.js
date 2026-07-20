@@ -25,6 +25,14 @@ const POSTER_ALT = "Queensland Government bushfire-safety poster: Prepare, Act, 
 export default {
   title: "Vocabulary & Mediation",
 
+  pictureVocab: {
+    base: "assets/images/picvocab",
+    courses: [
+      { key: "gkurs", dir: "GKurs/Vocabulary", name: "Grundkurs", tag: "GKurs · Vocabulary", count: 0 },
+      { key: "ekurs", dir: "EKurs/Vocabulary", name: "Erweiterungskurs", tag: "EKurs · Vocabulary", count: 15 },
+    ],
+  },
+
   steps: [
     /* ============ STEP 1 — Deadly or safe creatures ============ */
     {

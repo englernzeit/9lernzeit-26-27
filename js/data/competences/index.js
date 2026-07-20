@@ -42,3 +42,15 @@ const CONTENT = {
 export function getCompetenceContent(unitId, sectionId) {
   return CONTENT[`${unitId}/${sectionId}`] ?? null;
 }
+
+/**
+ * True if any page in the unit ships a Picture Vocabulary deck. Word
+ * Master is only offered in units that have picture vocabulary.
+ * @param {string} unitId
+ */
+export function unitHasPictureVocab(unitId) {
+  const prefix = `${unitId}/`;
+  return Object.entries(CONTENT).some(
+    ([key, content]) => key.startsWith(prefix) && content?.pictureVocab?.courses?.some((c) => c.count > 0),
+  );
+}

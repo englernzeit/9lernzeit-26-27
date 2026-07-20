@@ -15,7 +15,7 @@
  */
 
 import { getUnit, getSection } from "../data/units.js";
-import { getCompetenceContent } from "../data/competences/index.js";
+import { getCompetenceContent, unitHasPictureVocab } from "../data/competences/index.js";
 import { createBackTab } from "../components/backTab.js";
 import { createJournalCarousel } from "../components/journalCarousel.js";
 import {
@@ -156,8 +156,11 @@ export function renderSectionView(root, unitId, sectionId) {
   }
 
   // --- Vocabulary hub (Picture Vocabulary + Word Master) ---------
-  if (content.pictureVocab || content.wordMaster?.items?.length) {
-    view.appendChild(buildVocabHub(content, ctx));
+  // Word Master is only offered in units that have picture vocabulary.
+  const hasPicture = content.pictureVocab?.courses?.some((c) => c.count > 0);
+  const showWordMaster = content.wordMaster?.items?.length && unitHasPictureVocab(unitId);
+  if (hasPicture || showWordMaster) {
+    view.appendChild(buildVocabHub(content, ctx, { showWordMaster }));
   }
 
   // --- Steps ------------------------------------------------------
@@ -519,8 +522,9 @@ function buildGuideSection(guide) {
  *
  * @param {{pictureVocab?: object, wordMaster?: {subtitle?: string, items: Array}}} content
  * @param {{unitId: string, sectionId: string}} ctx
+ * @param {{showWordMaster?: boolean}} [opts]
  */
-function buildVocabHub(content, ctx) {
+function buildVocabHub(content, ctx, { showWordMaster = false } = {}) {
   const hub = document.createElement("div");
   hub.className = "vocab-hub";
 
@@ -544,8 +548,9 @@ function buildVocabHub(content, ctx) {
     hub.appendChild(picBtn);
   }
 
-  // Word Master — the gap-fill drill; score is saved and printed in the PDF.
-  if (content.wordMaster?.items?.length) {
+  // Word Master — the gap-fill drill; score is saved and printed in the
+  // PDF. Only offered in units that have picture vocabulary.
+  if (showWordMaster && content.wordMaster?.items?.length) {
     const btn = document.createElement("button");
     btn.className = "journal__wordmaster-btn";
     btn.textContent = "Word Master";
