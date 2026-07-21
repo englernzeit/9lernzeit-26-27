@@ -2793,6 +2793,9 @@ export function createBilingualPoster({
  * Field keys: p{i}-b{j}.
  * ============================================================ */
 
+const COMIC_WORD_MAX = 10;
+const comicWords = (s) => s.trim().split(/\s+/).filter(Boolean);
+
 export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-comicx";
@@ -2842,31 +2845,55 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
       ov.append(badge, txt);
       frame.appendChild(ov);
 
-      // Text field below the panel.
-      const row = document.createElement("label");
-      row.className = "exo-comicx__inrow";
-      const tag = document.createElement("span");
-      tag.className = "exo-comicx__tag";
-      tag.textContent = `💬 ${j + 1}`;
+      // Text field below the panel — one clearly-labelled row per bubble.
+      const field = document.createElement("div");
+      field.className = "exo-comicx__field";
+
+      const head = document.createElement("div");
+      head.className = "exo-comicx__fhead";
+      const numTag = document.createElement("span");
+      numTag.className = "exo-comicx__badge2";
+      numTag.textContent = String(j + 1);
+      const label = document.createElement("label");
+      label.className = "exo-comicx__flabel";
+      label.textContent = `What does speech bubble ${j + 1} say?`;
+      const count = document.createElement("span");
+      count.className = "exo-comicx__count";
+      head.append(numTag, label, count);
+
       const input = document.createElement("input");
       input.type = "text";
       input.className = "exo-comicx__input";
+      input.maxLength = 90;
       input.placeholder = b.placeholder ?? "Write what they say…";
       input.value = values?.[key] ?? "";
       input.dataset.answerKey = keyFor(key);
+      label.setAttribute("for", input.id = `${keyFor(key)}-in`);
 
+      const setCount = () => {
+        const n = comicWords(input.value).length;
+        count.textContent = `${n} / ${COMIC_WORD_MAX} words`;
+        count.classList.toggle("exo-comicx__count--full", n >= COMIC_WORD_MAX);
+      };
       const paint = () => {
         txt.textContent = input.value;
         ov.classList.toggle("exo-comicx__bubble--on", input.value.trim().length > 0);
       };
       input.addEventListener("input", () => {
+        // Hard limit: never allow more than COMIC_WORD_MAX words.
+        const w = comicWords(input.value);
+        if (w.length > COMIC_WORD_MAX) {
+          input.value = w.slice(0, COMIC_WORD_MAX).join(" ");
+        }
+        setCount();
         onChange(key, input.value);
         paint();
       });
+      setCount();
       paint();
 
-      row.append(tag, input);
-      inputs.appendChild(row);
+      field.append(head, input);
+      inputs.appendChild(field);
     });
 
     cell.append(frame, inputs);
