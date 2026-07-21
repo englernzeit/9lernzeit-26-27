@@ -7,6 +7,42 @@
  * Journal styling lives in css/components/exercises.css.
  */
 
+/* ---------- Shuffling ------------------------------------------ *
+ * Options and draggable chips are shuffled with a REAL random order
+ * (Math.random), freshly each time a card is built — so every learner
+ * gets a different sequence and can't just copy "it's the third one"
+ * from a neighbour. The correct answer always travels with its option,
+ * so shuffling never changes what is right.
+ */
+
+/** Fisher–Yates shuffle, in place. */
+function shuffleInPlace(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/** Shuffle a copy, leaving the original array untouched. */
+const shuffledCopy = (arr) => shuffleInPlace(arr.slice());
+
+/**
+ * Shuffle in place for ORDERING tasks: never leaves the array in its
+ * original order, so the correct sequence is never shown by accident.
+ * `keyOf` maps an item to a stable comparable value.
+ */
+function shuffleOrder(arr, keyOf = (x) => x) {
+  if (arr.length < 2) return arr;
+  const original = arr.map(keyOf);
+  let guard = 0;
+  do {
+    shuffleInPlace(arr);
+    guard += 1;
+  } while (guard < 25 && arr.every((x, i) => keyOf(x) === original[i]));
+  return arr;
+}
+
 /* ---------- Tappable-glossary reading text (Step 1) ------------ */
 
 /**
@@ -264,16 +300,12 @@ export function createMultipleChoice({ questions, columns }) {
     opts.className = "exo-mc__opts";
     let solved = false;
 
-    // Shuffle the options (deterministic per question) so the correct
-    // answer isn't always in the same position. The answer is still never
-    // revealed — only the picked option is marked right or wrong.
-    const order = question.options.map((label, i) => ({ label, correct: i === question.correct }));
-    let seed = (qi + 1) * 2654435761 + 40503; // deterministic PRNG, varies per question
-    const rand = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
-    for (let i = order.length - 1; i > 0; i--) {
-      const j = Math.floor(rand() * (i + 1));
-      [order[i], order[j]] = [order[j], order[i]];
-    }
+    // Shuffle the options randomly so the correct answer isn't always in
+    // the same position. The answer is still never revealed — only the
+    // picked option is marked right or wrong.
+    const order = shuffleInPlace(
+      question.options.map((label, i) => ({ label, correct: i === question.correct })),
+    );
 
     order.forEach(({ label, correct }) => {
       const btn = document.createElement("button");
@@ -316,14 +348,11 @@ export function createGroupSort({ groups }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-sort";
 
-  // Flatten items with their correct group, then shuffle deterministically.
+  // Flatten items with their correct group, then shuffle randomly.
   // An item is a plain string, or `{ image, label? }` for a picture chip.
   const items = [];
   groups.forEach((g, gi) => g.items.forEach((it) => items.push({ item: it, group: gi })));
-  for (let i = 0; i < items.length; i++) {
-    const j = (i * 7 + 3) % items.length; // stable pseudo-shuffle (no Math.random)
-    [items[i], items[j]] = [items[j], items[i]];
-  }
+  shuffleInPlace(items);
 
   const hasImages = items.some((e) => typeof e.item === "object" && e.item.image);
 
@@ -431,12 +460,11 @@ export function createSentenceBuild({ sentences }) {
     bank.className = "exo-build__bank";
 
     const order = [];
-    // stable shuffle
-    const shuffled = sentence.tokens.map((t, i) => ({ t, i }));
-    for (let i = 0; i < shuffled.length; i++) {
-      const j = (i * 5 + 2) % shuffled.length;
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
+    // random shuffle that never leaves the tokens already in order
+    const shuffled = shuffleOrder(
+      sentence.tokens.map((t, i) => ({ t, i })),
+      (o) => o.i,
+    );
 
     shuffled.forEach(({ t, i }) => {
       const tok = document.createElement("button");
@@ -649,12 +677,8 @@ export function createImageMatch({ pairs }) {
 
   const tray = document.createElement("div");
   tray.className = "exo-imatch__tray";
-  // Stable shuffle of the words so they don't sit under their picture
-  const words = pairs.map((p) => p.word);
-  for (let i = 0; i < words.length; i++) {
-    const j = (i * 7 + 3) % words.length;
-    [words[i], words[j]] = [words[j], words[i]];
-  }
+  // Random shuffle of the words so they don't sit under their picture
+  const words = shuffleInPlace(pairs.map((p) => p.word));
   words.forEach((word) => {
     const chip = document.createElement("button");
     chip.type = "button";
@@ -696,12 +720,11 @@ export function createEventOrder({ events }) {
   wrap.className = "exo exo-order";
 
   const n = events.length;
-  // Present the events in a stable shuffled order (not the answer order)
-  const shown = events.map((e, i) => ({ text: e.text, correct: i + 1 }));
-  for (let i = 0; i < shown.length; i++) {
-    const j = (i * 3 + 2) % shown.length;
-    [shown[i], shown[j]] = [shown[j], shown[i]];
-  }
+  // Present the events in a random order that is never the answer order.
+  const shown = shuffleOrder(
+    events.map((e, i) => ({ text: e.text, correct: i + 1 })),
+    (e) => e.correct,
+  );
 
   const rows = shown.map((e) => {
     const row = document.createElement("div");
@@ -778,9 +801,12 @@ export function createInlineChoice(data) {
     sup.textContent = gapIndex + 1;
     holder.appendChild(sup);
 
+    // Shuffle the choices so the answer isn't always in the same slot.
+    const gapOptions = shuffledCopy(gap.options);
+
     let getValue;
-    if (gap.options.length <= 3) {
-      const btns = gap.options.map((opt) => {
+    if (gapOptions.length <= 3) {
+      const btns = gapOptions.map((opt) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "exo-inline__opt";
@@ -805,7 +831,7 @@ export function createInlineChoice(data) {
       blank.value = "";
       blank.textContent = "—";
       sel.appendChild(blank);
-      gap.options.forEach((opt) => {
+      gapOptions.forEach((opt) => {
         const o = document.createElement("option");
         o.value = opt;
         o.textContent = opt;
@@ -1032,6 +1058,9 @@ export function createMatchUp({ options, items }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-match";
 
+  // Shuffle the option list so its order never mirrors the rows' answers.
+  const shownOptions = shuffledCopy(options);
+
   const rows = items.map((item) => {
     const row = document.createElement("div");
     row.className = "exo-match__row";
@@ -1044,7 +1073,7 @@ export function createMatchUp({ options, items }) {
     blank.value = "";
     blank.textContent = "—";
     sel.appendChild(blank);
-    for (const opt of options) {
+    for (const opt of shownOptions) {
       const o = document.createElement("option");
       o.value = opt;
       o.textContent = opt;
@@ -1115,12 +1144,8 @@ export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deu
   grid.append(leftCol, rightCol);
   wrap.appendChild(grid);
 
-  // Deterministic shuffle of the right column (no Math.random).
-  const order = pairs.map((_, i) => i);
-  for (let i = 0; i < order.length; i++) {
-    const j = (i * 3 + 2) % order.length;
-    [order[i], order[j]] = [order[j], order[i]];
-  }
+  // Random shuffle of the right column so answers aren't row-aligned.
+  const order = shuffleOrder(pairs.map((_, i) => i));
 
   const leftBtns = new Map();
   const rightBtns = new Map();
@@ -1227,7 +1252,7 @@ export function createArgumentPick({ args }) {
   lead.textContent = `Tick the ${suitable} suitable arguments — ignore the absurd ones.`;
   wrap.appendChild(lead);
 
-  const rows = args.map((arg) => {
+  const rows = shuffledCopy(args).map((arg) => {
     const label = document.createElement("label");
     label.className = "exo-args__row";
     const box = document.createElement("input");
