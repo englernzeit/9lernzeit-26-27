@@ -2827,23 +2827,38 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
     const inputs = document.createElement("div");
     inputs.className = "exo-comicx__inputs";
 
+    const frameFits = []; // re-fit every bubble's text when the panel resizes
+
     (panel.bubbles ?? []).forEach((b, j) => {
       const key = `p${i}-b${j}`;
 
-      // Overlay that sits on the drawn bubble in the artwork.
+      // Overlay that sits on the drawn bubble in the artwork (no visible
+      // marker of its own — it's just where the learner's words appear).
       const ov = document.createElement("div");
       ov.className = "exo-comicx__bubble";
       ov.style.left = `${b.x}%`;
       ov.style.top = `${b.y}%`;
       ov.style.width = `${b.w}%`;
       ov.style.height = `${b.h}%`;
-      const badge = document.createElement("span");
-      badge.className = "exo-comicx__bubble-badge";
-      badge.textContent = String(j + 1);
       const txt = document.createElement("span");
       txt.className = "exo-comicx__bubble-text";
-      ov.append(badge, txt);
+      ov.appendChild(txt);
       frame.appendChild(ov);
+
+      // Shrink the words until they fit inside the bubble box (both ways).
+      const fit = () => {
+        if (!ov.clientHeight || !txt.textContent) return;
+        let size = 16;
+        txt.style.fontSize = size + "px";
+        while (
+          (txt.scrollHeight > ov.clientHeight || txt.scrollWidth > ov.clientWidth) &&
+          size > 6
+        ) {
+          size -= 0.5;
+          txt.style.fontSize = size + "px";
+        }
+      };
+      frameFits.push(fit);
 
       // Text field below the panel — one clearly-labelled row per bubble.
       const field = document.createElement("div");
@@ -2878,6 +2893,7 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
       const paint = () => {
         txt.textContent = input.value;
         ov.classList.toggle("exo-comicx__bubble--on", input.value.trim().length > 0);
+        fit();
       };
       input.addEventListener("input", () => {
         // Hard limit: never allow more than COMIC_WORD_MAX words.
@@ -2895,6 +2911,12 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
       field.append(head, input);
       inputs.appendChild(field);
     });
+
+    // The panel's real size only settles once the artwork has loaded and on
+    // every responsive resize — re-fit the bubble text each time.
+    if (typeof ResizeObserver === "function") {
+      new ResizeObserver(() => frameFits.forEach((f) => f())).observe(frame);
+    }
 
     cell.append(frame, inputs);
     grid.appendChild(cell);

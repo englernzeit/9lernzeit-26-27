@@ -2475,44 +2475,20 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 5px;
   overflow: hidden;
   text-align: center;
   pointer-events: none;
 }
 
-.exo-comicx__bubble-badge {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translate(-35%, -35%);
-  width: 1.35rem;
-  height: 1.35rem;
-  border-radius: 50%;
-  background: var(--j-coral);
-  color: #fff;
-  font-family: var(--j-font-display);
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(60, 40, 20, 0.4);
-}
-
-.exo-comicx__bubble--on .exo-comicx__bubble-badge {
-  opacity: 0;
-}
-
 .exo-comicx__bubble-text {
+  width: 100%;
   font-family: var(--j-font-body);
-  font-size: 13px; /* fallback for browsers without container queries */
-  font-size: clamp(11px, 4.4cqi, 16px);
-  line-height: 1.08;
+  font-size: 13px; /* JS shrinks this to fit; this is only the starting size */
+  line-height: 1.05;
   color: #14120f;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 
 .exo-comicx__inputs {
