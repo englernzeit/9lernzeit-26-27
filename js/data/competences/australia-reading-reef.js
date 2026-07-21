@@ -365,23 +365,68 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Draw the rescue",
+      subtitle: "Challenge · Write the rescue comic",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "comic-strip",
+          type: "comic-speech",
           kind: "Projekt · Challenge",
           title: "Rescue comic strip",
           intro:
-            "Your project: turn a Flying Doctors rescue into a four-panel comic. For each panel, write the caption (what happens) and one speech bubble (what someone says). You can draw or add the pictures later.",
+            "Read the six-panel Flying Doctors rescue below — the pictures tell the whole story, but the speech bubbles are empty. Your job: write what everyone says. Type in each text field and your words appear live in the matching bubble.",
+          base: "assets/images/unit1/comic",
           panels: [
-            { n: 1, prompt: "Panel 1 — the call for help", bubblePlaceholder: "“Help! Our car has broken down!”", capPlaceholder: "Far out in the outback, a family's vehicle breaks down." },
-            { n: 2, prompt: "Panel 2 — the plane takes off", bubblePlaceholder: "“The Flying Doctors are on their way!”", capPlaceholder: "At the base, the doctor jumps into the small plane." },
-            { n: 3, prompt: "Panel 3 — the rescue", bubblePlaceholder: "“Don't worry — we'll help you.”", capPlaceholder: "The plane lands on the red desert road." },
-            { n: 4, prompt: "Panel 4 — safe again", bubblePlaceholder: "“Thank you for saving us!”", capPlaceholder: "Everyone is safe as the desert sun goes down." },
+            {
+              n: 1,
+              img: "panel1.jpg",
+              bubbles: [
+                { x: 19, y: 13, w: 26, h: 17, placeholder: "The doctor: “We've had a call for help!”" },
+                { x: 76, y: 14, w: 26, h: 18, placeholder: "The nurse: “The medical kit is ready.”" },
+              ],
+            },
+            {
+              n: 2,
+              img: "panel2.jpg",
+              bubbles: [
+                { x: 48, y: 16, w: 26, h: 18, placeholder: "The pilot: “It's a two-hour flight.”" },
+                { x: 13, y: 82, w: 22, h: 17, placeholder: "The co-pilot: “The runway is only red dirt!”" },
+              ],
+            },
+            {
+              n: 3,
+              img: "panel3.jpg",
+              bubbles: [
+                { x: 17, y: 15, w: 24, h: 18, placeholder: "The boy: “Thank you for coming so fast!”" },
+                { x: 84, y: 53, w: 24, h: 18, placeholder: "The doctor: “Where does it hurt?”" },
+              ],
+            },
+            {
+              n: 4,
+              img: "panel4.jpg",
+              bubbles: [
+                { x: 38, y: 15, w: 24, h: 19, placeholder: "The doctor: “Your ankle is broken.”" },
+                { x: 61, y: 19, w: 22, h: 17, placeholder: "The nurse: “This bandage will help.”" },
+              ],
+            },
+            {
+              n: 5,
+              img: "panel5.jpg",
+              bubbles: [
+                { x: 19, y: 15, w: 26, h: 20, placeholder: "Grandma: “I can stand again — thank you!”" },
+                { x: 59, y: 66, w: 25, h: 19, placeholder: "The nurse: “Take it easy for a few weeks.”" },
+              ],
+            },
+            {
+              n: 6,
+              img: "panel6.jpg",
+              bubbles: [
+                { x: 57, y: 67, w: 22, h: 18, placeholder: "The pilot: “Another life saved today.”" },
+                { x: 82, y: 68, w: 23, h: 19, placeholder: "The doctor: “On to the next emergency!”" },
+              ],
+            },
           ],
-          help: "Tip: use this unit's words (outback, vehicle, shade, sting, citizen …). Keep captions short — a comic is fast!",
+          help: "Tip: keep each bubble short — a comic is fast! Use this unit's words (outback, vehicle, shade, sting, citizen …). The little coral number shows which field fills which bubble.",
         },
       ],
     },

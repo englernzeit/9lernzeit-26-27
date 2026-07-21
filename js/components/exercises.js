@@ -2782,3 +2782,96 @@ export function createBilingualPoster({
 
   return wrap;
 }
+
+/* ================= Comic speech bubbles =========================
+ * A creative reading mini-project: the learner reads a wordless six-panel
+ * comic (hand-painted RFDS rescue) and writes the dialogue. Each panel has
+ * one or two blank speech bubbles already drawn into the artwork; the
+ * learner types in a text field below the panel and the words appear live
+ * inside the matching bubble. Product task; every field feeds the PDF.
+ * Bubble coords (x, y = centre; w, h = size) are percentages of the panel.
+ * Field keys: p{i}-b{j}.
+ * ============================================================ */
+
+export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-comicx";
+  const grid = document.createElement("div");
+  grid.className = "exo-comicx__grid";
+  wrap.appendChild(grid);
+
+  panels.forEach((panel, i) => {
+    const cell = document.createElement("article");
+    cell.className = "exo-comicx__cell";
+
+    const frame = document.createElement("div");
+    frame.className = "exo-comicx__frame";
+    if (base && panel.img) {
+      const img = document.createElement("img");
+      img.className = "exo-comicx__art";
+      img.src = `${base}/${panel.img}`;
+      img.alt = "";
+      img.loading = "lazy";
+      img.addEventListener("error", () => {
+        img.remove();
+        frame.classList.add("exo-comicx__frame--empty");
+      });
+      frame.appendChild(img);
+    } else {
+      frame.classList.add("exo-comicx__frame--empty");
+    }
+
+    const inputs = document.createElement("div");
+    inputs.className = "exo-comicx__inputs";
+
+    (panel.bubbles ?? []).forEach((b, j) => {
+      const key = `p${i}-b${j}`;
+
+      // Overlay that sits on the drawn bubble in the artwork.
+      const ov = document.createElement("div");
+      ov.className = "exo-comicx__bubble";
+      ov.style.left = `${b.x}%`;
+      ov.style.top = `${b.y}%`;
+      ov.style.width = `${b.w}%`;
+      ov.style.height = `${b.h}%`;
+      const badge = document.createElement("span");
+      badge.className = "exo-comicx__bubble-badge";
+      badge.textContent = String(j + 1);
+      const txt = document.createElement("span");
+      txt.className = "exo-comicx__bubble-text";
+      ov.append(badge, txt);
+      frame.appendChild(ov);
+
+      // Text field below the panel.
+      const row = document.createElement("label");
+      row.className = "exo-comicx__inrow";
+      const tag = document.createElement("span");
+      tag.className = "exo-comicx__tag";
+      tag.textContent = `💬 ${j + 1}`;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "exo-comicx__input";
+      input.placeholder = b.placeholder ?? "Write what they say…";
+      input.value = values?.[key] ?? "";
+      input.dataset.answerKey = keyFor(key);
+
+      const paint = () => {
+        txt.textContent = input.value;
+        ov.classList.toggle("exo-comicx__bubble--on", input.value.trim().length > 0);
+      };
+      input.addEventListener("input", () => {
+        onChange(key, input.value);
+        paint();
+      });
+      paint();
+
+      row.append(tag, input);
+      inputs.appendChild(row);
+    });
+
+    cell.append(frame, inputs);
+    grid.appendChild(cell);
+  });
+
+  return wrap;
+}
