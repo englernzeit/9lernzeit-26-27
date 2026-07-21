@@ -44,6 +44,7 @@ import {
   createComicStrip,
   createBilingualCard,
   createSignMaker,
+  createBilingualPoster,
 } from "../components/exercises.js";
 import {
   getName,
@@ -379,6 +380,20 @@ function downloadAnswerSheet(view, unit, section, content, name) {
             label: `${card.title} — ${sign.hint ?? `Sign ${k + 1}`}`,
             answer: answers[`${base}-signs-s${k}`] ?? "",
           }));
+        }
+        if (card.type === "bilingual-poster") {
+          const bp = `${base}-biposter`;
+          const items = [
+            { label: `${card.title} — Headline (EN)`, answer: answers[`${bp}-head-en`] ?? "" },
+            { label: `${card.title} — Überschrift (DE)`, answer: answers[`${bp}-head-de`] ?? "" },
+          ];
+          (card.tips ?? []).forEach((_, k) => {
+            items.push({ label: `${card.title} — Tip ${k + 1} (EN)`, answer: answers[`${bp}-tip${k}-en`] ?? "" });
+            items.push({ label: `${card.title} — Tipp ${k + 1} (DE)`, answer: answers[`${bp}-tip${k}-de`] ?? "" });
+          });
+          items.push({ label: `${card.title} — Emergency (EN)`, answer: answers[`${bp}-foot-en`] ?? "" });
+          items.push({ label: `${card.title} — Notfall (DE)`, answer: answers[`${bp}-foot-de`] ?? "" });
+          return items;
         }
         if (card.type === "paragraph-builder") {
           return card.paragraph.sentences.map((sentence, k) => ({
@@ -973,6 +988,22 @@ function buildCard(step, data, index, taskNo, ctx) {
         createSignMaker({
           signs: data.signs,
           base: data.base,
+          values: prefix(saved, base),
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "bilingual-poster": {
+      const base = `step${step.step}-task${index + 1}-biposter`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createBilingualPoster({
+          icon: data.icon,
+          headline: data.headline,
+          tips: data.tips,
+          footer: data.footer,
           values: prefix(saved, base),
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),

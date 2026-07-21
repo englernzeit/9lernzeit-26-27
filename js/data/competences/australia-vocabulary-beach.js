@@ -333,23 +333,26 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Bilingual safety card",
+      subtitle: "Challenge · Bilingual sun & heat poster",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "bilingual-card",
+          type: "bilingual-poster",
           kind: "Mediation · Challenge",
-          title: "Safety card for a German friend",
+          title: "Sun & heat: a poster for everyone",
           intro:
-            "Your German exchange partner has just arrived in Australia and doesn't know the dangers. Make them a bilingual safety card: for each danger write a short warning in English, then explain it in your own words in German (mediation — not word for word!).",
-          rows: [
-            { hazard: "Box jellyfish", icon: "🪼", en: "Warning in English…", de: "Erklärung auf Deutsch…" },
-            { hazard: "Bushfire", icon: "🔥", en: "Warning in English…", de: "Erklärung auf Deutsch…" },
-            { hazard: "Sun & heat", icon: "☀️", en: "Warning in English…", de: "Erklärung auf Deutsch…" },
-            { hazard: "Snake", icon: "🐍", en: "Warning in English…", de: "Erklärung auf Deutsch…" },
+            "Australia's sun is dangerous — it is easy to get sunburn or heatstroke. Design one awareness poster that works for BOTH your English-speaking classmates and your German family: write every line in English and then, in your own words, in German (mediation — not word for word!). Watch your poster build itself as you type.",
+          icon: "☀️",
+          headline: { en: "SUN & HEAT — TAKE CARE", de: "Sonne & Hitze — pass auf dich auf!" },
+          tips: [
+            { en: "Wear a hat, sunglasses and sunscreen.", de: "Trag einen Hut, eine Sonnenbrille und Sonnencreme." },
+            { en: "Drink water all day, even when you're not thirsty.", de: "Trink den ganzen Tag Wasser, auch ohne Durst." },
+            { en: "Stay in the shade between 11 a.m. and 3 p.m.", de: "Bleib zwischen 11 und 15 Uhr im Schatten." },
+            { en: "Never leave anyone in a hot car.", de: "Lass niemanden in einem heißen Auto zurück." },
           ],
-          help: "Tip: the English line is a short warning; the German line explains WHY and what to do, in your own words.",
+          footer: { en: "Feeling dizzy or sick? Cool down and call 000.", de: "Schwindelig oder übel? Abkühlen und 000 anrufen." },
+          help: "Tip: keep the English lines short, like on a real poster. In the German line, say the same idea in your own words — you don't have to translate every word.",
         },
       ],
     },

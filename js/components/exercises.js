@@ -2649,3 +2649,136 @@ export function createSignMaker({ signs, base, values, keyFor, onChange }) {
 
   return wrap;
 }
+
+/* ================= Bilingual awareness poster ===================
+ * A mediation mini-project: the learner turns one danger (sun & heat)
+ * into a public-information poster written in BOTH languages. Every line
+ * has an English version and a German one, and the whole thing renders
+ * live as a real awareness poster. Product task; every field feeds the
+ * PDF. Field keys: head-en/head-de, tip{i}-en/tip{i}-de, foot-en/foot-de.
+ * ============================================================ */
+
+export function createBilingualPoster({
+  icon = "☀️",
+  headline = {},
+  tips = [],
+  footer = {},
+  values,
+  keyFor,
+  onChange,
+}) {
+  const state = {};
+  const get = (k) => values?.[k] ?? "";
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-biposter";
+  const grid = document.createElement("div");
+  grid.className = "exo-biposter__grid";
+  wrap.appendChild(grid);
+
+  // LEFT: live poster preview
+  const left = document.createElement("div");
+  left.className = "exo-biposter__left";
+  const cap = document.createElement("div");
+  cap.className = "exo-biposter__cap";
+  cap.textContent = "Live poster";
+  const poster = document.createElement("article");
+  poster.className = "exo-biposter__poster";
+
+  const sun = document.createElement("div");
+  sun.className = "exo-biposter__sun";
+  sun.textContent = icon;
+
+  const headEn = document.createElement("h4");
+  headEn.className = "exo-biposter__head-en";
+  const headDe = document.createElement("p");
+  headDe.className = "exo-biposter__head-de";
+
+  const list = document.createElement("ul");
+  list.className = "exo-biposter__tips";
+  const tipEls = tips.map(() => {
+    const li = document.createElement("li");
+    li.className = "exo-biposter__tip";
+    const en = document.createElement("span");
+    en.className = "exo-biposter__tip-en";
+    const de = document.createElement("span");
+    de.className = "exo-biposter__tip-de";
+    li.append(en, de);
+    list.appendChild(li);
+    return { en, de };
+  });
+
+  const foot = document.createElement("div");
+  foot.className = "exo-biposter__foot";
+  const footEn = document.createElement("span");
+  footEn.className = "exo-biposter__foot-en";
+  const footDe = document.createElement("span");
+  footDe.className = "exo-biposter__foot-de";
+  foot.append(footEn, footDe);
+
+  poster.append(sun, headEn, headDe, list, foot);
+  left.append(cap, poster);
+
+  // RIGHT: form
+  const right = document.createElement("div");
+  right.className = "exo-biposter__right";
+  const form = document.createElement("div");
+  form.className = "exo-biposter__form";
+  right.appendChild(form);
+
+  const addField = (key, langLabel, placeholder) => {
+    const label = document.createElement("label");
+    label.className = "exo-biposter__field";
+    const span = document.createElement("span");
+    span.className = "exo-biposter__flabel";
+    span.textContent = langLabel;
+    const el = document.createElement("input");
+    el.type = "text";
+    el.className = `exo-biposter__input exo-biposter__input--${key.endsWith("-de") ? "de" : "en"}`;
+    el.placeholder = placeholder ?? "";
+    el.value = get(key);
+    el.dataset.answerKey = keyFor(key);
+    state[key] = el.value;
+    el.addEventListener("input", () => {
+      state[key] = el.value;
+      onChange(key, el.value);
+      update();
+    });
+    label.append(span, el);
+    return label;
+  };
+
+  const addRow = (title, enField, deField, enPh, dePh) => {
+    const row = document.createElement("div");
+    row.className = "exo-biposter__inrow";
+    const rl = document.createElement("div");
+    rl.className = "exo-biposter__rowlabel";
+    rl.textContent = title;
+    row.append(rl, addField(enField, "English", enPh), addField(deField, "Deutsch", dePh));
+    form.appendChild(row);
+  };
+
+  addRow("Headline", "head-en", "head-de", headline.en, headline.de);
+  tips.forEach((t, i) => addRow(`Tip ${i + 1}`, `tip${i}-en`, `tip${i}-de`, t.en, t.de));
+  addRow("In an emergency", "foot-en", "foot-de", footer.en, footer.de);
+
+  grid.append(left, right);
+
+  const paint = (el, val, ph) => {
+    el.textContent = val || ph || "";
+    el.classList.toggle("exo-biposter__ghost", !val);
+  };
+  function update() {
+    paint(headEn, state["head-en"], headline.en);
+    paint(headDe, state["head-de"], headline.de);
+    tips.forEach((t, i) => {
+      paint(tipEls[i].en, state[`tip${i}-en`], t.en);
+      paint(tipEls[i].de, state[`tip${i}-de`], t.de);
+    });
+    paint(footEn, state["foot-en"], footer.en);
+    paint(footDe, state["foot-de"], footer.de);
+  }
+  update();
+
+  return wrap;
+}
