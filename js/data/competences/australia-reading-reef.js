@@ -374,55 +374,55 @@ export default {
           kind: "Projekt · Challenge",
           title: "Rescue comic strip",
           intro:
-            "This six-panel comic tells a whole Flying Doctors rescue — but the speech bubbles are empty. Fill them in! Under each picture is a text box for every bubble. Type there, and your words appear straight away inside the matching bubble (the coral number tells you which is which). Keep each bubble to 10 words or fewer.",
+            "This six-panel comic tells a whole Flying Doctors rescue — but the speech bubbles are empty. Fill them in! Under each picture there is a line for every person who speaks (for example, “The doctor says …”). Type what they say and your words appear straight away inside their bubble. Keep each bubble to 10 words or fewer.",
           base: "assets/images/unit1/comic",
           panels: [
             {
               n: 1,
               img: "panel1.jpg",
               bubbles: [
-                { x: 19, y: 15, w: 26, h: 18, placeholder: "The doctor: “We've had a call for help!”" },
-                { x: 76, y: 18, w: 27, h: 18, placeholder: "The nurse: “The medical kit is ready.”" },
+                { x: 33, y: 13, w: 26, h: 14, speaker: "The doctor" },
+                { x: 89, y: 17, w: 18, h: 14, speaker: "The nurse" },
               ],
             },
             {
               n: 2,
               img: "panel2.jpg",
               bubbles: [
-                { x: 48, y: 16, w: 26, h: 18, placeholder: "The pilot: “It's a two-hour flight.”" },
-                { x: 13, y: 82, w: 22, h: 17, placeholder: "The co-pilot: “The runway is only red dirt!”" },
+                { x: 33, y: 16, w: 25, h: 18, speaker: "The pilot" },
+                { x: 12, y: 80, w: 19, h: 14, speaker: "The co-pilot" },
               ],
             },
             {
               n: 3,
               img: "panel3.jpg",
               bubbles: [
-                { x: 17, y: 15, w: 24, h: 18, placeholder: "The boy: “Thank you for coming so fast!”" },
-                { x: 84, y: 53, w: 24, h: 18, placeholder: "The doctor: “Where does it hurt?”" },
+                { x: 20, y: 14, w: 21, h: 15, speaker: "The boy" },
+                { x: 87, y: 53, w: 18, h: 16, speaker: "The doctor" },
               ],
             },
             {
               n: 4,
               img: "panel4.jpg",
               bubbles: [
-                { x: 38, y: 17, w: 24, h: 19, placeholder: "The doctor: “Your ankle is broken.”" },
-                { x: 61, y: 20, w: 23, h: 18, placeholder: "The nurse: “This bandage will help.”" },
+                { x: 43, y: 10, w: 22, h: 16, speaker: "The doctor" },
+                { x: 62, y: 23, w: 16, h: 15, speaker: "The nurse" },
               ],
             },
             {
               n: 5,
               img: "panel5.jpg",
               bubbles: [
-                { x: 20, y: 17, w: 27, h: 21, placeholder: "Grandma: “I can stand again — thank you!”" },
-                { x: 59, y: 65, w: 30, h: 23, placeholder: "The nurse: “Take it easy for a few weeks.”" },
+                { x: 13, y: 16, w: 18, h: 15, speaker: "Grandma" },
+                { x: 51, y: 61, w: 21, h: 13, speaker: "The nurse" },
               ],
             },
             {
               n: 6,
               img: "panel6.jpg",
               bubbles: [
-                { x: 57, y: 67, w: 22, h: 18, placeholder: "The pilot: “Another life saved today.”" },
-                { x: 82, y: 68, w: 23, h: 19, placeholder: "The doctor: “On to the next emergency!”" },
+                { x: 60, y: 61, w: 16, h: 12, speaker: "The pilot" },
+                { x: 85, y: 62, w: 17, h: 12, speaker: "The doctor" },
               ],
             },
           ],

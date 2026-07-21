@@ -2871,7 +2871,7 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
       numTag.textContent = String(j + 1);
       const label = document.createElement("label");
       label.className = "exo-comicx__flabel";
-      label.textContent = `What does speech bubble ${j + 1} say?`;
+      label.textContent = b.speaker ? `${b.speaker} says` : `Speech bubble ${j + 1}`;
       const count = document.createElement("span");
       count.className = "exo-comicx__count";
       head.append(numTag, label, count);
@@ -2880,7 +2880,6 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
       input.type = "text";
       input.className = "exo-comicx__input";
       input.maxLength = 90;
-      input.placeholder = b.placeholder ?? "Write what they say…";
       input.value = values?.[key] ?? "";
       input.dataset.answerKey = keyFor(key);
       label.setAttribute("for", input.id = `${keyFor(key)}-in`);
