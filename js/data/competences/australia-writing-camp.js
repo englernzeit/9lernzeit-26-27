@@ -364,7 +364,20 @@ export default {
           kind: "Kreativ · Challenge",
           title: "You are the organisation — reply!",
           intro:
-            "Role swap! A student has emailed your wildlife organisation to ask about volunteering. Now write the official REPLY (100–140 words): thank them, answer their questions, and tell them the next step. Stay polite and formal throughout.",
+            "Role swap! The email below arrived at your wildlife organisation. Now write the official REPLY (100–140 words): thank the writer, answer every question, and tell them the next step. Stay polite and formal throughout.",
+          incoming: {
+            from: "Lena Wagner <lena.wagner@email.de>",
+            subject: "Enquiry about volunteer opportunities",
+            body: [
+              "Dear Sir or Madam,",
+              "My name is Lena Wagner and I am a 15-year-old student from Germany. I love animals and I would like to help protect Australian wildlife during my summer holidays.",
+              "Could you please tell me whether I am old enough to volunteer, and what volunteers do each day? I would also like to know if you offer accommodation.",
+              "Finally, could you tell me how I can apply?",
+              "Thank you very much for your help.",
+              "Yours faithfully,",
+              "Lena Wagner",
+            ],
+          },
           subject: "Re: Enquiry about volunteer opportunities",
           chips: [
             { n: "01", label: "Thank them for writing" },

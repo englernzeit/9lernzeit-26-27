@@ -771,6 +771,11 @@ function buildCard(step, data, index, taskNo, ctx) {
     body.appendChild(buildTaskVideo(data.video));
   }
 
+  // Optional read-only email to react to (e.g. Writing "write the reply").
+  if (data.incoming) {
+    body.appendChild(buildReceivedEmail(data.incoming));
+  }
+
   switch (data.type) {
     case "video":
     case "image":
@@ -987,6 +992,47 @@ function buildCard(step, data, index, taskNo, ctx) {
   }
 
   return card;
+}
+
+/**
+ * A read-only "received email" shown above a reply task, so the incoming
+ * message stays visible while the learner writes their answer.
+ * @param {{from?: string, subject?: string, body: string[]}} email
+ */
+function buildReceivedEmail(email) {
+  const art = document.createElement("article");
+  art.className = "received-mail";
+
+  const head = document.createElement("div");
+  head.className = "received-mail__head";
+  const tag = document.createElement("span");
+  tag.className = "received-mail__tag";
+  tag.textContent = "📨 New message";
+  head.appendChild(tag);
+  if (email.from) {
+    const from = document.createElement("div");
+    from.className = "received-mail__meta";
+    from.innerHTML = `<span>From:</span> ${email.from}`;
+    head.appendChild(from);
+  }
+  if (email.subject) {
+    const subj = document.createElement("div");
+    subj.className = "received-mail__meta";
+    subj.innerHTML = `<span>Subject:</span> ${email.subject}`;
+    head.appendChild(subj);
+  }
+  art.appendChild(head);
+
+  const bodyEl = document.createElement("div");
+  bodyEl.className = "received-mail__body";
+  (email.body ?? []).forEach((para) => {
+    const p = document.createElement("p");
+    p.textContent = para;
+    bodyEl.appendChild(p);
+  });
+  art.appendChild(bodyEl);
+
+  return art;
 }
 
 /**

@@ -407,6 +407,57 @@
   margin-top: 0.1rem;
 }
 
+/* Read-only "received email" shown above a reply task */
+.received-mail {
+  margin: 0.9rem 0 1.1rem;
+  background: #fffdf5;
+  border: 1.5px solid rgba(138, 125, 99, 0.4);
+  border-radius: 10px 14px 10px 14px;
+  box-shadow: 0 6px 16px -10px rgba(70, 60, 110, 0.3);
+  transform: rotate(-0.4deg);
+  overflow: hidden;
+}
+
+.received-mail__head {
+  background: rgba(79, 127, 150, 0.12);
+  border-bottom: 1.5px dashed rgba(138, 125, 99, 0.4);
+  padding: 0.5rem 0.9rem 0.6rem;
+}
+
+.received-mail__tag {
+  display: inline-block;
+  font-family: var(--j-font-display);
+  font-size: 1.05rem;
+  color: var(--j-teal-deep);
+  margin-bottom: 0.2rem;
+}
+
+.received-mail__meta {
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  color: var(--j-ink);
+}
+
+.received-mail__meta span {
+  color: var(--j-khaki);
+}
+
+.received-mail__body {
+  padding: 0.7rem 1rem 0.9rem;
+}
+
+.received-mail__body p {
+  font-family: var(--j-font-body);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--j-ink);
+  margin: 0 0 0.5rem;
+}
+
+.received-mail__body p:last-child {
+  margin-bottom: 0;
+}
+
 .taskcard__lines {
   margin-top: 1rem;
   display: flex;
