@@ -13,7 +13,10 @@
 
 .jcar__stage {
   position: relative;
-  touch-action: pan-y;
+  /* pan-y keeps vertical scrolling and lets our JS pointer-swipe drive the
+     cards horizontally; pinch-zoom re-enables two-finger zoom on the cards
+     (iPad/phone), which plain pan-y would have blocked. */
+  touch-action: pan-y pinch-zoom;
   /* Slide/spread heights are set from JS to the active card's height,
      so a card is never taller (scroll) or shorter (empty gap) than it
      needs. This animates the change between cards. */

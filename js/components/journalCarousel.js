@@ -76,17 +76,25 @@ export function createJournalCarousel({ mode, accent, cards }) {
   });
   root.appendChild(dotsRow);
 
-  // Swipe
+  // Swipe — single finger only. A second finger (pinch-to-zoom) is not the
+  // primary pointer, so it aborts the swipe and lets the browser zoom.
   let startX = null;
   stage.addEventListener("pointerdown", (e) => {
+    if (!e.isPrimary) {
+      startX = null; // pinch started: cancel any in-progress swipe
+      return;
+    }
     startX = e.clientX;
   });
   stage.addEventListener("pointerup", (e) => {
-    if (startX === null) return;
+    if (!e.isPrimary || startX === null) return;
     const dx = e.clientX - startX;
     startX = null;
     if (Math.abs(dx) < 40) return;
     go(active + (dx < 0 ? 1 : -1));
+  });
+  stage.addEventListener("pointercancel", () => {
+    startX = null;
   });
 
   function render() {
