@@ -2948,3 +2948,89 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
 
   return wrap;
 }
+
+/* ================= Poster fill-in (mediation) ===================
+ * A hand-painted awareness poster with empty text zones drawn into the
+ * artwork. The learner types straight into each zone and the words fill
+ * the poster live — typically one zone in English, one in German
+ * (mediation). Product task; every zone feeds the PDF. Zone coords
+ * (x, y = top-left; w, h = size) are percentages of the poster image.
+ * Field keys: z{i}.
+ * ============================================================ */
+
+export function createPosterFill({ base, img, zones, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-pfill";
+  const stage = document.createElement("div");
+  stage.className = "exo-pfill__stage";
+  wrap.appendChild(stage);
+
+  if (base && img) {
+    const im = document.createElement("img");
+    im.className = "exo-pfill__bg";
+    im.src = `${base}/${img}`;
+    im.alt = "";
+    stage.appendChild(im);
+  }
+
+  const zoneFits = [];
+
+  (zones ?? []).forEach((z, i) => {
+    const key = `z${i}`;
+    const zone = document.createElement("div");
+    zone.className = "exo-pfill__zone";
+    if (z.role) zone.classList.add(`exo-pfill__zone--${z.role}`);
+    zone.classList.add(`exo-pfill__zone--${z.lang === "de" ? "de" : "en"}`);
+    zone.style.left = `${z.x}%`;
+    zone.style.top = `${z.y}%`;
+    zone.style.width = `${z.w}%`;
+    zone.style.height = `${z.h}%`;
+
+    const badge = document.createElement("span");
+    badge.className = "exo-pfill__badge";
+    badge.textContent = z.label || (z.lang === "de" ? "Deutsch" : "English");
+
+    const ta = document.createElement("textarea");
+    ta.className = "exo-pfill__ta";
+    ta.value = values?.[key] ?? "";
+    ta.dataset.answerKey = keyFor(key);
+    ta.setAttribute("aria-label", badge.textContent);
+    ta.spellcheck = false;
+
+    // Shrink the text until it fits the zone (no scrollbars on a poster).
+    const fit = () => {
+      ta.style.fontSize = "";
+      if (!ta.clientHeight) return;
+      let size = parseFloat(getComputedStyle(ta).fontSize) || 16;
+      ta.style.fontSize = `${size}px`;
+      let guard = 0;
+      while (ta.scrollHeight > ta.clientHeight && size > 8 && guard < 60) {
+        size -= 1;
+        ta.style.fontSize = `${size}px`;
+        guard += 1;
+      }
+    };
+
+    const paint = () => {
+      zone.classList.toggle("exo-pfill__zone--filled", ta.value.trim().length > 0);
+      fit();
+    };
+    ta.addEventListener("input", () => {
+      onChange(key, ta.value);
+      paint();
+    });
+    paint();
+
+    zone.append(badge, ta);
+    stage.appendChild(zone);
+    zoneFits.push(fit);
+  });
+
+  // Zones only get their real size once the poster image has loaded and on
+  // every responsive resize — re-fit each zone's text then.
+  if (typeof ResizeObserver === "function") {
+    new ResizeObserver(() => zoneFits.forEach((f) => f())).observe(stage);
+  }
+
+  return wrap;
+}

@@ -46,6 +46,7 @@ import {
   createSignMaker,
   createBilingualPoster,
   createComicSpeech,
+  createPosterFill,
 } from "../components/exercises.js";
 import {
   getName,
@@ -377,6 +378,12 @@ function downloadAnswerSheet(view, unit, section, content, name) {
               answer: answers[`${base}-comicx-p${k}-b${j}`] ?? "",
             })),
           );
+        }
+        if (card.type === "poster-fill") {
+          return card.zones.map((z, k) => ({
+            label: `${card.title} — ${z.label || (z.lang === "de" ? "Deutsch" : "English")}`,
+            answer: answers[`${base}-pfill-z${k}`] ?? "",
+          }));
         }
         if (card.type === "bilingual-card") {
           return card.rows.flatMap((row, k) => [
@@ -997,6 +1004,21 @@ function buildCard(step, data, index, taskNo, ctx) {
         createSignMaker({
           signs: data.signs,
           base: data.base,
+          values: prefix(saved, base),
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "poster-fill": {
+      const base = `step${step.step}-task${index + 1}-pfill`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createPosterFill({
+          base: data.base,
+          img: data.img,
+          zones: data.zones,
           values: prefix(saved, base),
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
