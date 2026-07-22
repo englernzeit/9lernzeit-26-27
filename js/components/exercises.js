@@ -2986,15 +2986,21 @@ export function createPosterFill({ base, img, zones, values, keyFor, onChange })
     zone.style.width = `${z.w}%`;
     zone.style.height = `${z.h}%`;
 
-    const badge = document.createElement("span");
-    badge.className = "exo-pfill__badge";
-    badge.textContent = z.label || (z.lang === "de" ? "Deutsch" : "English");
+    // Title/banner zones carry a language badge; small caption zones don't
+    // (pass label: "" to suppress it).
+    const badgeText = z.label === undefined ? (z.lang === "de" ? "Deutsch" : "English") : z.label;
+    let badge = null;
+    if (badgeText) {
+      badge = document.createElement("span");
+      badge.className = "exo-pfill__badge";
+      badge.textContent = badgeText;
+    }
 
     const ta = document.createElement("textarea");
     ta.className = "exo-pfill__ta";
     ta.value = values?.[key] ?? "";
     ta.dataset.answerKey = keyFor(key);
-    ta.setAttribute("aria-label", badge.textContent);
+    ta.setAttribute("aria-label", badgeText || z.pdf || "poster text");
     ta.spellcheck = false;
 
     // Shrink the text until it fits the zone (no scrollbars on a poster).
@@ -3021,7 +3027,8 @@ export function createPosterFill({ base, img, zones, values, keyFor, onChange })
     });
     paint();
 
-    zone.append(badge, ta);
+    if (badge) zone.append(badge, ta);
+    else zone.appendChild(ta);
     stage.appendChild(zone);
     zoneFits.push(fit);
   });

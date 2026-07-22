@@ -381,7 +381,7 @@ function downloadAnswerSheet(view, unit, section, content, name) {
         }
         if (card.type === "poster-fill") {
           return card.zones.map((z, k) => ({
-            label: `${card.title} — ${z.label || (z.lang === "de" ? "Deutsch" : "English")}`,
+            label: `${card.title} — ${z.label || z.pdf || (z.lang === "de" ? "Deutsch" : "English")}`,
             answer: answers[`${base}-pfill-z${k}`] ?? "",
           }));
         }

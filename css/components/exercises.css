@@ -2571,7 +2571,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   position: relative;
   container-type: inline-size;
   width: 100%;
-  max-width: 900px;
+  max-width: 520px;
   margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
@@ -2608,6 +2608,18 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 
 .exo-pfill__zone--de .exo-pfill__badge {
   background: var(--j-teal-deep);
+}
+
+/* The banner badge sits INSIDE its zone (below the icon captions), not
+   floating above where it would cover them. */
+.exo-pfill__zone--banner .exo-pfill__badge {
+  transform: none;
+  top: 0.15rem;
+  left: 0.25rem;
+}
+
+.exo-pfill__zone--banner .exo-pfill__ta {
+  padding-top: 1.35rem;
 }
 
 .exo-pfill__ta {
@@ -2656,6 +2668,18 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   font-size: clamp(12px, 3cqi, 24px);
   line-height: 1.15;
   color: var(--j-teal-deep);
+}
+
+/* Small rule captions under each icon */
+.exo-pfill__zone--caption .exo-pfill__ta {
+  font-size: 12px;
+  font-size: clamp(9px, 2.8cqi, 18px);
+  line-height: 1.02;
+  text-align: center;
+  font-weight: 700;
+  color: var(--j-ink);
+  padding: 0.1rem 0.15rem;
+  border-width: 1.5px;
 }
 
 /* ===================== Bilingual card ====================== */
