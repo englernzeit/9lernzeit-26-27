@@ -22,6 +22,7 @@ const BOTTOM = 56;
  *   name: string,
  *   date: string,
  *   steps: Array<{heading: string, items: Array<{label: string, answer: string}>}>,
+ *   posters?: Array<{dataUrl: string, w: number, h: number, caption?: string}>,
  * }} doc
  * @returns {Blob}
  */
@@ -46,6 +47,30 @@ export function buildAnswerSheetPdf(doc) {
   y -= 6;
   rule(MARGIN, y, PAGE_W - MARGIN, 0.8);
   y -= 20;
+
+  // Small copies of the finished posters, side by side.
+  const images = [];
+  const posters = (doc.posters ?? []).filter((p) => p && p.dataUrl && p.w && p.h);
+  if (posters.length) {
+    const gap = 16;
+    const usable = PAGE_W - 2 * MARGIN;
+    const pw = (usable - gap * (posters.length - 1)) / posters.length;
+    let maxPh = 0;
+    posters.forEach((p, i) => {
+      const ph = pw * (p.h / p.w);
+      maxPh = Math.max(maxPh, ph);
+      const x = MARGIN + i * (pw + gap);
+      if (p.caption) text(x, y, "F2", 9, p.caption);
+      const imgTop = y - 12;
+      ops.push(
+        `q ${pw.toFixed(2)} 0 0 ${ph.toFixed(2)} ${x.toFixed(2)} ${(imgTop - ph).toFixed(2)} cm /Im${i} Do Q`,
+      );
+      images.push({ data: dataUrlToBinary(p.dataUrl), w: p.w, h: p.h });
+    });
+    y -= 12 + maxPh + 16;
+    rule(MARGIN, y, PAGE_W - MARGIN, 0.8);
+    y -= 20;
+  }
 
   let clipped = false;
 
@@ -90,7 +115,14 @@ export function buildAnswerSheetPdf(doc) {
     text(MARGIN, BOTTOM - 14, "F1", 8, "…");
   }
 
-  return assemblePdf(ops.join("\n"));
+  return assemblePdf(ops.join("\n"), images);
+}
+
+/** Decode a `data:image/jpeg;base64,…` URL to a binary (latin1) string,
+ *  one character per byte, ready to embed as a PDF stream. */
+function dataUrlToBinary(dataUrl) {
+  const comma = dataUrl.indexOf(",");
+  return atob(dataUrl.slice(comma + 1));
 }
 
 /**
@@ -138,16 +170,26 @@ function wrap(str, max) {
  * @param {string} content
  * @returns {Blob}
  */
-function assemblePdf(content) {
+function assemblePdf(content, images = []) {
+  // Image XObjects are objects 7, 8, … — referenced from the page as /Im0, …
+  const xobjRefs = images.map((_, i) => `/Im${i} ${7 + i} 0 R`).join(" ");
+  const xobjRes = images.length ? ` /XObject << ${xobjRefs} >>` : "";
   const objects = [
     "<< /Type /Catalog /Pages 2 0 R >>",
     "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
     `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] ` +
-      "/Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>",
+      `/Resources << /Font << /F1 5 0 R /F2 6 0 R >>${xobjRes} >> /Contents 4 0 R >>`,
     `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
   ];
+  for (const im of images) {
+    objects.push(
+      `<< /Type /XObject /Subtype /Image /Width ${im.w} /Height ${im.h} ` +
+        `/ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${im.data.length} >>\n` +
+        `stream\n${im.data}\nendstream`,
+    );
+  }
 
   let file = "%PDF-1.4\n";
   const offsets = [];

@@ -307,7 +307,7 @@ function buildNamePdfCluster(view, unit, section, content) {
       input.focus();
       return;
     }
-    downloadAnswerSheet(view, unit, section, content, name);
+    downloadAnswerSheet(view, unit, section, content, name).catch((err) => console.error("PDF export failed", err));
   });
 
   cluster.append(nameTag, pdf, hint);
@@ -321,7 +321,7 @@ function buildNamePdfCluster(view, unit, section, content) {
  * @param {object} content
  * @param {string} name
  */
-function downloadAnswerSheet(view, unit, section, content, name) {
+async function downloadAnswerSheet(view, unit, section, content, name) {
   const answers = getAnswers(unit.id, section.id);
   for (const el of view.querySelectorAll("[data-answer-key]")) {
     const value = /** @type {HTMLInputElement} */ (el).value ?? el.textContent;
@@ -380,10 +380,20 @@ function downloadAnswerSheet(view, unit, section, content, name) {
           );
         }
         if (card.type === "poster-fill") {
-          return card.zones.map((z, k) => ({
-            label: `${card.title} — ${z.label || z.pdf || (z.lang === "de" ? "Deutsch" : "English")}`,
-            answer: answers[`${base}-pfill-z${k}`] ?? "",
-          }));
+          // One compact line per poster (the two posters are also drawn as
+          // small pictures at the top of the sheet).
+          return (card.posters ?? []).map((poster, pi) => {
+            const parts = card.zones
+              .map((z, zi) => {
+                const val = (answers[`${base}-pfill-p${pi}-z${zi}`] ?? "").trim();
+                return val ? `${z.pdf || z.role}: ${val}` : "";
+              })
+              .filter(Boolean);
+            return {
+              label: `${card.title} — ${poster.label || (poster.lang === "de" ? "Deutsch" : "English")}`,
+              answer: parts.join(" · "),
+            };
+          });
         }
         if (card.type === "bilingual-card") {
           return card.rows.flatMap((row, k) => [
@@ -445,16 +455,133 @@ function downloadAnswerSheet(view, unit, section, content, name) {
     steps.unshift({ heading: "Word Master", items: wmItems });
   }
 
+  const posters = await renderPosterImages(view, content, answers);
+
   const blob = buildAnswerSheetPdf({
     title: `${section.label} — Answer Sheet`,
     subtitle: `English Explorer · Unit ${unit.number}: ${unit.label}`,
     name,
     date: new Date().toLocaleDateString("de-DE"),
     steps,
+    posters,
   });
 
   const safe = (s) => s.replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "");
   downloadPdf(blob, `${safe(section.label)}_${safe(name)}.pdf`);
+}
+
+/**
+ * Render every poster-fill poster (background art + the learner's text) to a
+ * small JPEG so the answer sheet can show a picture of each finished poster.
+ * Returns [] when there is no poster on the page.
+ */
+async function renderPosterImages(view, content, answers) {
+  const bg = view.querySelector(".exo-pfill__bg");
+  if (!bg || !bg.complete || !bg.naturalWidth) return [];
+  try {
+    await document.fonts?.ready;
+  } catch {
+    /* fonts optional — canvas falls back to a default face */
+  }
+
+  const out = [];
+  content.steps.forEach((s) => {
+    s.cards.forEach((card, i) => {
+      if (card.type !== "poster-fill") return;
+      const base = `step${s.step}-task${i + 1}-pfill`;
+      (card.posters ?? []).forEach((poster, pi) => {
+        const W = 480;
+        const H = Math.round(W * (bg.naturalHeight / bg.naturalWidth));
+        const canvas = document.createElement("canvas");
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext("2d");
+        try {
+          ctx.drawImage(bg, 0, 0, W, H);
+        } catch {
+          return;
+        }
+        (card.zones ?? []).forEach((z, zi) => {
+          const t = (answers[`${base}-p${pi}-z${zi}`] ?? "").trim();
+          if (t) drawPosterText(ctx, t, (z.x / 100) * W, (z.y / 100) * H, (z.w / 100) * W, (z.h / 100) * H, z.role);
+        });
+        let dataUrl = "";
+        try {
+          dataUrl = canvas.toDataURL("image/jpeg", 0.72);
+        } catch {
+          return;
+        }
+        out.push({
+          dataUrl,
+          w: W,
+          h: H,
+          caption: poster.label || (poster.lang === "de" ? "Deutsch" : "English"),
+        });
+      });
+    });
+  });
+  return out;
+}
+
+/** Draw one poster zone's text onto the canvas, shrunk to fit its box. */
+function drawPosterText(ctx, str, x, y, w, h, role) {
+  let family, color, align, weight, maxSize;
+  if (role === "title") {
+    family = "'Caveat', 'Patrick Hand', cursive";
+    color = "#a8452f";
+    align = "center";
+    weight = "700";
+    maxSize = Math.min(h * 0.5, 34);
+  } else if (role === "banner") {
+    family = "'Patrick Hand', cursive";
+    color = "#20303a";
+    align = "left";
+    weight = "400";
+    maxSize = Math.min(h * 0.26, 16);
+  } else {
+    family = "'Patrick Hand', cursive";
+    color = "#14120f";
+    align = "center";
+    weight = "700";
+    maxSize = Math.min(h * 0.72, 15);
+  }
+  const padX = w * 0.06;
+  const padY = h * 0.08;
+  let size = Math.max(6, maxSize);
+  let lines = [];
+  for (; size >= 6; size -= 1) {
+    ctx.font = `${weight} ${size}px ${family}`;
+    lines = wrapCanvasText(ctx, str, w - padX * 2);
+    if (lines.length * size * 1.14 <= h - padY * 2) break;
+  }
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.textBaseline = "top";
+  const lineH = size * 1.14;
+  const total = lines.length * lineH;
+  let ty = y + Math.max(padY, (h - total) / 2);
+  const tx = align === "center" ? x + w / 2 : x + padX;
+  for (const ln of lines) {
+    ctx.fillText(ln, tx, ty);
+    ty += lineH;
+  }
+}
+
+function wrapCanvasText(ctx, str, maxW) {
+  const words = String(str).replace(/\s+/g, " ").trim().split(" ");
+  const lines = [];
+  let line = "";
+  for (const wd of words) {
+    const test = line ? `${line} ${wd}` : wd;
+    if (line && ctx.measureText(test).width > maxW) {
+      lines.push(line);
+      line = wd;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
 }
 
 /* ================= Grammar guide =============================== */
@@ -1018,6 +1145,7 @@ function buildCard(step, data, index, taskNo, ctx) {
         createPosterFill({
           base: data.base,
           img: data.img,
+          posters: data.posters,
           zones: data.zones,
           values: prefix(saved, base),
           keyFor: (f) => `${base}-${f}`,
