@@ -358,7 +358,6 @@ export default {
             { role: "caption", pdf: "Rule · clothing icon", x: 48, y: 68, w: 13, h: 6 },
             { role: "banner", pdf: "Message", x: 4, y: 76, w: 47, h: 18 },
           ],
-          help: "Tip: keep the headline short and punchy. The two posters must say the SAME thing — one in English (Drink water · Wear a hat · Use sunscreen · Seek shade · Light clothing) and one in German (Trink Wasser · Trag einen Hut · Sonnencreme · Schatten suchen · Helle Kleidung).",
         },
       ],
     },
