@@ -1,8 +1,9 @@
 /**
  * Minimal PDF writer — no libraries, no print dialog.
  *
- * Produces a single A4 page: black Helvetica on white, thin rules,
- * no fills — printer-friendly and ink-saving by construction.
+ * Produces a single A4 page: black Helvetica on white with thin rules and
+ * a light amber highlight behind each given answer, so the answer stands
+ * out from its task label (yellow prints as a faint grey in B&W too).
  * Text uses WinAnsi encoding, so German umlauts/ß print correctly.
  *
  * Only what the answer sheet needs is implemented: absolute-
@@ -35,6 +36,14 @@ export function buildAnswerSheetPdf(doc) {
   };
   const rule = (x1, yy, x2, width = 0.5) => {
     ops.push(`${width} w ${x1} ${yy.toFixed(1)} m ${x2} ${yy.toFixed(1)} l S`);
+  };
+  // A highlighter-amber box, then reset the fill back to black for text.
+  // (Yellow has a high luminance, so it also prints as a faint grey in B&W.)
+  const HL = [1, 0.92, 0.55];
+  const highlight = (x, yy, w, h) => {
+    ops.push(
+      `${HL[0]} ${HL[1]} ${HL[2]} rg ${x.toFixed(1)} ${yy.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)} re f 0 0 0 rg`,
+    );
   };
 
   // Header
@@ -89,18 +98,28 @@ export function buildAnswerSheetPdf(doc) {
       }
       const answer = (item.answer ?? "").trim();
       if (answer) {
-        // Label and wrapped answer text
+        // Task/question label (bold), then the answer on a highlighted band
+        // so the given answer is clearly set apart from the task.
         text(MARGIN, y, "F2", 10, `${item.label}:`);
         y -= 13;
-        for (const line of wrap(answer, 92)) {
-          if (y < BOTTOM) {
-            clipped = true;
-            break outer;
+        const lineH = 13;
+        const lines = wrap(answer, 90);
+        const firstBaseline = y;
+        let drawn = 0;
+        while (drawn < lines.length && firstBaseline - drawn * lineH >= BOTTOM) drawn += 1;
+        if (drawn > 0) {
+          const lastBaseline = firstBaseline - (drawn - 1) * lineH;
+          highlight(MARGIN + 8, lastBaseline - 3, PAGE_W - MARGIN - (MARGIN + 8), firstBaseline + 9 - (lastBaseline - 3));
+          for (let i = 0; i < drawn; i++) {
+            text(MARGIN + 14, firstBaseline - i * lineH, "F1", 10, lines[i]);
           }
-          text(MARGIN + 12, y, "F1", 10, line);
-          y -= 13;
+          y = firstBaseline - drawn * lineH;
         }
-        y -= 4;
+        y -= 6;
+        if (drawn < lines.length) {
+          clipped = true;
+          break outer;
+        }
       } else {
         // No answer yet — a labelled write-in line
         text(MARGIN, y, "F2", 10, `${item.label}:`);
