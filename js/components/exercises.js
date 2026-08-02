@@ -1124,16 +1124,21 @@ export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deu
   const wrap = document.createElement("div");
   wrap.className = "exo exo-tap";
 
-  const head = document.createElement("div");
-  head.className = "exo-tap__head";
-  const hl = document.createElement("span");
-  hl.className = "exo-tap__collabel";
-  hl.textContent = leftLabel;
-  const hr = document.createElement("span");
-  hr.className = "exo-tap__collabel";
-  hr.textContent = rightLabel;
-  head.append(hl, hr);
-  wrap.appendChild(head);
+  // Column labels are optional: pass empty labels to drop the header row
+  // entirely (the two columns speak for themselves) and give the chips
+  // more room.
+  if (leftLabel || rightLabel) {
+    const head = document.createElement("div");
+    head.className = "exo-tap__head";
+    const hl = document.createElement("span");
+    hl.className = "exo-tap__collabel";
+    hl.textContent = leftLabel;
+    const hr = document.createElement("span");
+    hr.className = "exo-tap__collabel";
+    hr.textContent = rightLabel;
+    head.append(hl, hr);
+    wrap.appendChild(head);
+  }
 
   const grid = document.createElement("div");
   grid.className = "exo-tap__grid";

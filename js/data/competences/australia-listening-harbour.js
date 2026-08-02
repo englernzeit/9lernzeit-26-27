@@ -264,10 +264,9 @@ export default {
         {
           type: "tap-match",
           kind: "Verbinden",
-          title: "Match the words",
-          intro: "Match each word with its meaning.",
-          leftLabel: "Word",
-          rightLabel: "Meaning",
+          title: "Match each word with its meaning",
+          leftLabel: "",
+          rightLabel: "",
           pairs: [
             { left: "remote", right: "Far away and hard to reach" },
             { left: "inland", right: "Away from the coast" },
