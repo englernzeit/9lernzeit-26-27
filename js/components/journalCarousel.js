@@ -78,14 +78,10 @@ export function createJournalCarousel({ mode, accent, cards }) {
 
   // Swipe — single finger only. A second finger (pinch-to-zoom) is not the
   // primary pointer, so it aborts the swipe and lets the browser zoom.
-  // A swipe must also begin on the plain card surface: if the finger lands
-  // on a field, button or link, we never arm a swipe, so tapping into a
-  // text box can't be mistaken for a card flip (a little horizontal drift
-  // while tapping used to swipe the card away and break the layout).
   let startX = null;
   stage.addEventListener("pointerdown", (e) => {
-    if (!e.isPrimary || isInteractive(e.target)) {
-      startX = null; // pinch, or a tap on a control/field — not a swipe
+    if (!e.isPrimary) {
+      startX = null; // pinch started: cancel any in-progress swipe
       return;
     }
     startX = e.clientX;
@@ -135,19 +131,6 @@ export function createJournalCarousel({ mode, accent, cards }) {
 
   render();
   return root;
-}
-
-/**
- * Is the swipe starting on something the learner means to touch (a field,
- * button, link or draggable chip) rather than the blank card surface? If so
- * we leave the carousel's swipe unarmed so the tap does its own job.
- * @param {EventTarget | null} target
- */
-function isInteractive(target) {
-  return (
-    target instanceof Element &&
-    target.closest("input, textarea, select, button, a, label, [contenteditable], [draggable='true']") !== null
-  );
 }
 
 /**
