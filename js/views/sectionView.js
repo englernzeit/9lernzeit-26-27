@@ -14,7 +14,7 @@
  * Striped areas are placeholders for watercolor illustrations.
  */
 
-import { getUnit, getSection } from "../data/units.js";
+import { getUnit, getSection, isUnitActive } from "../data/units.js";
 import { getCompetenceContent, unitHasPictureVocab } from "../data/competences/index.js";
 import { createBackTab } from "../components/backTab.js";
 import { createJournalCarousel } from "../components/journalCarousel.js";
@@ -140,7 +140,8 @@ function comingSoonContent() {
 export function renderSectionView(root, unitId, sectionId) {
   const unit = getUnit(unitId);
   const section = getSection(unitId, sectionId);
-  if (!unit || !section) {
+  // Unknown section, or a section inside a temporarily deactivated unit.
+  if (!unit || !section || !isUnitActive(unit)) {
     window.location.hash = "/";
     return;
   }

@@ -50,6 +50,7 @@ export const UNITS = [
     number: 2,
     label: "Respect & Community",
     tagline: "",
+    active: false, // temporarily deactivated — see isUnitActive()
     // Left-center (schoolyard scene)
     mapPosition: { x: 18, y: 50 },
     mapPositionPortrait: { x: 34, y: 37 },
@@ -62,6 +63,7 @@ export const UNITS = [
     number: 3,
     label: "Looking Forward",
     tagline: "Your future, your choice",
+    active: false, // temporarily deactivated — see isUnitActive()
     // Center-top (mountains / signpost scene)
     mapPosition: { x: 56, y: 24 },
     mapPositionPortrait: { x: 62, y: 52 },
@@ -74,6 +76,7 @@ export const UNITS = [
     number: 4,
     label: "Generation Like",
     tagline: "Connect. Create. Care.",
+    active: false, // temporarily deactivated — see isUnitActive()
     // Right (city / phone scene)
     mapPosition: { x: 75, y: 52 },
     mapPositionPortrait: { x: 38, y: 67 },
@@ -96,6 +99,17 @@ export const UNITS = [
 /** @param {string} id */
 export function getUnit(id) {
   return UNITS.find((unit) => unit.id === id) ?? null;
+}
+
+/**
+ * Whether a unit is currently open to learners. A unit is switched off by
+ * setting `active: false` in its config above (a temporary toggle): the map
+ * shows it locked and the router sends direct links back to the map. A unit
+ * with no `active` field counts as active.
+ * @param {{active?: boolean} | null | undefined} unit
+ */
+export function isUnitActive(unit) {
+  return Boolean(unit) && unit.active !== false;
 }
 
 /**

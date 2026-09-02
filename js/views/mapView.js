@@ -5,7 +5,7 @@
  * Today's Plan notebook.
  */
 
-import { UNITS } from "../data/units.js";
+import { UNITS, isUnitActive } from "../data/units.js";
 import { TODAYS_PLAN } from "../data/todaysPlan.js";
 import { createChecklist } from "../components/checklist.js";
 
@@ -89,14 +89,18 @@ export function renderMapView(root) {
 
   // --- Unit stops: sticker scene + painted label plaque ---
   for (const unit of UNITS) {
+    const active = isUnitActive(unit);
     const stop = document.createElement("button");
-    stop.className = "map-view__unit-stop";
+    stop.className = active ? "map-view__unit-stop" : "map-view__unit-stop map-view__unit-stop--locked";
     // CSS picks --x/--y (landscape) or --xp/--yp (portrait)
     stop.style.setProperty("--x", `${unit.mapPosition.x}%`);
     stop.style.setProperty("--y", `${unit.mapPosition.y}%`);
     stop.style.setProperty("--xp", `${unit.mapPositionPortrait.x}%`);
     stop.style.setProperty("--yp", `${unit.mapPositionPortrait.y}%`);
-    stop.setAttribute("aria-label", `Open unit ${unit.number}: ${unit.label}`);
+    stop.setAttribute(
+      "aria-label",
+      active ? `Open unit ${unit.number}: ${unit.label}` : `Unit ${unit.number}: ${unit.label} — coming soon`,
+    );
 
     const sticker = document.createElement("img");
     // Per-unit modifier drives the themed idle animation
@@ -113,9 +117,21 @@ export function renderMapView(root) {
     labelImg.draggable = false;
 
     stop.append(sticker, labelImg);
-    stop.addEventListener("click", () => {
-      window.location.hash = `/unit/${unit.id}`;
-    });
+
+    if (active) {
+      stop.addEventListener("click", () => {
+        window.location.hash = `/unit/${unit.id}`;
+      });
+    } else {
+      // Deactivated: a lock badge, and the button does nothing.
+      stop.disabled = true;
+      const lock = document.createElement("span");
+      lock.className = "map-view__unit-lock";
+      lock.textContent = "🔒";
+      lock.setAttribute("aria-hidden", "true");
+      stop.appendChild(lock);
+    }
+
     view.appendChild(stop);
   }
 

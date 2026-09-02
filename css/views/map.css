@@ -285,6 +285,51 @@
     drop-shadow(0 0 8px rgba(255, 244, 200, 0.9));
 }
 
+/* --- Temporarily deactivated units ------------------------------- */
+/* Still on the map so the journey reads whole, but greyed, unlit, and
+   un-openable, with a lock badge. Flip `active` back on in units.js. */
+.map-view__unit-stop--locked {
+  cursor: not-allowed;
+}
+
+.map-view__unit-stop--locked .map-view__unit-sticker {
+  animation: none;
+  filter: grayscale(0.92) brightness(0.97) drop-shadow(0 3px 6px rgba(44, 42, 38, 0.28));
+  opacity: 0.6;
+}
+
+.map-view__unit-stop--locked .map-view__unit-labelplate {
+  filter: grayscale(0.92);
+  opacity: 0.6;
+}
+
+/* No hover lift / glow for a locked stop, even if the browser hovers it */
+.map-view__unit-stop--locked:hover,
+.map-view__unit-stop--locked:focus-visible {
+  transform: translate(-50%, -50%);
+}
+
+.map-view__unit-stop--locked:hover .map-view__unit-sticker,
+.map-view__unit-stop--locked:focus-visible .map-view__unit-sticker {
+  filter: grayscale(0.92) brightness(0.97) drop-shadow(0 3px 6px rgba(44, 42, 38, 0.28));
+}
+
+.map-view__unit-stop--locked:hover .map-view__unit-labelplate,
+.map-view__unit-stop--locked:focus-visible .map-view__unit-labelplate {
+  filter: grayscale(0.92);
+}
+
+.map-view__unit-lock {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(1.9rem, 4.5vw, 3.2rem);
+  filter: drop-shadow(0 2px 5px rgba(44, 42, 38, 0.5));
+  pointer-events: none;
+  z-index: 4;
+}
+
 /* --- Today's Plan notebook (top-right) ------------------------- */
 
 .map-view__plan {

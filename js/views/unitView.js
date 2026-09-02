@@ -11,7 +11,7 @@
  * the spec's swap behaviour: panels never stack.
  */
 
-import { getUnit } from "../data/units.js";
+import { getUnit, isUnitActive } from "../data/units.js";
 import { createUnitCarousel } from "../components/unitCarousel.js";
 import { createBackTab } from "../components/backTab.js";
 
@@ -23,7 +23,8 @@ const SVG_NS = "http://www.w3.org/2000/svg";
  */
 export function renderUnitView(root, unitId) {
   const unit = getUnit(unitId);
-  if (!unit) {
+  // Unknown or temporarily deactivated units send the learner back to the map.
+  if (!unit || !isUnitActive(unit)) {
     window.location.hash = "/";
     return;
   }
