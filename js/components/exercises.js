@@ -1766,40 +1766,7 @@ export function createGapFill({ items }) {
   return wrap;
 }
 
-/* ---------- Translate (Word Master: German → English) ---------- */
-
-/**
- * Expand an answer pattern into every sentence it allows:
- * "(a|b)" = one of the alternatives, "[x]" = optional.
- * "Delete the (photo|picture) [now]" → 4 sentences.
- */
-function expandPattern(pattern) {
-  const m = pattern.match(/\(([^()]*)\)|\[([^[\]]*)\]/);
-  if (!m) return [pattern];
-  const alts = m[1] !== undefined ? m[1].split("|") : [m[2], ""];
-  const head = pattern.slice(0, m.index);
-  const tail = pattern.slice(m.index + m[0].length);
-  return alts.flatMap((alt) => expandPattern(head + alt + tail));
-}
-
-/** Sentence-level normaliser: case, punctuation and short forms don't count. */
-function normSentence(s) {
-  return ` ${(s ?? "").toLowerCase().replace(/[’‘`´]/g, "'")} `
-    .replace(/[.,!?;:"“”„«»()]/g, " ")
-    .replace(/\bcan't\b/g, "cannot")
-    .replace(/\bwon't\b/g, "will not")
-    .replace(/\bshan't\b/g, "shall not")
-    .replace(/n't\b/g, " not")
-    .replace(/\bcan not\b/g, "cannot")
-    .replace(/'m\b/g, " am")
-    .replace(/'re\b/g, " are")
-    .replace(/'ve\b/g, " have")
-    .replace(/'ll\b/g, " will")
-    .replace(/'d\b/g, " would")
-    .replace(/\b(it|that|he|she|what|there|who|this)'s\b/g, "$1 is")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+/* ---------- Word Master (one new word per sentence) ------------ */
 
 /** Edit distance, capped: enough to tell "almost — a typo" from "wrong". */
 function editDistance(a, b, cap = 3) {
@@ -1818,59 +1785,86 @@ function editDistance(a, b, cap = 3) {
   return prev[b.length];
 }
 
+/** "Bitte **lösch** das Foto" → text nodes with the **word** in <strong>. */
+function appendBolded(el, text) {
+  text.split(/\*\*(.+?)\*\*/).forEach((part, i) => {
+    if (!part) return;
+    if (i % 2) {
+      const b = document.createElement("strong");
+      b.textContent = part;
+      el.appendChild(b);
+    } else {
+      el.appendChild(document.createTextNode(part));
+    }
+  });
+}
+
 /**
- * Word Master as a task card: a German sentence per row, the learner
- * types the whole English sentence. `en` is an answer pattern (see
- * expandPattern) so natural variants count; case, punctuation and short
- * forms (don't = do not) never matter. Like every self-check here, the
- * answer is never shown: right rows lock green, a near-miss (1–2
- * letters off) turns amber "check your spelling", the rest turn red.
+ * Word Master as a task card: each row is a German sentence with the new
+ * word in **bold** and the English sentence with a gap for just that word
+ * ("___"). Like every self-check here, the answer is never shown: right
+ * gaps lock green, a 1-letter slip turns amber ("check your spelling"),
+ * anything else red. `wordBox: true` adds the shuffled words as help (LE).
  *
- * @param {{ items: Array<{ de: string, en: string, hint?: string }> }} data
+ * @param {{ items: Array<{ de: string, en: string, answer: string, accept?: string[] }>, wordBox?: boolean }} data
  */
-export function createTranslate({ items }) {
+export function createWordMasterCard({ items, wordBox }) {
   const wrap = document.createElement("div");
-  wrap.className = "exo exo-trans";
+  wrap.className = "exo exo-wm";
+
+  if (wordBox) {
+    const box = document.createElement("div");
+    box.className = "exo-wm__box";
+    for (const w of shuffledCopy(items.map((it) => it.answer))) {
+      const chip = document.createElement("span");
+      chip.className = "exo-wm__chip";
+      chip.textContent = w;
+      box.appendChild(chip);
+    }
+    wrap.appendChild(box);
+  }
+
+  const list = document.createElement("div");
+  list.className = "exo-wm__list";
+  wrap.appendChild(list);
 
   const rows = items.map((item, i) => {
     const row = document.createElement("div");
-    row.className = "exo-trans__item";
+    row.className = "exo-wm__item";
 
     const de = document.createElement("p");
-    de.className = "exo-trans__de";
+    de.className = "exo-wm__de";
     const num = document.createElement("span");
-    num.className = "exo-trans__num";
+    num.className = "exo-wm__num";
     num.textContent = String(i + 1);
-    de.append(num, document.createTextNode(item.de));
-    row.appendChild(de);
+    de.appendChild(num);
+    appendBolded(de, item.de);
 
-    if (item.hint) {
-      const hint = document.createElement("p");
-      hint.className = "exo-trans__hint";
-      hint.textContent = item.hint;
-      row.appendChild(hint);
-    }
-
+    const en = document.createElement("p");
+    en.className = "exo-wm__en";
+    const [before, after = ""] = item.en.split("___");
     const input = document.createElement("input");
     input.type = "text";
-    input.className = "exo-trans__input";
-    input.placeholder = "Write the English sentence …";
+    input.className = "exo-wm__gap";
+    input.size = Math.max(7, item.answer.length + 1);
     input.setAttribute("autocomplete", "off");
-    input.setAttribute("autocapitalize", "sentences");
+    input.setAttribute("autocapitalize", "off");
     input.spellcheck = false;
-    row.appendChild(input);
+    if (before) en.appendChild(document.createTextNode(before));
+    en.appendChild(input);
+    if (after) en.appendChild(document.createTextNode(after));
 
     const note = document.createElement("p");
-    note.className = "exo-trans__note";
-    row.appendChild(note);
+    note.className = "exo-wm__note";
 
     input.addEventListener("input", () => {
-      row.classList.remove("exo-trans__item--wrong", "exo-trans__item--near");
+      row.classList.remove("exo-wm__item--wrong", "exo-wm__item--near");
       note.textContent = "";
     });
 
-    wrap.appendChild(row);
-    return { row, input, note, accepted: expandPattern(item.en).map(normSentence), done: false };
+    row.append(de, en, note);
+    list.appendChild(row);
+    return { row, input, note, accepted: [item.answer, ...(item.accept ?? [])].map(norm), done: false };
   });
 
   const checkBtn = checkButton(wrap, () => {
@@ -1880,21 +1874,20 @@ export function createTranslate({ items }) {
         right += 1;
         continue;
       }
-      const given = normSentence(r.input.value);
-      r.row.classList.remove("exo-trans__item--wrong", "exo-trans__item--near");
+      const given = norm(r.input.value);
+      r.row.classList.remove("exo-wm__item--wrong", "exo-wm__item--near");
       r.note.textContent = "";
       if (!given) continue;
       if (r.accepted.includes(given)) {
         r.done = true;
         r.input.disabled = true;
-        r.row.classList.add("exo-trans__item--right");
+        r.row.classList.add("exo-wm__item--right");
         right += 1;
-      } else if (r.accepted.some((a) => editDistance(given, a, 2) <= 2)) {
-        r.row.classList.add("exo-trans__item--near");
+      } else if (r.accepted.some((a) => editDistance(given, a, 1) <= 1)) {
+        r.row.classList.add("exo-wm__item--near");
         r.note.textContent = "Almost — check your spelling.";
       } else {
-        r.row.classList.add("exo-trans__item--wrong");
-        r.note.textContent = "Not yet — try again.";
+        r.row.classList.add("exo-wm__item--wrong");
       }
     }
     checkBtn.result(`${right} / ${rows.length} correct`);

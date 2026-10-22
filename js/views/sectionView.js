@@ -26,7 +26,7 @@ import {
   createGame,
   createProfileBuilder,
   createGapFill,
-  createTranslate,
+  createWordMasterCard,
   createIdeaPick,
   createAudioPlayer,
   createReadAloud,
@@ -1002,8 +1002,8 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "sentence-build":
       body.appendChild(createSentenceBuild({ sentences: data.sentences }));
       break;
-    case "translate":
-      body.appendChild(createTranslate({ items: data.items }));
+    case "word-master":
+      body.appendChild(createWordMasterCard({ items: data.items, wordBox: data.wordBox }));
       break;
     case "idea-pick": {
       // Starters keep the plain written-card keys (…s1, s2); picks get their own

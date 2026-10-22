@@ -710,44 +710,65 @@
 
 .exo-idea__chip-de:empty { display: none; }
 
-/* --- Translate (Word Master: German → English) ------------------ */
+/* --- Word Master (one new word per sentence) --------------------- */
+
+.exo-wm__box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.45rem 0.6rem;
+  border: 1.5px dashed rgba(79, 127, 150, 0.5);
+  border-radius: 10px;
+  background: rgba(79, 127, 150, 0.06);
+}
+
+.exo-wm__chip {
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  background: var(--j-paper-2);
+  border: 1px solid rgba(79, 127, 150, 0.35);
+  font-family: var(--j-font-display);
+  font-size: 1.1rem;
+  color: var(--j-teal-deep);
+}
 
 /* Compact: two columns of sentences on wide cards, one on phones */
-.exo-trans {
+.exo-wm__list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.45rem 0.6rem;
 }
 
 @media (max-width: 640px) {
-  .exo-trans { grid-template-columns: 1fr; }
+  .exo-wm__list { grid-template-columns: 1fr; }
 }
 
-.exo-trans > .exo__checkbar { grid-column: 1 / -1; }
-
-.exo-trans__item {
+.exo-wm__item {
   background: rgba(255, 255, 255, 0.45);
   border: 1.5px solid rgba(120, 105, 80, 0.22);
   border-radius: 10px;
-  padding: 0.4rem 0.6rem 0.4rem;
+  padding: 0.4rem 0.6rem;
   transition: border-color 0.2s, background 0.2s;
 }
 
-.exo-trans__de {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-  font-size: 1rem;
+.exo-wm__de {
+  font-size: 0.98rem;
   line-height: 1.3;
-  color: var(--j-ink);
+  color: var(--j-secondary);
 }
 
-.exo-trans__num {
-  flex: 0 0 auto;
+.exo-wm__de strong {
+  color: var(--j-coral-deep);
+  font-weight: 700;
+}
+
+.exo-wm__num {
   display: inline-grid;
+  vertical-align: 0.05em;
   place-items: center;
   width: 1.3rem;
   height: 1.3rem;
+  margin-right: 0.4rem;
   border-radius: 50%;
   background: rgba(79, 127, 150, 0.16);
   color: var(--j-teal-deep);
@@ -756,64 +777,64 @@
   font-size: 0.9rem;
 }
 
-.exo-trans__hint {
-  margin: 0.05rem 0 0 1.7rem;
-  font-family: var(--j-font-display);
-  font-size: 0.95rem;
-  line-height: 1.2;
-  color: var(--j-khaki);
+.exo-wm__en {
+  margin: 0.2rem 0 0 1.75rem;
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--j-ink);
 }
 
-.exo-trans__input {
-  display: block;
-  width: calc(100% - 1.7rem);
-  margin: 0.25rem 0 0 1.7rem;
+.exo-wm__gap {
   font-family: var(--j-font-display);
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   color: var(--j-ink);
+  text-align: center;
   background: var(--j-paper-1);
   border: none;
   border-bottom: 2px solid var(--j-teal);
   border-radius: 4px 4px 0 0;
-  padding: 0.05rem 0.4rem;
+  padding: 0 0.3rem;
+  margin: 0 0.15rem;
 }
 
-.exo-trans__input:focus-visible {
+.exo-wm__gap:focus-visible {
   outline: none;
   background: rgba(79, 127, 150, 0.1);
 }
 
-.exo-trans__note {
-  margin: 0.1rem 0 0 1.7rem;
+.exo-wm__note {
+  margin: 0.05rem 0 0 1.75rem;
   font-family: var(--j-font-display);
   font-size: 0.95rem;
+  color: #8a6a22;
 }
 
-.exo-trans__note:empty { display: none; }
+.exo-wm__note:empty { display: none; }
 
-.exo-trans__item--right {
+.exo-wm__item--right {
   border-color: rgba(109, 143, 78, 0.6);
   background: rgba(109, 143, 78, 0.12);
 }
-.exo-trans__item--right .exo-trans__input {
+.exo-wm__item--right .exo-wm__gap {
   border-bottom-color: var(--j-olive);
   color: var(--j-olive);
   background: transparent;
 }
 
-.exo-trans__item--near {
+.exo-wm__item--near {
   border-color: rgba(176, 138, 52, 0.65);
   background: rgba(214, 170, 70, 0.12);
 }
-.exo-trans__item--near .exo-trans__input { border-bottom-color: #b08a34; }
-.exo-trans__item--near .exo-trans__note { color: #8a6a22; }
+.exo-wm__item--near .exo-wm__gap { border-bottom-color: #b08a34; }
 
-.exo-trans__item--wrong {
+.exo-wm__item--wrong {
   border-color: rgba(163, 85, 69, 0.55);
   background: rgba(192, 106, 88, 0.1);
 }
-.exo-trans__item--wrong .exo-trans__input { border-bottom-color: var(--j-coral-deep); }
-.exo-trans__item--wrong .exo-trans__note { color: var(--j-coral-deep); }
+.exo-wm__item--wrong .exo-wm__gap {
+  border-bottom-color: var(--j-coral-deep);
+  color: var(--j-coral-deep);
+}
 
 /* --- Audio player ----------------------------------------------- */
 

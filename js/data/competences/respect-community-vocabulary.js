@@ -13,7 +13,7 @@
  *   Step 4 (Challenge)— design the class "Respect Agreement" poster
  *
  * Above the steps: "New words" postcards (wordCards). Steps 1–3 each carry
- * the Word Master — eight German sentences to translate (LE with hints).
+ * the Word Master — one new word per sentence, German → English (LE with a word box).
  */
 
 // New words — postcard pile at the top of the page (stamps cut from the
@@ -34,28 +34,29 @@ const WORD_CARDS = {
   ],
 };
 
-// Word Master — eight sentences to translate, one per word, in a different
-// order from the cards. `en` is an answer pattern: (a|b) = either, [x] =
-// optional; case, punctuation and short forms never count.
+// Word Master — one new word per sentence: the German sentence shows the
+// word in **bold**, the English sentence has a gap for just that word.
+// New sentences (not the card examples), in a different order from the cards.
 const WORD_MASTER = [
-  { de: "Lösch das Foto sofort!", en: "Delete (the|this|that) (photo|picture) (immediately|right now|now|at once|straight away|right away)", le: "löschen = delete · sofort = immediately / right now" },
-  { de: "Ein Zuschauer, der nichts sagt, hilft dem Mobber.", en: "(A|One) bystander (who|that) (says nothing|does not say anything) (helps|is helping) the bully", le: "der Zuschauer = bystander · der Mobber = bully" },
-  { de: "Neue Schüler brauchen unsere Unterstützung.", en: "New (students|pupils|kids) need our support", le: "die Unterstützung = support" },
-  { de: "Das war ein schrecklicher Kommentar.", en: "(That|It) was a horrible comment", le: "schrecklich = horrible" },
-  { de: "Das Opfer brauchte Hilfe.", en: "The victim needed [some] help", le: "das Opfer = victim · brauchte = needed" },
-  { de: "Hör auf, ihn zu hänseln!", en: "[Please] stop teasing him[ please]", le: "hänseln = tease · Hör auf … = Stop …-ing" },
-  { de: "Cybermobbing hört nicht am Schultor auf.", en: "Cyberbullying does not stop at the school (gate|gates)", le: "Cybermobbing = cyberbullying · das Schultor = the school gate" },
-  { de: "Der Mobber hat sich entschuldigt.", en: "The bully (apologised|apologized|said sorry|has apologised|has apologized|has said sorry)", le: "der Mobber = bully · sich entschuldigen = apologise / say sorry" },
+  { de: "Bitte **lösch** das peinliche Foto, bevor es jemand sieht.", en: "Please ___ the embarrassing photo before anyone sees it.", answer: "delete" },
+  { de: "Kein einziger **Zuschauer** hat etwas gesagt, als Tom ausgelacht wurde.", en: "Not one ___ said anything when Tom was laughed at.", answer: "bystander" },
+  { de: "Mit der **Unterstützung** ihrer Freunde ging sie wieder zur Schule.", en: "With the ___ of her friends, she went back to school.", answer: "support" },
+  { de: "Die Nachrichten im Gruppenchat waren wirklich **gemein**.", en: "The messages in the group chat were really ___.", answer: "horrible" },
+  { de: "Das **Opfer** hatte Angst, es den Lehrern zu erzählen.", en: "The ___ was afraid to tell the teachers.", answer: "victim" },
+  { de: "Sie **hänseln** ihn jeden Tag wegen seiner Brille.", en: "They ___ him every day about his glasses.", answer: "tease" },
+  { de: "**Cybermobbing** kann auch nachts weitergehen.", en: "___ can go on at night, too.", answer: "cyberbullying" },
+  { de: "Der **Mobber** hat sich nie entschuldigt.", en: "The ___ never said sorry.", answer: "bully" },
 ];
 
-const wordMasterCard = (withHints) => ({
-  type: "translate",
-  kind: "Word Master · Übersetzen",
+const wordMasterCard = (withWordBox) => ({
+  type: "word-master",
+  kind: "Wortschatz · Ein Wort",
   title: "Word Master",
-  intro: withHints
-    ? "Übersetze ins Englische — mit den neuen Wörtern. Dann Check."
-    : "Translate into English with the new words, then Check.",
-  items: WORD_MASTER.map(({ de, en, le }) => (withHints ? { de, en, hint: le } : { de, en })),
+  intro: withWordBox
+    ? "Welches neue Wort fehlt? Schreib das englische Wort in die Lücke. Dann Check."
+    : "Write the missing new word in English, then Check.",
+  wordBox: withWordBox,
+  items: WORD_MASTER,
 });
 
 export default {
