@@ -61,6 +61,7 @@ export const UNITS = [
     banner: "assets/images/unit2/banner-community.png",
     centerImage: "assets/images/unit2/island-community.webp",
     wideCards: true, // landscape (≈5:3) location cards
+    taskBackground: "assets/images/unit2/bg-tasks-leaves.jpg",
     // Theme 2 "Respect" — eight competences, built from the LE/G/E source.
     // pos = % of the unit page (landscape): down the left side, across the
     // bottom, up the right — sheet order 1–7, then Revision top right.

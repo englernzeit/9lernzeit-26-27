@@ -153,6 +153,11 @@ export function renderSectionView(root, unitId, sectionId) {
 
   const view = document.createElement("div");
   view.className = "view journal";
+  // Optional per-unit backdrop for the task pages (default: bg-journal)
+  if (unit.taskBackground) {
+    view.classList.add("journal--photo-bg");
+    view.style.backgroundImage = `url("${unit.taskBackground}")`;
+  }
 
   // --- Header ---------------------------------------------------
   const header = document.createElement("header");

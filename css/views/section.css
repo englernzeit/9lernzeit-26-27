@@ -187,6 +187,8 @@
 }
 
 .journal__swatch {
+  flex-shrink: 0;
+  white-space: nowrap;
   padding: 0.3rem 1.25rem 0.25rem;
   transform: rotate(-1.2deg) skewX(-4deg);
   font-family: var(--j-font-display);
@@ -204,6 +206,22 @@
 .journal__section-sub {
   font-size: 1.2rem;
   color: var(--j-khaki);
+}
+
+/* Photo backdrop (unit.taskBackground): the step heading sits straight on
+   the page background, so give it a paper strip to stay readable */
+.journal--photo-bg .journal__section-head {
+  width: fit-content;
+  max-width: calc(100% - 5.8rem);
+  margin-left: 2.9rem;
+  padding: 0.35rem 1.1rem 0.35rem 0.35rem;
+  border-radius: 0.5rem;
+  background: rgba(253, 250, 241, 0.92);
+  box-shadow: 0 3px 10px rgba(40, 50, 20, 0.18);
+}
+
+.journal--photo-bg .journal__section-sub {
+  color: var(--j-ink);
 }
 
 /* --- Reading passage ------------------------------------------- */
@@ -731,6 +749,12 @@
 
   .journal__section-head {
     padding: 0 1.2rem;
+  }
+
+  .journal--photo-bg .journal__section-head {
+    max-width: calc(100% - 2.4rem);
+    margin-left: 1.2rem;
+    padding: 0.35rem 0.9rem 0.35rem 0.35rem;
   }
 
   .grammar-guide {
