@@ -130,7 +130,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · leicht",
+          kind: "Offene Frage",
           title: "Mix-It-Up Day at your school?",
           intro: "Would you like a Mix-It-Up Day at your school? Write one or two sentences.",
           starters: ["I would / would not like a Mix-It-Up Day, because …"],
@@ -198,7 +198,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · eigene Worte",
+          kind: "Offene Frage",
           title: "What does Amira mean?",
           intro: "Amira says: “One lunch break does not make a school kind.” What does she mean? Write two sentences in your own words.",
           starters: ["Amira means that …", "I think she is right / wrong, because …"],
@@ -266,7 +266,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Stellung nehmen",
+          kind: "Offene Frage",
           title: "Answer Leon",
           intro: "Leon did not want to spend his free time with people he has nothing in common with. Answer him in two sentences: what could he miss?",
           starters: ["Leon, I understand that … , but …", "If you sit with new people, you might …"],
@@ -295,6 +295,13 @@ export default {
             "The honest result: …",
           ],
           help: "Tipp: Schreib wie eine Zeitung — kurze, klare Sätze und ein Zitat machen den Bericht lebendig.",
+        },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Would you report it?",
+          intro: "Your report is written. Would you like to write for a school newspaper? Write one or two sentences.",
+          starters: ["I would / would not like to write for a school newspaper, because …"],
         },
       ],
     },

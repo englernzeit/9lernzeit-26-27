@@ -190,6 +190,14 @@ export default {
           help: "Hilfe: I would … = Ich würde … · dangerous = gefährlich",
         },
         {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Would you fly with them?",
+          intro: "Would you like to work for the Flying Doctors? Write one or two sentences.",
+          starters: ["I would / would not like to work for the Flying Doctors, because …"],
+          help: "Hilfe: I would like to = Ich würde gern · because = weil",
+        },
+        {
           type: "game",
           game: "monster-hangman",
           kind: "Spiel",
@@ -276,6 +284,13 @@ export default {
           answer: true,
           help: "Try: Today was scary because … / In the end …",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your outback trip",
+          intro: "You are going on a road trip in the outback. What will you take with you — and why? Write two sentences.",
+          starters: ["I will take … , because …", "I will also …"],
+        },
       ],
     },
 
@@ -359,6 +374,13 @@ export default {
           answer: true,
           help: "In my opinion … Firstly … Secondly …",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Help in the middle of nowhere",
+          intro: "Why is a service like the Flying Doctors so important for people in the outback? Give two reasons in two sentences.",
+          starters: ["Firstly, …", "Without the Flying Doctors, …"],
+        },
       ],
     },
 
@@ -430,7 +452,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Deine Meinung",
+          kind: "Offene Frage",
           title: "Your favourite panel",
           intro: "Your comic is finished. Which panel is the most exciting one — and why? Write one or two sentences.",
           starters: ["The most exciting panel is number … , because …"],

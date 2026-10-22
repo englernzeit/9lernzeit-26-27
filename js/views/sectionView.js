@@ -882,19 +882,19 @@ function buildStepSection(step, ctx) {
     return buildCard(step, data, i, taskNo, ctx);
   });
 
-  if (step.layout === "single") {
+  if (step.layout === "single" && cards.length === 1) {
     const holder = document.createElement("div");
     holder.className = "jcar jcar--single";
     const stage = document.createElement("div");
     stage.className = "jcar__stage";
-    // Usually one challenge card; any extra cards (e.g. a word game) stack below
-    for (const card of cards) stage.appendChild(card);
+    stage.appendChild(cards[0]);
     holder.appendChild(stage);
     section.appendChild(holder);
   } else {
-    section.appendChild(
-      createJournalCarousel({ mode: step.layout, accent: step.accent, cards }),
-    );
+    // A challenge step with extra cards (open question, word game) becomes a
+    // card row like the other steps — same full width as the single card.
+    const mode = step.layout === "single" ? "spread" : step.layout;
+    section.appendChild(createJournalCarousel({ mode, accent: step.accent, cards }));
   }
 
   return section;

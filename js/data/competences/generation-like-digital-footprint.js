@@ -143,6 +143,14 @@ export default {
           help: "Hilfe: I always = ich immer · I never = ich nie",
         },
         {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your footprint",
+          intro: "What do you post online most? Write one or two sentences.",
+          starters: ["I mostly post …"],
+          help: "Hilfe: mostly = meistens · to post = posten",
+        },
+        {
           type: "game",
           game: "monster-hangman",
           kind: "Spiel",
@@ -212,6 +220,13 @@ export default {
         },
         { type: "written", kind: "Schreiben · leicht", title: "My footprint today", intro: "Name three things you did online today — a video, a chat, a game… Write one short sentence about each.", answer: true, help: "Start each line with: Today I …" },
         { type: "written", kind: "Schreiben · leicht", title: "Delete one thing", intro: "If you could delete one thing from the internet forever, what would it be — and why? Write 2–3 sentences.", answer: true },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your safety rule",
+          intro: "Which online safety rule is the most important for you? Write two sentences.",
+          starters: ["The most important rule for me is …", "It is important, because …"],
+        },
       ],
     },
 
@@ -259,6 +274,13 @@ export default {
         },
         { type: "written", kind: "Schreiben", title: "Your future self", intro: "It's five years from now and someone googles your name. Write down two things you'd love them to find — and one thing you'd hate them to see.", answer: true },
         { type: "written", kind: "Schreiben", title: "Advice to a friend", intro: "Your younger cousin just got their first phone. Give them your three best rules for staying safe online, and say why each one matters.", answer: true },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your future self",
+          intro: "Could something you post today be a problem in ten years? Write two sentences with an example.",
+          starters: ["Yes / No, because …", "For example, …"],
+        },
       ],
     },
 
@@ -278,7 +300,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Deine Meinung",
+          kind: "Offene Frage",
           title: "Ten years from now",
           intro: "Look at your dream profile. Which part would a future boss like most — and why? Write one or two sentences.",
           starters: ["A future boss would like my … , because …"],

@@ -128,6 +128,14 @@ export default {
           ],
           help: "Hilfe: In my opinion = Meiner Meinung nach · advantage = Vorteil",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your topic",
+          intro: "Which topic would you like to discuss in a written discussion? Write one or two sentences.",
+          starters: ["I would like to discuss … , because …"],
+          help: "Hilfe: to discuss = diskutieren · because = weil",
+        },
       ],
     },
 
@@ -265,6 +273,13 @@ export default {
             "In my opinion, …",
           ],
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "For or against?",
+          intro: "Are you for or against the ban? Write two sentences with your main reason.",
+          starters: ["I am for / against the ban.", "My main reason is …"],
+        },
       ],
     },
 
@@ -336,6 +351,13 @@ export default {
             ],
           },
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your best paragraph",
+          intro: "Which of your four paragraphs is the best one — and why? Write two sentences.",
+          starters: ["My best paragraph is …", "It is the best, because …"],
+        },
       ],
     },
 
@@ -365,6 +387,13 @@ export default {
             "My discussion has about 120–150 words.",
           ],
           help: "Remember the four parts: introduction · arguments for · arguments against · your opinion.",
+        },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Did you change your mind?",
+          intro: "Did writing the discussion change your opinion? Write one or two sentences.",
+          starters: ["Writing it made me think that …"],
         },
       ],
     },

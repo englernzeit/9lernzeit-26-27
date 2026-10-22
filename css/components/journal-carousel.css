@@ -56,10 +56,6 @@
   margin: 0 auto;
   transform: rotate(-0.4deg);
 }
-.jcar--single .jcar__stage > .taskcard + .taskcard {
-  margin-top: 1.75rem;
-  transform: rotate(0.3deg);
-}
 
 /* --- Blob arrows ------------------------------------------------ */
 

@@ -173,6 +173,14 @@ export default {
           ],
           starters: ["Idea ___ is best, because …"],
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "A word for you",
+          intro: "Which of the eight words was new for you? Write one sentence with it.",
+          starters: ["The new word for me was … : …"],
+          help: "Hilfe: new for me = neu für mich",
+        },
       ],
     },
 
@@ -246,6 +254,13 @@ export default {
           ],
           starters: ["Idea ___ is best, because …", "The other ideas are not as good, because …"],
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Bystander or helper?",
+          intro: "What can a bystander do to help? Write two sentences.",
+          starters: ["A bystander can …", "This is important, because …"],
+        },
       ],
     },
 
@@ -316,6 +331,13 @@ export default {
           ],
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Online and offline",
+          intro: "Is cyberbullying worse than bullying at school? Write two sentences and give a reason.",
+          starters: ["In my opinion, cyberbullying is … , because …", "On the other hand, …"],
+        },
       ],
     },
 
@@ -344,7 +366,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Deine Meinung",
+          kind: "Offene Frage",
           title: "Why an agreement?",
           intro: "Why should every class have a Respect Agreement? Write one or two sentences — use at least one of the eight words.",
           starters: ["Every class needs a Respect Agreement, because …", "If we all keep the rules, …"],

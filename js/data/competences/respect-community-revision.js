@@ -109,7 +109,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · leicht",
+          kind: "Offene Frage",
           title: "My most important word",
           intro: "Which word from this unit is the most important one for you? Write one or two sentences.",
           starters: ["The most important word for me is … , because …"],
@@ -150,7 +150,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Selbstcheck",
+          kind: "Offene Frage",
           title: "Before the test",
           intro: "What was the hardest thing in this unit for you — and what will you do about it before the test? Write two sentences.",
           starters: ["The hardest thing for me was …", "Before the test I will …"],
@@ -210,6 +210,13 @@ export default {
           ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your plan for Friday",
+          intro: "Look at your mistakes. Which lesson will you revise first — and how? Write two sentences.",
+          starters: ["First I will revise …", "I will do it like this: …"],
+        },
       ],
     },
 
@@ -232,6 +239,13 @@ export default {
             "Reading or Listening question (+ answer): …",
           ],
           help: "Eine gute Frage hat genau eine richtige Antwort — und prüft Verstehen, nicht Auswendiglernen.",
+        },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "A good test question",
+          intro: "What makes a test question really good? Write one or two sentences.",
+          starters: ["A good test question …"],
         },
       ],
     },

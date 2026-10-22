@@ -69,7 +69,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Deine Meinung",
+          kind: "Offene Frage",
           title: "Never again",
           intro: "Think about your digital footprint. What is one thing you would never post online? Write one or two sentences.",
           starters: ["I would never post … , because …"],
@@ -120,7 +120,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · If-Clause",
+          kind: "Offene Frage",
           title: "One more hour",
           intro: "Write about yourself with an if-clause: what would you do with one more hour every day? One or two sentences.",
           starters: ["If I had one more hour every day, I would …"],
@@ -166,6 +166,13 @@ export default {
           answer: true,
           help: "Use: This is a picture of … / In the foreground … / I think …",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Influencers and you",
+          intro: "After this unit: has your opinion of influencers changed? Write two sentences.",
+          starters: ["Before this unit I thought …", "Now I think …"],
+        },
       ],
     },
 
@@ -194,6 +201,13 @@ export default {
             "I can write a short discussion with my own opinion.",
           ],
           help: "This checklist is your Unit 4 progress — anything unticked shows you what to revise next.",
+        },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "One thing I learned",
+          intro: "What is the most important thing you learned in this unit? Write one or two sentences.",
+          starters: ["The most important thing I learned is …"],
         },
       ],
     },

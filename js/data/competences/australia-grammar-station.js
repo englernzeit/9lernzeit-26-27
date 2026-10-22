@@ -240,6 +240,14 @@ export default {
           ],
           help: "Denk an: can → could · must → had to · can't → couldn't",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your day",
+          intro: "What can you do well — and what must you do every day? Write one or two sentences.",
+          starters: ["I can … well, but I must …"],
+          help: "Hilfe: can = kann · must = muss · every day = jeden Tag",
+        },
       ],
     },
 
@@ -365,6 +373,13 @@ export default {
           answer: true,
           help: "doesn't have to → didn't have to · can → could · must → had to · can't → couldn't",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Last weekend",
+          intro: "What did you have to do last weekend — and what were you able to do? Write two sentences.",
+          starters: ["Last weekend I had to …", "I was able to …"],
+        },
       ],
     },
 
@@ -482,6 +497,13 @@ export default {
           answer: true,
           help: "Watch for: Simple Past with 'last Sunday' / Present Perfect with 'so far', and Past Progressive for the background action.",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your Sydney trip",
+          intro: "Imagine you have just been to Sydney. Write two sentences: one in the simple past and one in the present perfect.",
+          starters: ["Last summer I …", "I have never …"],
+        },
       ],
     },
 
@@ -512,7 +534,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Deine Meinung",
+          kind: "Offene Frage",
           title: "The most important rule",
           intro: "Which camp rule is the most important one for you? Explain why in one or two sentences — use a modal (must, mustn't, should, have to …).",
           starters: ["The most important rule is … , because you …"],

@@ -129,7 +129,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · leicht",
+          kind: "Offene Frage",
           title: "Your online day",
           intro: "Which of these online words do you use every day? Write one or two sentences.",
           starters: ["Every day I …", "I never …"],
@@ -229,6 +229,13 @@ export default {
           ],
           help: "Hilfe: habit = Gewohnheit · generation = Generation",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your digital day",
+          intro: "Use two words from this unit to describe your digital day. Write two sentences.",
+          starters: ["In the morning I …", "In the evening I …"],
+        },
       ],
     },
 
@@ -312,6 +319,13 @@ export default {
           intro: "Choose three of the tricky words above and write your own English example sentence for each — one that clearly shows the meaning.",
           answer: true,
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "A tricky word",
+          intro: "Which word from this unit is the trickiest for you? Explain it in your own words in two sentences.",
+          starters: ["The trickiest word for me is …", "It means …"],
+        },
       ],
     },
 
@@ -340,6 +354,13 @@ export default {
             "I checked my spelling.",
           ],
           help: "Tip: open the Word Master or scroll up if you need to remember a word.",
+        },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "A word you will use",
+          intro: "Which word from this unit will you really use? Write one or two sentences.",
+          starters: ["I will really use the word … , because …"],
         },
       ],
     },

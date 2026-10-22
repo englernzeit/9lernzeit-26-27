@@ -150,6 +150,14 @@ export default {
           help: "Hilfe: subscribe = abonnieren · delete = löschen · follow = folgen",
         },
         {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Who do you follow?",
+          intro: "Who do you follow online — and why? Write one or two sentences.",
+          starters: ["I follow … , because …"],
+          help: "Hilfe: I follow = ich folge · because = weil",
+        },
+        {
           type: "game",
           game: "monster-hangman",
           kind: "Spiel",
@@ -233,6 +241,13 @@ export default {
             "His advice to new influencers is …",
           ],
           help: "Write full sentences — begin with a capital letter and end with a full stop.",
+        },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Jerome's life",
+          intro: "Would you like to live like Jerome? Write two sentences.",
+          starters: ["I would / would not like to live like Jerome, because …", "The best / worst part is …"],
         },
       ],
     },
@@ -342,6 +357,13 @@ export default {
             "I compare myself to others when …",
           ],
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Can you trust them?",
+          intro: "Can you trust what influencers say about products? Write two sentences with a reason.",
+          starters: ["In my opinion, you can / cannot trust them, because …", "On the other hand, …"],
+        },
       ],
     },
 
@@ -362,7 +384,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Deine Meinung",
+          kind: "Offene Frage",
           title: "Would you buy it?",
           intro: "Would you buy something just because an influencer says it is great? Write one or two sentences.",
           starters: ["I would / would not buy it, because …"],

@@ -120,6 +120,14 @@ export default {
           help: "Hilfe: I can see = Ich kann sehen · there is = es gibt",
         },
         {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Your kind of picture",
+          intro: "Which kind of picture do you like to describe — and why? Write one or two sentences.",
+          starters: ["I like pictures of … , because …"],
+          help: "Hilfe: I like = ich mag · because = weil",
+        },
+        {
           type: "game",
           game: "monster-hangman",
           kind: "Spiel",
@@ -208,6 +216,13 @@ export default {
           answer: true,
           help: "Try: I like this picture because … / It reminds me of …",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Speaking in front of others",
+          intro: "How do you feel when you speak English in front of the class? Write two sentences.",
+          starters: ["When I speak in front of the class, I feel …", "It helps me when …"],
+        },
       ],
     },
 
@@ -269,6 +284,13 @@ export default {
           ],
           answer: true,
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Maybe, probably …",
+          intro: "Why is it important to say “maybe” or “probably” when you talk about a picture? Write two sentences.",
+          starters: ["It is important, because …", "For example, …"],
+        },
       ],
     },
 
@@ -299,6 +321,13 @@ export default {
             "I practised saying it out loud.",
           ],
           help: "Tip: don't read word for word when you present — use your notes as a reminder.",
+        },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "How did it go?",
+          intro: "How did your picture talk go? Write one or two sentences.",
+          starters: ["My picture talk went … , because …"],
         },
       ],
     },

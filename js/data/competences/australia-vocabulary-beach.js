@@ -170,7 +170,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · leicht",
+          kind: "Offene Frage",
           title: "You and the creatures",
           intro: "Which Australian creature would you like to see — and which one never? Write one or two sentences.",
           starters: ["I would like to see a … , because …", "I never want to meet a … , because …"],
@@ -277,6 +277,13 @@ export default {
           ],
           help: "Schreib in ganzen deutschen Sätzen. Du musst nicht jedes Wort übersetzen — sag das Wichtigste.",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Ready for a bushfire?",
+          intro: "What is the most important thing to do when there is a bushfire warning? Write two sentences.",
+          starters: ["The most important thing is to …", "You should also …"],
+        },
       ],
     },
 
@@ -335,6 +342,13 @@ export default {
           ],
           help: "Schreib in ganzen deutschen Sätzen — dein Freund versteht kaum Englisch.",
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Explaining it to Oma",
+          intro: "What was hard about explaining the poster to Oma in German? Write two sentences.",
+          starters: ["It was hard to … , because …", "Next time I will …"],
+        },
       ],
     },
 
@@ -369,7 +383,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Deine Meinung",
+          kind: "Offene Frage",
           title: "Why two languages?",
           intro: "Why does the park need the same poster in English AND in German? Write one or two sentences.",
           starters: ["The poster needs two languages, because …"],

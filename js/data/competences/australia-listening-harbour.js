@@ -149,6 +149,14 @@ export default {
           help: "Hilfe: hobby = Hobby · to finish school = die Schule beenden · to request a song = ein Lied wünschen",
         },
         {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Charlene, Oscar and you",
+          intro: "Who is more like you — Charlene or Oscar? Write one or two sentences.",
+          starters: ["I am more like … , because …"],
+          help: "Hilfe: more like = ähnlicher · because = weil",
+        },
+        {
           type: "game",
           game: "monster-hangman",
           kind: "Spiel",
@@ -233,6 +241,13 @@ export default {
             "The caller I would rather meet is … because …",
           ],
           help: "Write full sentences — begin with a capital letter and end with a full stop.",
+        },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "One question for the callers",
+          intro: "If you could call the radio show, what would you ask Charlene or Oscar? Write two sentences.",
+          starters: ["I would ask … : “ … ?”", "I want to know this, because …"],
         },
       ],
     },
@@ -328,6 +343,13 @@ export default {
             "In my opinion teenagers around the world are (not) really the same because …",
           ],
         },
+        {
+          type: "written",
+          kind: "Offene Frage",
+          title: "Different or the same?",
+          intro: "Are Australian teenagers different from teenagers in Germany? Write two sentences with one example.",
+          starters: ["In my opinion, they are … , because …", "For example, …"],
+        },
       ],
     },
 
@@ -365,7 +387,7 @@ export default {
         },
         {
           type: "written",
-          kind: "Schreiben · Deine Meinung",
+          kind: "Offene Frage",
           title: "Could you live there?",
           intro: "Would you like to live in Australia like the teenagers on the radio show? Write one or two sentences and give a reason.",
           starters: ["I would / would not like to live in Australia, because …"],
