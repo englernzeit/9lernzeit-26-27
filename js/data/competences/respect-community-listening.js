@@ -11,33 +11,38 @@
  * programme) · Step 4 challenge: write your own radio spot.
  */
 
+// Two speakers only (Presenter + Grace): the source's third voice, Mehmet,
+// is folded into Grace and only mentioned, so "whose idea?" keeps its
+// distractor. Every fact the tasks ask about is unchanged.
 const FAIRFIELD_FULL = [
-  "Presenter: Good morning, Fairfield. It is Tuesday, it is twenty past eight, and this is Fairfield Live. Today: the buddy system is one year old. Mehmet and Grace are here in the studio. Mehmet, whose idea was it?",
-  "Mehmet: Grace's, really. Last September we got fourteen new students in one week. Three of them left again before Christmas. Grace said in the school council that nobody had asked them a single question.",
+  "Presenter: Good morning, Fairfield. It is Tuesday, it is twenty past eight, and this is Fairfield Live. Today: the buddy system is one year old, and Grace is here in the studio. Grace, a lot of people think it was Mehmet's idea. Was it?",
+  "Grace: No, it was mine, really. Mehmet joined later — now we run it together. Last September we got fourteen new students in one week. Three of them left again before Christmas. I said in the school council that nobody had asked them a single question.",
+  "Presenter: Why did you say that?",
   "Grace: I asked one of them why she was leaving, and she told me that she had eaten lunch alone for eleven weeks. Eleven weeks. That was the moment.",
   "Presenter: So how does it work now?",
   "Grace: Every new student gets two buddies, not one. One from their own year and one from the year above. Two, because one person can be ill, or move house, or simply forget.",
-  "Mehmet: The buddies have three jobs in the first two weeks. Show them where everything is. Eat lunch with them at least twice. And send them a message on the first Friday.",
+  "Presenter: And what do the buddies actually do?",
+  "Grace: They have three jobs in the first two weeks. Show them where everything is. Eat lunch with them at least twice. And send them a message on the first Friday.",
   "Presenter: A message?",
-  "Mehmet: Just 'how was your week'. It takes eight seconds. It is the part that people forget, and it is the part that works.",
+  "Grace: Just 'how was your week'. It takes eight seconds. It is the part that people forget, and it is the part that works.",
   "Presenter: Does it work? Be honest.",
-  "Grace: Partly. Twenty-six new students this year, twenty-six buddy pairs. Nineteen of them still meet. Seven pairs stopped after the two weeks.",
-  "Mehmet: We are not going to pretend that seven is a good number. But last year three students left our school. This year nobody has left.",
+  "Grace: Partly. Twenty-six new students this year, twenty-six buddy pairs. Nineteen of them still meet. Seven pairs stopped after the two weeks. I am not going to pretend that seven is a good number. But last year three students left our school. This year nobody has left.",
   "Presenter: What do you need now?",
   "Grace: Buddies from Year 11. We have almost none, and the new students in Year 10 need them most. If you are in Year 11, come to room B14 on Thursday at half past one.",
-  "Presenter: Room B14, Thursday, half past one. Mehmet, Grace, thank you. After the break: why the canteen is closed on Friday.",
+  "Presenter: Room B14, Thursday, half past one. Grace, thank you. After the break: why the canteen is closed on Friday.",
 ];
 
 const FAIRFIELD_SHORT = [
-  "Presenter: Good morning. This is Fairfield Live, your school radio. Today: the buddy system. Grace and Mehmet are here.",
-  "Presenter: Grace, whose idea was it?",
-  "Grace: Mine. Last September fourteen new students came to our school. One girl told me that she had eaten lunch alone for eleven weeks.",
+  "Presenter: Good morning. This is Fairfield Live, your school radio. Today: the buddy system. Grace is here in the studio.",
+  "Presenter: Grace, was the buddy system Mehmet's idea?",
+  "Grace: No, it was mine. Mehmet helps me now. Last September fourteen new students came to our school. One girl told me that she had eaten lunch alone for eleven weeks.",
   "Presenter: How does the buddy system work?",
-  "Mehmet: Every new student gets two buddies. The buddies show them the school. They eat lunch with them two times. And they send them a message on the first Friday. That takes eight seconds.",
+  "Grace: Every new student gets two buddies. The buddies show them the school. They eat lunch with them two times. And they send them a message on the first Friday. That takes eight seconds.",
   "Presenter: Does it work?",
   "Grace: This year twenty-six new students got a buddy. Nineteen of them still meet.",
-  "Grace: And we need more buddies from Year 11. Come to room B14 on Thursday.",
-  "Presenter: Thank you, Grace and Mehmet.",
+  "Presenter: What do you need now?",
+  "Grace: More buddies from Year 11. Come to room B14 on Thursday.",
+  "Presenter: Thank you, Grace.",
 ];
 
 const LISTEN_FULL = { label: "Fairfield Live — the school radio", note: "Listen twice. Press play — your browser reads it aloud.", lines: FAIRFIELD_FULL };
@@ -167,7 +172,7 @@ export default {
           intro: "Fill each gap with one to five words — only the missing words. Then Check.",
           readAloud: LISTEN_FULL,
           items: [
-            { hint: "wie alt ist das System?", segments: ["Mehmet and Grace are in the studio because the buddy system is ", { answer: "one year old", accept: ["a year old"], size: 14 }, "."] },
+            { hint: "wie alt ist das System?", segments: ["Grace is in the studio because the buddy system is ", { answer: "one year old", accept: ["a year old"], size: 14 }, "."] },
             { hint: "wann gingen drei?", segments: ["Three of the new students left again ", { answer: "before Christmas", size: 16 }, "."] },
             { hint: "eat lunch …", segments: ["In the first two weeks the buddies eat lunch with the new student ", { answer: "at least twice", accept: ["twice", "two times"], size: 14 }, "."] },
             { hint: "wie lange?", segments: ["The message on the first Friday takes ", { answer: "eight seconds", accept: ["8 seconds"], size: 14 }, "."] },
@@ -216,7 +221,7 @@ export default {
           intro: "Fill each gap with one to five words — write only the missing words. Then Check.",
           readAloud: LISTEN_FULL,
           items: [
-            { hint: "the buddy system is …", segments: ["Mehmet and Grace are in the studio because the buddy system is ", { answer: "one year old", accept: ["a year old"], size: 14 }, "."] },
+            { hint: "the buddy system is …", segments: ["Grace is in the studio because the buddy system is ", { answer: "one year old", accept: ["a year old"], size: 14 }, "."] },
             { hint: "when did three leave?", segments: ["Three of the new students left again ", { answer: "before Christmas", size: 16 }, "."] },
             { hint: "ill, move house or …", segments: ["A new student gets two buddies because one person can be ill, move house or ", { answer: "simply forget", accept: ["forget"], size: 14 }, "."] },
             { hint: "eat lunch …", segments: ["In the first two weeks the buddies eat lunch with the new student ", { answer: "at least twice", accept: ["twice", "two times"], size: 14 }, "."] },
