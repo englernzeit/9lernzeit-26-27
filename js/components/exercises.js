@@ -61,6 +61,11 @@ export function createGlossaryText({ paragraphs, highlight }) {
     para.some((seg) => typeof seg !== "string"),
   );
 
+  // A long text (a whole article) gets a compact type size, so the big
+  // A1 style made for a few short sentences doesn't blow the card up.
+  const chars = paragraphs.flat().reduce((n, seg) => n + (typeof seg === "string" ? seg : seg.w ?? "").length, 0);
+  if (chars > 800) wrap.classList.add("exo-glossary--long");
+
   // ----- Optional colour highlighter (a "marker pen" per tense) -----
   // A study aid, not a checked exercise: pick a colour, then tap words to
   // mark them. Tapping again (or the eraser) removes the mark.
@@ -295,6 +300,13 @@ export function createMultipleChoice({ questions, columns }) {
     q.className = "exo-mc__prompt";
     q.textContent = `${qi + 1}. ${question.q}`;
     block.appendChild(q);
+    // Optional German support line (LE)
+    if (question.de) {
+      const de = document.createElement("p");
+      de.className = "exo-de";
+      de.textContent = question.de;
+      block.appendChild(de);
+    }
 
     const opts = document.createElement("div");
     opts.className = "exo-mc__opts";
@@ -882,7 +894,7 @@ export function createEventOrder({ events }) {
   const n = events.length;
   // Present the events in a random order that is never the answer order.
   const shown = shuffleOrder(
-    events.map((e, i) => ({ text: e.text, correct: i + 1 })),
+    events.map((e, i) => ({ text: e.text, de: e.de, correct: i + 1 })),
     (e) => e.correct,
   );
 
@@ -900,6 +912,13 @@ export function createEventOrder({ events }) {
     const text = document.createElement("span");
     text.className = "exo-order__text";
     text.textContent = e.text;
+    // Optional German support line (LE)
+    if (e.de) {
+      const de = document.createElement("span");
+      de.className = "exo-de";
+      de.textContent = e.de;
+      text.appendChild(de);
+    }
     row.append(input, text);
     wrap.appendChild(row);
     return { row, input, correct: e.correct };

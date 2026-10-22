@@ -34,11 +34,46 @@ const THEME_INTRO = [
   ".",
 ];
 
+// LE article — the harder words carry a German gloss (tap to see it).
 const ARTICLE_LE = [
-  "Fairfield High has 800 students. At lunch they always sit in the same places. The football players sit together. The gamers sit together. The students who came this year sit at the end of the room.",
-  "Amira is in Year 10. She had an idea. For one lunch break, nobody sits in their normal place. At the door every student takes a coloured card. The card says which table you sit at.",
-  "Not everybody liked the idea. Leon said that he did not want to eat with people he does not know. The school council talked about it for two weeks. Then they voted: 22 said yes, 9 said no.",
-  "On the day, nobody spoke for ten minutes. Then a boy asked about the football match, and the room got loud. At table eleven a boy from Year 7 found a girl who plays his online game. Two tables did not talk at all.",
+  [
+    "Fairfield High has 800 students. At lunch they ",
+    { w: "always", de: "immer" },
+    " sit in the same places. The football players sit ",
+    { w: "together", de: "zusammen" },
+    ". The gamers sit together. The students who came this year sit at the ",
+    { w: "end", de: "das Ende" },
+    " of the room.",
+  ],
+  [
+    "Amira is in Year 10. She had an idea. For one ",
+    { w: "lunch break", de: "die Mittagspause" },
+    ", ",
+    { w: "nobody", de: "niemand" },
+    " sits in their normal place. At the door every student takes a ",
+    { w: "coloured card", de: "eine farbige Karte" },
+    ". The card says which table you sit at.",
+  ],
+  [
+    "Not everybody liked the idea. Leon said that he did not want to eat with people he does not know. The ",
+    { w: "school council", de: "die Schülervertretung" },
+    " talked about it for two weeks. Then they ",
+    { w: "voted", de: "stimmten ab" },
+    ": 22 said yes, 9 said no.",
+  ],
+  [
+    "On the day, nobody ",
+    { w: "spoke", de: "sprach" },
+    " for ten minutes. Then a boy asked about the football ",
+    { w: "match", de: "das Spiel" },
+    ", and the room got ",
+    { w: "loud", de: "laut" },
+    ". At table eleven a boy from Year 7 ",
+    { w: "found", de: "fand" },
+    " a girl who plays his online game. Two tables did not talk ",
+    { w: "at all", de: "überhaupt nicht" },
+    ".",
+  ],
   "Amira says: “I know eleven new names now.”",
 ];
 
@@ -100,11 +135,12 @@ export default {
           intro: "Read the article again, then choose True or False. Check when you are ready.",
           columns: 2,
           questions: [
-            { q: "At lunch the students at Fairfield High always sit in the same places.", options: ["True", "False"], correct: 0 },
-            { q: "The card tells you which table you sit at.", options: ["True", "False"], correct: 0 },
-            { q: "Leon liked the idea.", options: ["True", "False"], correct: 1 },
-            { q: "All the tables talked to each other.", options: ["True", "False"], correct: 1 },
+            { q: "At lunch the students at Fairfield High always sit in the same places.", de: "Beim Mittagessen sitzen die Schüler immer an denselben Plätzen.", options: ["True", "False"], correct: 0 },
+            { q: "The card tells you which table you sit at.", de: "Die Karte sagt dir, an welchem Tisch du sitzt.", options: ["True", "False"], correct: 0 },
+            { q: "Leon liked the idea.", de: "Leon fand die Idee gut.", options: ["True", "False"], correct: 1 },
+            { q: "All the tables talked to each other.", de: "An allen Tischen wurde miteinander geredet.", options: ["True", "False"], correct: 1 },
           ],
+          help: "Hilfe: True = richtig · False = falsch. Klassenarbeit-Tipp: Dort musst du auch die Zeile angeben, z. B. l. 1.",
         },
         {
           type: "event-order",
@@ -112,11 +148,12 @@ export default {
           title: "What happened first?",
           intro: "Put the four moments in order — 1 is what happened first. Then Check.",
           events: [
-            { text: "Amira has an idea for Mix-It-Up Day." },
-            { text: "The school council votes: 22 yes, 9 no." },
-            { text: "On the day, nobody speaks for ten minutes." },
-            { text: "A boy asks about the football match and the room gets loud." },
+            { text: "Amira has an idea for Mix-It-Up Day.", de: "Amira hat eine Idee für den Mix-It-Up Day." },
+            { text: "The school council votes: 22 yes, 9 no.", de: "Die Schülervertretung stimmt ab: 22 ja, 9 nein." },
+            { text: "On the day, nobody speaks for ten minutes.", de: "An dem Tag spricht zehn Minuten lang niemand." },
+            { text: "A boy asks about the football match and the room gets loud.", de: "Ein Junge fragt nach dem Fußballspiel, und es wird laut." },
           ],
+          help: "Hilfe: Bring die vier Momente in die richtige Reihenfolge — 1 = was zuerst passiert ist.",
         },
         {
           type: "idea-pick",
@@ -126,7 +163,7 @@ export default {
           situation: PROBLEM.situation,
           ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …"],
-          help: "Klassenarbeit-Tipp: Bei „richtig / falsch“ musst du auch die Zeile angeben, z. B. l. 1.",
+          help: "Hilfe: Sieben aus deiner Klasse wollen nicht mitmachen. Idee 1 = trotzdem machen · Idee 2 = die sieben fragen, was sie brauchen · Idee 3 = kürzer machen (nur 15 Minuten gemischt). because = weil",
         },
         {
           type: "written",
