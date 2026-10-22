@@ -49,14 +49,24 @@ export const UNITS = [
     id: "respect-community",
     number: 2,
     label: "Respect & Community",
-    tagline: "",
-    active: false, // temporarily deactivated — see isUnitActive()
+    tagline: "Speak up, don't stand by",
+    active: true, // Unit 2 build in progress — being activated page by page
     // Left-center (schoolyard scene)
     mapPosition: { x: 18, y: 50 },
     mapPositionPortrait: { x: 34, y: 37 },
     sticker: "assets/images/sticker-unit2-community.webp",
     labelImage: "assets/images/label-unit2.png",
-    sections: placeholderSections(),
+    // Theme 2 "Respect" — eight competences, built from the LE/G/E source.
+    sections: [
+      { id: "vocabulary", label: "Vocabulary · Respect Words" },
+      { id: "reading", label: "Reading · Mix-It-Up Day" },
+      { id: "listening", label: "Listening · Fairfield Live" },
+      { id: "mediation", label: "Mediation · Pass It On" },
+      { id: "writing", label: "Writing · Blog Comment" },
+      { id: "speaking", label: "Speaking · Keep Talking" },
+      { id: "grammar", label: "Grammar · Reported Speech" },
+      { id: "revision", label: "Revision · Ready for the Test" },
+    ],
   },
   {
     id: "looking-forward",

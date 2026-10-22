@@ -18,6 +18,7 @@ import writtenDiscussion from "./generation-like-written-discussion.js";
 import vocabulary from "./generation-like-vocabulary.js";
 import speaking from "./generation-like-speaking.js";
 import revision from "./generation-like-revision.js";
+import respectVocabulary from "./respect-community-vocabulary.js";
 
 const CONTENT = {
   "australia/reading-reef": readingReef,
@@ -32,6 +33,7 @@ const CONTENT = {
   "generation-like/vocabulary": vocabulary,
   "generation-like/speaking": speaking,
   "generation-like/revision": revision,
+  "respect-community/vocabulary": respectVocabulary,
 };
 
 /**
