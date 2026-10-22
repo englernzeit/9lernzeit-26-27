@@ -1,8 +1,9 @@
 /* ============================================================
-   Back tab — torn-paper / masking-tape "Back to …" affordance.
-   Used on section pages ("Back to [Unit]") and unit carousels
-   ("Back to Map"). Final torn-paper art added with assets;
-   the tape look below is the working shell. No browser chrome.
+   Back tab — a kraft-paper luggage tag pointing back.
+   Used on section pages ("Back to [Unit]") and unit pages
+   ("Back to Journey"). The tag shape is drawn by ::before (so the
+   drop shadow on the button follows the pointed end); ::after is
+   the metal eyelet. No browser chrome.
    ============================================================ */
 
 .back-tab {
@@ -10,25 +11,101 @@
   top: var(--space-md);
   left: var(--space-md);
   z-index: 10;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-tape);
-  box-shadow: var(--shadow-lift-1);
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 1.35rem 0.6rem 2.2rem;
+  background: none;
+  border: none;
+  color: #4a3826;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 5px rgba(60, 40, 20, 0.28));
   transform: rotate(-2deg);
-  font-family: var(--font-hand);
-  font-size: 1.05rem;
-  transition: transform var(--motion-micro);
+  transform-origin: left center;
+  transition: transform 0.28s cubic-bezier(0.3, 1.45, 0.5, 1);
 }
 
+/* The tag: kraft card with a pointed left end and a faint fibre grain */
 .back-tab::before {
-  content: "\2190\00a0"; /* ← hand-drawn arrow asset replaces this later */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 45%, rgba(80, 50, 20, 0.08)),
+    repeating-linear-gradient(100deg, rgba(120, 80, 40, 0.05) 0 2px, transparent 2px 7px),
+    #dcbc8c;
+  clip-path: polygon(1.2rem 0, 100% 0, 100% 100%, 1.2rem 100%, 0 50%);
+}
+
+/* Metal eyelet near the point */
+.back-tab::after {
+  content: "";
+  position: absolute;
+  left: 0.78rem;
+  top: 50%;
+  width: 0.62rem;
+  height: 0.62rem;
+  margin-top: -0.31rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(40, 28, 14, 0.75) 0 32%, #f4e6c8 38% 62%, #a8875a 68% 100%);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+.back-tab__arrow {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #c06a58;
+  color: #fff;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15), 0 1px 2px rgba(60, 40, 20, 0.3);
+  transition: transform 0.28s cubic-bezier(0.3, 1.45, 0.5, 1);
+}
+
+.back-tab__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+  text-align: left;
+}
+
+.back-tab__eyebrow {
+  font-family: var(--font-hand);
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.back-tab__place {
+  margin-top: 0.1rem;
+  font-family: "Caveat", var(--font-hand);
+  font-weight: 700;
+  font-size: 1.6rem;
+  white-space: nowrap;
 }
 
 .back-tab:hover,
 .back-tab:focus-visible {
-  transform: rotate(0deg) scale(1.05);
+  transform: rotate(0deg) translateX(-3px) scale(1.04);
 }
 
-/* Keep tape rotation when pressed (overrides generic button:active) */
+.back-tab:hover .back-tab__arrow,
+.back-tab:focus-visible .back-tab__arrow {
+  transform: translateX(-3px);
+}
+
+.back-tab:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 0.15rem #c06a58) drop-shadow(0 4px 5px rgba(60, 40, 20, 0.28));
+}
+
+/* Keep the tag rotation when pressed (overrides generic button:active) */
 .back-tab:active {
-  transform: rotate(-2deg) scale(0.97);
+  transform: rotate(-2deg) scale(0.96);
 }

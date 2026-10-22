@@ -289,20 +289,25 @@ function buildNamePdfCluster(view, unit, section, content) {
 
   const nameTag = document.createElement("label");
   nameTag.className = "journal__nametag";
+  // A "HELLO my name is" sticker
   const caption = document.createElement("span");
   caption.className = "journal__nametag-caption";
-  caption.textContent = "Name:";
+  caption.innerHTML = '<span class="journal__nametag-hello">HELLO</span><span class="journal__nametag-sub">my name is</span>';
   const input = document.createElement("input");
   input.className = "journal__nametag-input";
   input.type = "text";
   input.maxLength = 60;
   input.autocomplete = "name";
+  input.placeholder = "your name";
+  input.setAttribute("aria-label", "Your name");
   input.value = getName();
   nameTag.append(caption, input);
 
   const pdf = document.createElement("button");
   pdf.className = "journal__pdf-badge";
-  pdf.textContent = "PDF";
+  pdf.type = "button";
+  pdf.innerHTML =
+    '<span class="journal__pdf-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 4v10m-4.5-4.5L12 14l4.5-4.5M5.5 19h13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>PDF</span>';
   pdf.setAttribute("aria-label", "Download your answers as a PDF");
 
   const hint = document.createElement("span");

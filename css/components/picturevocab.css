@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: flex-end; /* buttons hug the right edge */
   gap: 0.7rem;
-  margin: -3.2rem 0 0.6rem auto; /* pull up, hug the right edge */
+  margin: -1.2rem 1rem 0.6rem auto; /* pull up under the name sticker, hug the right edge */
   width: max-content;
 }
 
