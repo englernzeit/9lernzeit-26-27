@@ -25,6 +25,7 @@ import respectMediation from "./respect-community-mediation.js";
 import respectGrammar from "./respect-community-grammar.js";
 import respectWriting from "./respect-community-writing.js";
 import respectSpeaking from "./respect-community-speaking.js";
+import respectRevision from "./respect-community-revision.js";
 
 const CONTENT = {
   "australia/reading-reef": readingReef,
@@ -46,6 +47,7 @@ const CONTENT = {
   "respect-community/grammar": respectGrammar,
   "respect-community/writing": respectWriting,
   "respect-community/speaking": respectSpeaking,
+  "respect-community/revision": respectRevision,
 };
 
 /**
