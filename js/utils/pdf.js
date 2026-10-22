@@ -1,20 +1,25 @@
 /**
  * Minimal PDF writer — no libraries, no print dialog.
  *
- * Produces a single A4 page: black Helvetica on white with thin rules and
- * a light amber highlight behind each given answer, so the answer stands
- * out from its task label (yellow prints as a faint grey in B&W too).
+ * Produces A4 pages: black Helvetica on white with thin rules and a light
+ * amber highlight behind each given answer, so the answer stands out from
+ * its task label (yellow prints as a faint grey in B&W too). A task the
+ * learner left empty is marked "— not answered —" in red, and page 1 says
+ * how many tasks were answered, so the teacher sees gaps at a glance.
  * Text uses WinAnsi encoding, so German umlauts/ß print correctly.
  *
  * Only what the answer sheet needs is implemented: absolute-
- * positioned text lines and horizontal rules. Content that would
- * overflow the page is cut with an ellipsis line (one page, always).
+ * positioned text lines, rules and JPEG images. Content flows onto
+ * as many pages as it needs — nothing is ever cut off.
  */
 
 const PAGE_W = 595; // A4 portrait, points
 const PAGE_H = 842;
 const MARGIN = 50;
 const BOTTOM = 56;
+const TOP = PAGE_H - 64;
+const LABEL_CHARS = 98; // Helvetica-Bold 10pt across the text width
+const ANSWER_CHARS = 90; // Helvetica 10pt, indented
 
 /**
  * @param {{
@@ -28,11 +33,17 @@ const BOTTOM = 56;
  * @returns {Blob}
  */
 export function buildAnswerSheetPdf(doc) {
-  const ops = [];
-  let y = PAGE_H - 64;
+  const pages = [[]];
+  let ops = pages[0];
+  let y = TOP;
 
   const text = (x, yy, font, size, str) => {
     ops.push(`BT /${font} ${size} Tf ${x} ${yy.toFixed(1)} Td (${escapeText(str)}) Tj ET`);
+  };
+  const redText = (x, yy, font, size, str) => {
+    ops.push(`0.78 0.1 0.08 rg`);
+    text(x, yy, font, size, str);
+    ops.push(`0 0 0 rg`);
   };
   const rule = (x1, yy, x2, width = 0.5) => {
     ops.push(`${width} w ${x1} ${yy.toFixed(1)} m ${x2} ${yy.toFixed(1)} l S`);
@@ -46,6 +57,23 @@ export function buildAnswerSheetPdf(doc) {
     );
   };
 
+  // Start a new page with a small running header when `need` points
+  // would not fit any more.
+  const ensure = (need) => {
+    if (y - need >= BOTTOM) return;
+    ops = [];
+    pages.push(ops);
+    y = PAGE_H - 44;
+    text(MARGIN, y, "F1", 9, `${doc.title} · ${doc.name}`);
+    y -= 6;
+    rule(MARGIN, y, PAGE_W - MARGIN, 0.5);
+    y -= 20;
+  };
+
+  // How many tasks were answered — a quick overview for the teacher
+  const allItems = doc.steps.flatMap((s) => s.items);
+  const open = allItems.filter((it) => !(it.answer ?? "").trim()).length;
+
   // Header
   text(MARGIN, y, "F2", 16, doc.title);
   y -= 16;
@@ -53,7 +81,10 @@ export function buildAnswerSheetPdf(doc) {
   y -= 24;
   text(MARGIN, y, "F1", 11, `Name: ${doc.name}`);
   text(PAGE_W - MARGIN - 130, y, "F1", 11, `Date: ${doc.date}`);
-  y -= 6;
+  y -= 16;
+  text(MARGIN, y, "F2", 10, `Answered: ${allItems.length - open} of ${allItems.length} tasks`);
+  if (open) redText(MARGIN + 170, y, "F2", 10, `${open} not answered (marked in red)`);
+  y -= 8;
   rule(MARGIN, y, PAGE_W - MARGIN, 0.8);
   y -= 20;
 
@@ -81,60 +112,56 @@ export function buildAnswerSheetPdf(doc) {
     y -= 20;
   }
 
-  let clipped = false;
+  const lineH = 13;
 
-  outer: for (const step of doc.steps) {
-    if (y < BOTTOM + 40) {
-      clipped = true;
-      break;
-    }
+  for (const step of doc.steps) {
+    ensure(16 + 2 * lineH + 20); // keep a heading together with its first task
     text(MARGIN, y, "F2", 12, step.heading);
     y -= 16;
 
     for (const item of step.items) {
-      if (y < BOTTOM + 24) {
-        clipped = true;
-        break outer;
-      }
       const answer = (item.answer ?? "").trim();
+      const labelLines = wrap(`${item.label}:`, LABEL_CHARS);
+      ensure(labelLines.length * lineH + (answer ? lineH : 20));
+      for (const l of labelLines) {
+        text(MARGIN, y, "F2", 10, l);
+        y -= lineH;
+      }
+
       if (answer) {
-        // Task/question label (bold), then the answer on a highlighted band
-        // so the given answer is clearly set apart from the task.
-        text(MARGIN, y, "F2", 10, `${item.label}:`);
-        y -= 13;
-        const lineH = 13;
-        const lines = wrap(answer, 90);
-        const firstBaseline = y;
-        let drawn = 0;
-        while (drawn < lines.length && firstBaseline - drawn * lineH >= BOTTOM) drawn += 1;
-        if (drawn > 0) {
-          const lastBaseline = firstBaseline - (drawn - 1) * lineH;
-          highlight(MARGIN + 8, lastBaseline - 3, PAGE_W - MARGIN - (MARGIN + 8), firstBaseline + 9 - (lastBaseline - 3));
-          for (let i = 0; i < drawn; i++) {
-            text(MARGIN + 14, firstBaseline - i * lineH, "F1", 10, lines[i]);
-          }
-          y = firstBaseline - drawn * lineH;
+        // The answer on a highlighted band, so it is clearly set apart
+        // from the task. A long answer continues on the next page.
+        let lines = wrap(answer, ANSWER_CHARS);
+        while (lines.length) {
+          ensure(lineH);
+          let fit = 0;
+          while (fit < lines.length && y - fit * lineH >= BOTTOM) fit += 1;
+          const first = y;
+          const last = first - (fit - 1) * lineH;
+          highlight(MARGIN + 8, last - 3, PAGE_W - MARGIN - (MARGIN + 8), first + 9 - (last - 3));
+          for (let i = 0; i < fit; i++) text(MARGIN + 14, first - i * lineH, "F1", 10, lines[i]);
+          y = first - fit * lineH;
+          lines = lines.slice(fit);
         }
         y -= 6;
-        if (drawn < lines.length) {
-          clipped = true;
-          break outer;
-        }
       } else {
-        // No answer yet — a labelled write-in line
-        text(MARGIN, y, "F2", 10, `${item.label}:`);
-        rule(MARGIN + 60, y - 2, PAGE_W - MARGIN, 0.5);
-        y -= 18;
+        // Nothing written — say so in red, then a write-in line
+        redText(MARGIN + 14, y, "F2", 9, "— not answered —");
+        rule(MARGIN + 112, y - 2, PAGE_W - MARGIN, 0.5);
+        y -= 20;
       }
     }
     y -= 8;
   }
 
-  if (clipped) {
-    text(MARGIN, BOTTOM - 14, "F1", 8, "…");
+  // Page numbers once the page count is known
+  if (pages.length > 1) {
+    pages.forEach((p, i) => {
+      p.push(`BT /F1 8 Tf ${PAGE_W - MARGIN - 50} ${BOTTOM - 26} Td (${escapeText(`Page ${i + 1} of ${pages.length}`)}) Tj ET`);
+    });
   }
 
-  return assemblePdf(ops.join("\n"), images);
+  return assemblePdf(pages.map((p) => p.join("\n")), images);
 }
 
 /** Decode a `data:image/jpeg;base64,…` URL to a binary (latin1) string,
@@ -164,7 +191,11 @@ export function downloadPdf(blob, filename) {
 
 /** Escape PDF string delimiters. */
 function escapeText(str) {
-  return str.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+  return str
+    .replace(/→/g, "->") // no arrow in WinAnsi
+    .replace(/\\/g, "\\\\")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)");
 }
 
 /** Greedy word wrap by character count (~Helvetica 10pt fits ~95). */
@@ -185,20 +216,21 @@ function wrap(str, max) {
 }
 
 /**
- * Wrap a content stream into a complete one-page PDF file.
- * @param {string} content
+ * Wrap the pages' content streams into a complete PDF file.
+ * @param {string[]} contents  one content stream per page
  * @returns {Blob}
  */
-function assemblePdf(content, images = []) {
-  // Image XObjects are objects 7, 8, … — referenced from the page as /Im0, …
-  const xobjRefs = images.map((_, i) => `/Im${i} ${7 + i} 0 R`).join(" ");
+function assemblePdf(contents, images = []) {
+  // Objects: 1 catalog, 2 page tree, 3–4 fonts, then the image XObjects
+  // (/Im0, … — page 1 only), then a page + content object per page.
+  const firstImage = 5;
+  const firstPage = firstImage + images.length;
+  const pageObj = (i) => firstPage + 2 * i;
+  const xobjRefs = images.map((_, i) => `/Im${i} ${firstImage + i} 0 R`).join(" ");
   const xobjRes = images.length ? ` /XObject << ${xobjRefs} >>` : "";
   const objects = [
     "<< /Type /Catalog /Pages 2 0 R >>",
-    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] ` +
-      `/Resources << /Font << /F1 5 0 R /F2 6 0 R >>${xobjRes} >> /Contents 4 0 R >>`,
-    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+    `<< /Type /Pages /Kids [${contents.map((_, i) => `${pageObj(i)} 0 R`).join(" ")}] /Count ${contents.length} >>`,
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
   ];
@@ -209,6 +241,13 @@ function assemblePdf(content, images = []) {
         `stream\n${im.data}\nendstream`,
     );
   }
+  contents.forEach((content, i) => {
+    objects.push(
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] ` +
+        `/Resources << /Font << /F1 3 0 R /F2 4 0 R >>${xobjRes} >> /Contents ${pageObj(i) + 1} 0 R >>`,
+    );
+    objects.push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+  });
 
   let file = "%PDF-1.4\n";
   const offsets = [];

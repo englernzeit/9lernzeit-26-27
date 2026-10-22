@@ -476,8 +476,9 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
           return items;
         }
         if (card.starters?.length) {
+          const tag = card.kind === "Offene Frage" ? "Open question · " : "";
           return card.starters.map((starter, k) => ({
-            label: `${card.title}: ${starter}`,
+            label: `${tag}${card.title}: ${starter}`,
             answer: answers[`${base}s${k + 1}`] ?? "",
           }));
         }
