@@ -296,13 +296,6 @@ export default {
           ],
           help: "Tipp: Schreib wie eine Zeitung — kurze, klare Sätze und ein Zitat machen den Bericht lebendig.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Would you report it?",
-          intro: "Your report is written. Would you like to write for a school newspaper? Write one or two sentences.",
-          starters: ["I would / would not like to write for a school newspaper, because …"],
-        },
       ],
     },
   ],

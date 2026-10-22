@@ -296,13 +296,6 @@ export default {
           ],
           help: "Tipp: Kurze Sätze, eine echte Zahl und ein klarer Aufruf machen einen guten Radiospot.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "On air",
-          intro: "Would you like to speak on your school radio? Write one or two sentences.",
-          starters: ["I would / would not like to speak on the radio, because …"],
-        },
       ],
     },
   ],

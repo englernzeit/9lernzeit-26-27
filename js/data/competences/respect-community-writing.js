@@ -323,13 +323,6 @@ export default {
           ],
           help: "Tipp: „That may be true, but …“ und „On the other hand, …“ helfen dir, die andere Seite stark zu machen.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "The other side",
-          intro: "You argued the other side. Did it change your own opinion? Write one or two sentences.",
-          starters: ["Arguing the other side made me think that …"],
-        },
       ],
     },
   ],

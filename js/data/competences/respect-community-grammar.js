@@ -272,13 +272,6 @@ export default {
           ],
           help: "Denk an den Rückschritt und an die Pronomen (I → he/she, my → his/her).",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "What did you learn?",
-          intro: "What did you learn from your interview? Write one or two sentences in reported speech.",
-          starters: ["My partner told me that …"],
-        },
       ],
     },
   ],

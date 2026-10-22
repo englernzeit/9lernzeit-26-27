@@ -355,13 +355,6 @@ export default {
           ],
           help: "Tip: open the Word Master or scroll up if you need to remember a word.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "A word you will use",
-          intro: "Which word from this unit will you really use? Write one or two sentences.",
-          starters: ["I will really use the word … , because …"],
-        },
       ],
     },
   ],

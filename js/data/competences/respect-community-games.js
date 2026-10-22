@@ -1,12 +1,12 @@
 /**
  * Respect & Community (Unit 2) — "Monster's Lunch" word games.
  *
- * Every step of every Unit 2 competence ends with the hangman game; this
+ * Steps 1–3 of every Unit 2 competence end with the hangman game; this
  * file holds all the word lists so they can be graded side by side:
  *   Step 1 (LE)        — easy words, simple English hint + German
  *   Step 2 (G-Kurs)    — the competence's key words, English definition
  *   Step 3 (E-Kurs)    — harder words, "a person who … / to … so that …"
- *   Step 4 (Challenge) — a gap sentence straight from the page's text
+ * Step 4 is a single creative challenge and has no game.
  *
  * The game only knows A–Z: every answer is ONE word, no spaces, hyphens
  * or apostrophes (a space would be a slot nobody can fill).
@@ -46,16 +46,6 @@ const GAMES = {
       W("RESPECT", "treating others the way you want to be treated"),
       W("HARMFUL", "something that hurts or does damage"),
     ],
-    4: [
-      W("BYSTANDERS", "Twenty people read it and said nothing — they were ___."),
-      W("VICTIM", "The person in the mean photo is the ___."),
-      W("DELETE", "Don't send a horrible photo on — ___ it!"),
-      W("CYBERBULLYING", "It does not stop at the school gate: on a phone, ___ follows you home."),
-      W("SUPPORT", "A buddy who sits down next to you is real ___."),
-      W("BULLY", "A ___ is mean to the same person again and again."),
-      W("TEASE", "If you make jokes about someone who is not laughing, you ___ them."),
-      W("HORRIBLE", "The photo was ___ — nobody should ever see it."),
-    ],
   },
 
   reading: {
@@ -88,16 +78,6 @@ const GAMES = {
       W("BELONG", "to feel at home in a group"),
       W("ISOLATED", "alone and cut off from the others"),
       W("CANCELLED", "when a plan will not happen after all"),
-    ],
-    4: [
-      W("NORMALLY", "For one lunch break, nobody at Fairfield High sat where they ___ sat."),
-      W("AMIRA", "The idea came from ___, who is in Year 10."),
-      W("CARD", "At the door, a coloured ___ decided the table."),
-      W("AGAINST", "In the end the council voted: twenty-two for, nine ___."),
-      W("SPOKE", "For the first ten minutes almost nobody ___."),
-      W("GAME", "A boy from Year 7 found a girl who plays the same online ___."),
-      W("JUNE", "Ms Obi wants to do it again in ___."),
-      W("KIND", "“One lunch break does not make a school ___,” Amira says."),
     ],
   },
 
@@ -132,16 +112,6 @@ const GAMES = {
       W("DETAIL", "a small fact, like a number or a name"),
       W("LEAST", "the smallest amount — the opposite of most"),
     ],
-    4: [
-      W("WEEK", "Last September fourteen new students came in one ___."),
-      W("CHRISTMAS", "Three of them left again before ___."),
-      W("ELEVEN", "One girl had eaten lunch alone for ___ weeks."),
-      W("TWO", "Every new student gets ___ buddies, not one."),
-      W("SECONDS", "The message on the first Friday takes eight ___."),
-      W("SEVEN", "Nineteen pairs still meet, but ___ pairs stopped."),
-      W("THURSDAY", "Year 11: come to room B14 on ___ at half past one."),
-      W("CANTEEN", "After the break: why the ___ is closed on Friday."),
-    ],
   },
 
   mediation: {
@@ -174,16 +144,6 @@ const GAMES = {
       W("EFFORT", "hard work so that something is done well"),
       W("INTERPRETER", "a person who translates spoken words"),
       W("RELEVANT", "important for the question that was asked"),
-    ],
-    4: [
-      W("SEVENTEEN", "Daniel Okafor, who is ___, started the Open Page Project."),
-      W("LEEDS", "The podcast is recorded in a school library in ___."),
-      W("MAY", "The works are shown in the town hall for a week in ___."),
-      W("JULY", "A lesson is over after 45 minutes; a poster is still there in ___."),
-      W("JOURNALIST", "The winning class spends a day with a ___ from the local paper."),
-      W("STREET", "Last year's class wrote about their own ___."),
-      W("MARCH", "Write to openpage before the first of ___."),
-      W("MONEY", "What do the winners get? There is no ___."),
     ],
   },
 
@@ -218,16 +178,6 @@ const GAMES = {
       W("STRUCTURE", "how a text is ordered: beginning, middle, end"),
       W("CONCERN", "“That does not ___ me” = it is not my business"),
     ],
-    4: [
-      W("OTHER", "On the one hand, … On the ___ hand, …"),
-      W("MISSING", "Four lessons are four lessons that are ___ somewhere else."),
-      W("JULY", "A poster on the wall still speaks in ___."),
-      W("VOTE", "We read every comment before the ___ on 2 May."),
-      W("SUM", "To ___ up, the project costs little and it stays."),
-      W("WALL", "Our Year 7 poster is still on the ___ by room 114."),
-      W("FALL", "Say it politely, so you do not ___ out with anybody."),
-      W("SECONDLY", "Firstly, … ___, …"),
-    ],
   },
 
   speaking: {
@@ -260,16 +210,6 @@ const GAMES = {
       W("NEGOTIATE", "to talk until both sides agree"),
       W("ELABORATE", "to say more about an idea, with details"),
       W("RESPOND", "to answer"),
-    ],
-    4: [
-      W("REASON", "Never just yes or no — always give a ___."),
-      W("BALL", "Ask back: give the ___ back to your partner."),
-      W("POINT", "That's a good ___."),
-      W("THOUGHT", "I hadn't ___ of that."),
-      W("MEAN", "I see what you ___, but we only have four lessons."),
-      W("WORK", "Would Friday ___ for you?"),
-      W("TRUE", "That may be ___, but …"),
-      W("SECONDS", "Your pitch must fit into sixty ___."),
     ],
   },
 
@@ -304,16 +244,6 @@ const GAMES = {
       W("COMPLAINED", "reporting verb: she said she was unhappy about something"),
       W("INSISTED", "reporting verb: she said it again and would not change her mind"),
     ],
-    4: [
-      W("WAS", "“I am late.” → He said that he ___ late."),
-      W("COULD", "“I can help.” → She said that she ___ help."),
-      W("WOULD", "“I will come back.” → She promised that she ___ come back."),
-      W("HAD", "“You must ask twice.” → She said we ___ to ask twice."),
-      W("IF", "“Do you like your job?” → They asked her ___ she liked her job."),
-      W("NOT", "“Don't shout.” → She told us ___ to shout."),
-      W("THERE", "In reported speech, here becomes ___."),
-      W("BEFORE", "In reported speech, yesterday becomes the day ___."),
-    ],
   },
 
   revision: {
@@ -347,16 +277,6 @@ const GAMES = {
       W("STRATEGY", "a plan for how to do something well"),
       W("WHILE", "linking word: at the same time as"),
     ],
-    4: [
-      W("BYSTANDER", "Vocabulary: a person who sees it and does nothing is a ___."),
-      W("LINE", "Reading: give the ___ numbers as proof."),
-      W("MISSING", "Listening: write only the ___ words, not the whole sentence."),
-      W("GERMAN", "Mediation: answer your brother in ___."),
-      W("FIRSTLY", "Writing: ___, … Secondly, …"),
-      W("POLITELY", "Speaking: if you say no, disagree ___."),
-      W("COULD", "Grammar: “I can help.” → She said she ___ help."),
-      W("TOMORROW", "Grammar: “I'll call ___.” → He said he would call the next day."),
-    ],
   },
 };
 
@@ -371,10 +291,14 @@ export function gameCard(sectionId, step) {
   };
 }
 
-/** Append the step's word game to every step of a competence page. */
+/**
+ * Append the step's word game to Steps 1–3 of a competence page.
+ * Step 4 stays a single creative challenge — no game there.
+ */
 export function withGames(sectionId, content) {
   return {
     ...content,
-    steps: content.steps.map((s) => ({ ...s, cards: [...s.cards, gameCard(sectionId, s.step)] })),
+    steps: content.steps.map((s) =>
+      s.step === 4 ? s : { ...s, cards: [...s.cards, gameCard(sectionId, s.step)] }),
   };
 }

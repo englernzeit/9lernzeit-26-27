@@ -202,13 +202,6 @@ export default {
           ],
           help: "This checklist is your Unit 4 progress — anything unticked shows you what to revise next.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "One thing I learned",
-          intro: "What is the most important thing you learned in this unit? Write one or two sentences.",
-          starters: ["The most important thing I learned is …"],
-        },
       ],
     },
   ],

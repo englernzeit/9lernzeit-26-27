@@ -364,13 +364,6 @@ export default {
           },
           help: "Tipp: Mit „a person who …“ oder „to … so that …“ kannst du ein Wort auch kurz erklären.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Why an agreement?",
-          intro: "Why should every class have a Respect Agreement? Write one or two sentences — use at least one of the eight words.",
-          starters: ["Every class needs a Respect Agreement, because …", "If we all keep the rules, …"],
-        },
       ],
     },
   ],

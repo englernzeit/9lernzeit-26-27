@@ -322,13 +322,6 @@ export default {
           ],
           help: "Tip: don't read word for word when you present — use your notes as a reminder.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "How did it go?",
-          intro: "How did your picture talk go? Write one or two sentences.",
-          starters: ["My picture talk went … , because …"],
-        },
       ],
     },
   ],

@@ -381,13 +381,6 @@ export default {
             { role: "banner", pdf: "Message", x: 4, y: 76, w: 47, h: 18 },
           ],
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Why two languages?",
-          intro: "Why does the park need the same poster in English AND in German? Write one or two sentences.",
-          starters: ["The poster needs two languages, because …"],
-        },
       ],
     },
   ],

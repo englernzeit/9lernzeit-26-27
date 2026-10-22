@@ -385,13 +385,6 @@ export default {
           ],
           help: "Tip: the wrong words are all facts and details — her age, her town, her instrument, her sport, her dream subject, what she loves, the place she compares Australia to, and the weather she means.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Could you live there?",
-          intro: "Would you like to live in Australia like the teenagers on the radio show? Write one or two sentences and give a reason.",
-          starters: ["I would / would not like to live in Australia, because …"],
-        },
       ],
     },
   ],

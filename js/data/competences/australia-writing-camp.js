@@ -421,13 +421,6 @@ export default {
           ],
           help: "Tip: start 'Dear …, Thank you for your email about …'. Answer one question per line, then give the next step.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Was it a good answer?",
-          intro: "You wrote the organisation's reply. Would the person be happy with your answer? Write one or two sentences.",
-          starters: ["I think the person would be … , because …"],
-        },
       ],
     },
   ],

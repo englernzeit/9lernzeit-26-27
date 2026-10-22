@@ -240,13 +240,6 @@ export default {
           ],
           help: "Eine gute Frage hat genau eine richtige Antwort — und prüft Verstehen, nicht Auswendiglernen.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "A good test question",
-          intro: "What makes a test question really good? Write one or two sentences.",
-          starters: ["A good test question …"],
-        },
       ],
     },
   ],

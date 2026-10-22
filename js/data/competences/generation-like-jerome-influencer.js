@@ -382,13 +382,6 @@ export default {
             "You are a social-media influencer. Pick any product and write a persuasive Instagram caption. The checklist ticks off each requirement automatically as you type.",
           help: "Peer review: swap captions with a partner. Did they use an indefinite pronoun? Did their caption give you FOMO? Tell them one phrase that worked.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Would you buy it?",
-          intro: "Would you buy something just because an influencer says it is great? Write one or two sentences.",
-          starters: ["I would / would not buy it, because …"],
-        },
       ],
     },
   ],

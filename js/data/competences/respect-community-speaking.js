@@ -278,13 +278,6 @@ export default {
           ],
           help: "Danach laut sprechen und stoppen: Schaffst du es in 60 Sekunden, ohne lange Pause?",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "After the pitch",
-          intro: "Which part of your 60-second pitch is the strongest? Write one or two sentences.",
-          starters: ["The strongest part of my pitch is … , because …"],
-        },
       ],
     },
   ],

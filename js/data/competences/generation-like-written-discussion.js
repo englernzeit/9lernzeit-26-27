@@ -388,13 +388,6 @@ export default {
           ],
           help: "Remember the four parts: introduction · arguments for · arguments against · your opinion.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Did you change your mind?",
-          intro: "Did writing the discussion change your opinion? Write one or two sentences.",
-          starters: ["Writing it made me think that …"],
-        },
       ],
     },
   ],

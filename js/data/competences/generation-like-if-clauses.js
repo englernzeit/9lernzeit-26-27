@@ -412,13 +412,6 @@ export default {
           ],
           help: "Formel: If + had + 3. Form … , … would have + 3. Form.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Peter and you",
-          intro: "What would you tell Peter about his regrets? Write one or two sentences.",
-          starters: ["Peter, if I were you, I would …"],
-        },
       ],
     },
   ],

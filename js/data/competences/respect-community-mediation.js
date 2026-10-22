@@ -310,13 +310,6 @@ export default {
           ],
           help: "Tipp: Nur das Wichtigste auf Deutsch — kurz, in eigenen Worten. Die Frage auf Englisch beginnt mit einem Fragewort.",
         },
-        {
-          type: "written",
-          kind: "Offene Frage",
-          title: "Being the interpreter",
-          intro: "What is the hardest part of being an interpreter for a friend? Write one or two sentences.",
-          starters: ["The hardest part is … , because …"],
-        },
       ],
     },
   ],
