@@ -5,7 +5,8 @@
  * ("School Matters" — Daniel's Open Page Project) that the learner relays:
  * answer the (German-speaking) brother in German with only what he asked
  * for, and ask Daniel a question in English when the brother says "frag
- * mal…". The podcast transcript doubles as a read-aloud player.
+ * mal…". The podcast is shown as text and played from
+ * assets/audio/u2-schoolmatters-{short,full}.mp3 (two voices, mono 64k).
  *
  * Step 1 LE (short podcast, sentence starters) · Step 2 G-Kurs · Step 3
  * E-Kurs (full podcast, 11 points) · Step 4 challenge: be the interpreter.
@@ -87,7 +88,7 @@ export default {
           kind: "Mediation · LE",
           title: "The podcast — School Matters",
           paragraphs: [GLOSS_INTRO, ...PODCAST_SHORT],
-          readAloud: { label: "School Matters — the podcast (short)", note: "You may read it, or press play to hear it.", lines: PODCAST_SHORT },
+          audio: { src: "assets/audio/u2-schoolmatters-short.mp3", label: "School Matters — the podcast (short)" },
           highlight: true,
           help: MED_RULES,
         },
@@ -142,7 +143,7 @@ export default {
           kind: "Mediation · G-Kurs",
           title: "The podcast — School Matters",
           paragraphs: [GLOSS_INTRO, ...PODCAST_FULL],
-          readAloud: { label: "School Matters — the podcast", note: "You may read it, or press play to hear it.", lines: PODCAST_FULL },
+          audio: { src: "assets/audio/u2-schoolmatters-full.mp3", label: "School Matters — the podcast" },
           help: MED_RULES,
         },
         {
@@ -198,7 +199,7 @@ export default {
           kind: "Mediation · E-Kurs",
           title: "The podcast — School Matters",
           paragraphs: [GLOSS_INTRO, ...PODCAST_FULL],
-          readAloud: { label: "School Matters — the podcast", note: "You may read it, or press play to hear it.", lines: PODCAST_FULL },
+          audio: { src: "assets/audio/u2-schoolmatters-full.mp3", label: "School Matters — the podcast" },
           help: MED_RULES,
         },
         {

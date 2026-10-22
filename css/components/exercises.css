@@ -566,8 +566,9 @@
   color: var(--j-khaki);
 }
 
-/* Read-aloud player: a "Show text" toggle + collapsible transcript */
-.exo-audio--tts { flex-wrap: wrap; }
+/* Read-aloud / audio player: a "Show text" toggle + collapsible transcript */
+.exo-audio--tts,
+.exo-audio--with-text { flex-wrap: wrap; }
 .exo-audio__text-toggle {
   font-family: var(--j-font-body);
   font-size: 0.95rem;

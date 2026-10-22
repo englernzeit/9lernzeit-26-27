@@ -553,9 +553,9 @@ export function createGame(data) {
  * Compact journal-styled audio player: round play/pause, seekable
  * progress bar and a running time. Wraps a native <audio> element.
  *
- * @param {{ src: string, label?: string }} data
+ * @param {{ src: string, label?: string, transcript?: string[] }} data
  */
-export function createAudioPlayer({ src, label }) {
+export function createAudioPlayer({ src, label, transcript }) {
   const wrap = document.createElement("div");
   wrap.className = "exo-audio";
 
@@ -626,6 +626,29 @@ export function createAudioPlayer({ src, label }) {
     audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
     paint();
   });
+
+  // Optional transcript behind a "Show text" toggle (hidden by default,
+  // so it stays a listening task)
+  if (transcript?.length) {
+    wrap.classList.add("exo-audio--with-text");
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "exo-audio__text-toggle";
+    toggle.textContent = "Show text";
+    const text = document.createElement("div");
+    text.className = "exo-audio__transcript";
+    text.hidden = true;
+    for (const line of transcript) {
+      const p = document.createElement("p");
+      p.textContent = line;
+      text.appendChild(p);
+    }
+    toggle.addEventListener("click", () => {
+      text.hidden = !text.hidden;
+      toggle.textContent = text.hidden ? "Show text" : "Hide text";
+    });
+    wrap.append(toggle, text);
+  }
 
   return wrap;
 }

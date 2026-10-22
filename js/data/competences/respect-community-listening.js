@@ -1,11 +1,9 @@
 /**
  * Respect & Community (Unit 2) — Listening: "Fairfield Live" (school radio).
  *
- * Built from the LE / G-Kurs / E-Kurs source (03_Listening_*). The source
- * has no audio file: the transcript (Hoertexte.md) is READ ALOUD — by a
- * teacher, a partner, or "the read-aloud function on your phone". We keep
- * that faithful with a read-aloud player (Web Speech API): press play and
- * the browser reads the programme, with a "Show text" toggle.
+ * Built from the LE / G-Kurs / E-Kurs source (03_Listening_*). Audio:
+ * assets/audio/u2-fairfield-{short,full}.mp3 — two-voice recordings of the
+ * transcripts below (mono 64k), with a "Show text" transcript toggle.
  *
  * Step 1 LE (short programme) · Step 2 G-Kurs · Step 3 E-Kurs (full
  * programme) · Step 4 challenge: write your own radio spot.
@@ -45,8 +43,9 @@ const FAIRFIELD_SHORT = [
   "Presenter: Thank you, Grace.",
 ];
 
-const LISTEN_FULL = { label: "Fairfield Live — the school radio", note: "Listen twice. Press play — your browser reads it aloud.", lines: FAIRFIELD_FULL };
-const LISTEN_SHORT = { label: "Fairfield Live — short version", note: "Listen twice. Press play — your browser reads it aloud.", lines: FAIRFIELD_SHORT };
+const AUD = "assets/audio";
+const LISTEN_FULL = { src: `${AUD}/u2-fairfield-full.mp3`, label: "Fairfield Live — the school radio", transcript: FAIRFIELD_FULL };
+const LISTEN_SHORT = { src: `${AUD}/u2-fairfield-short.mp3`, label: "Fairfield Live — short version", transcript: FAIRFIELD_SHORT };
 
 const HOW_TO_LISTEN = [
   [
@@ -101,7 +100,7 @@ export default {
           kind: "Interaktiv · Hören & wählen",
           title: "First listening — a, b or c?",
           intro: "Listen to the short programme, then choose the right answer. You hear it twice.",
-          readAloud: LISTEN_SHORT,
+          audio: LISTEN_SHORT,
           questions: [
             { q: "The idea for the buddy system came from …", options: ["Mehmet.", "Grace.", "the head teacher."], correct: 1 },
             { q: "Last September the school got …", options: ["four new students.", "fourteen new students.", "forty new students."], correct: 1 },
@@ -116,7 +115,7 @@ export default {
           title: "Second listening — complete the sentences",
           intro:
             "Listen again and fill each gap. Word box (two are left over): eight seconds · eleven weeks · fourteen days · Monday · Thursday · two buddies.",
-          readAloud: LISTEN_SHORT,
+          audio: LISTEN_SHORT,
           items: [
             { hint: "wie viele?", segments: ["Every new student gets ", { answer: "two buddies", accept: ["2 buddies"], size: 14 }, "."] },
             { hint: "wie lange allein?", segments: ["One girl had eaten lunch alone for ", { answer: "eleven weeks", accept: ["11 weeks"], size: 14 }, "."] },
@@ -154,7 +153,7 @@ export default {
           kind: "Interaktiv · Richtig / Falsch",
           title: "First listening — true or false?",
           intro: "Listen to the whole programme (twice), then choose True or False.",
-          readAloud: LISTEN_FULL,
+          audio: LISTEN_FULL,
           columns: 2,
           questions: [
             { q: "The buddy system was Mehmet's idea.", options: ["True", "False"], correct: 1 },
@@ -170,7 +169,7 @@ export default {
           kind: "Interaktiv · Lücken",
           title: "Second listening — complete the sentences",
           intro: "Fill each gap with one to five words — only the missing words. Then Check.",
-          readAloud: LISTEN_FULL,
+          audio: LISTEN_FULL,
           items: [
             { hint: "wie alt ist das System?", segments: ["Grace is in the studio because the buddy system is ", { answer: "one year old", accept: ["a year old"], size: 14 }, "."] },
             { hint: "wann gingen drei?", segments: ["Three of the new students left again ", { answer: "before Christmas", size: 16 }, "."] },
@@ -201,7 +200,7 @@ export default {
           kind: "Interaktiv · Richtig / Falsch",
           title: "First listening — true or false?",
           intro: "Listen to the whole programme (twice), then choose True or False.",
-          readAloud: LISTEN_FULL,
+          audio: LISTEN_FULL,
           columns: 2,
           questions: [
             { q: "The buddy system was Mehmet's idea.", options: ["True", "False"], correct: 1 },
@@ -219,7 +218,7 @@ export default {
           kind: "Interaktiv · Lücken",
           title: "Second listening — complete the sentences",
           intro: "Fill each gap with one to five words — write only the missing words. Then Check.",
-          readAloud: LISTEN_FULL,
+          audio: LISTEN_FULL,
           items: [
             { hint: "the buddy system is …", segments: ["Grace is in the studio because the buddy system is ", { answer: "one year old", accept: ["a year old"], size: 14 }, "."] },
             { hint: "when did three leave?", segments: ["Three of the new students left again ", { answer: "before Christmas", size: 16 }, "."] },
