@@ -169,6 +169,14 @@ export default {
           ],
         },
         {
+          type: "written",
+          kind: "Schreiben · leicht",
+          title: "You and the creatures",
+          intro: "Which Australian creature would you like to see — and which one never? Write one or two sentences.",
+          starters: ["I would like to see a … , because …", "I never want to meet a … , because …"],
+          help: "Hilfe: I would like to see = Ich würde gern … sehen · never = nie · because = weil",
+        },
+        {
           type: "game",
           game: "monster-hangman",
           kind: "Spiel",
@@ -358,6 +366,13 @@ export default {
             { role: "caption", pdf: "Rule · clothing icon", x: 48, y: 68, w: 13, h: 6 },
             { role: "banner", pdf: "Message", x: 4, y: 76, w: 47, h: 18 },
           ],
+        },
+        {
+          type: "written",
+          kind: "Schreiben · Deine Meinung",
+          title: "Why two languages?",
+          intro: "Why does the park need the same poster in English AND in German? Write one or two sentences.",
+          starters: ["The poster needs two languages, because …"],
         },
       ],
     },

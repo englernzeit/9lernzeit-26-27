@@ -276,6 +276,13 @@ export default {
             "You're building a brand-new profile you'd be proud of for the next ten years. Fill it in below — username, bio, your first three posts, and one thing you'd NEVER share.",
           help: "Tip: make it 'you' — your real hobbies and interests, not a fake perfect person.",
         },
+        {
+          type: "written",
+          kind: "Schreiben · Deine Meinung",
+          title: "Ten years from now",
+          intro: "Look at your dream profile. Which part would a future boss like most — and why? Write one or two sentences.",
+          starters: ["A future boss would like my … , because …"],
+        },
       ],
     },
   ],

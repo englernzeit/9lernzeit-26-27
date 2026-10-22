@@ -67,6 +67,13 @@ export default {
             { q: "What is the best advice from the text?", options: ["Stop using the internet", "Share everything quickly", "Think before you post and protect your details", "Give your password to friends", "Only post at night"], correct: 2 },
           ],
         },
+        {
+          type: "written",
+          kind: "Schreiben · Deine Meinung",
+          title: "Never again",
+          intro: "Think about your digital footprint. What is one thing you would never post online? Write one or two sentences.",
+          starters: ["I would never post … , because …"],
+        },
       ],
     },
 
@@ -110,6 +117,13 @@ export default {
             { q: "Type 3 (unreal past):", options: ["If he studied, he would have passed.", "If he had studied, he would have passed.", "If he has studied, he will pass.", "If he had studied, he will pass.", "If he studies, he would have passed."], correct: 1 },
             { q: "Complete: “If you ___ your phone off, you would sleep better.”", options: ["switch", "will switch", "switched", "had switched", "switches"], correct: 2 },
           ],
+        },
+        {
+          type: "written",
+          kind: "Schreiben · If-Clause",
+          title: "One more hour",
+          intro: "Write about yourself with an if-clause: what would you do with one more hour every day? One or two sentences.",
+          starters: ["If I had one more hour every day, I would …"],
         },
       ],
     },

@@ -128,6 +128,14 @@ export default {
           ],
         },
         {
+          type: "written",
+          kind: "Schreiben · leicht",
+          title: "Your online day",
+          intro: "Which of these online words do you use every day? Write one or two sentences.",
+          starters: ["Every day I …", "I never …"],
+          help: "Hilfe: every day = jeden Tag · never = nie",
+        },
+        {
           type: "game",
           game: "monster-hangman",
           kind: "Spiel",

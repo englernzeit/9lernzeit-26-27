@@ -428,6 +428,13 @@ export default {
           ],
           help: "Tip: a comic is fast — a few words per bubble is perfect (max 10). Try to use this unit's words: outback, vehicle, shade, sting, citizen …",
         },
+        {
+          type: "written",
+          kind: "Schreiben · Deine Meinung",
+          title: "Your favourite panel",
+          intro: "Your comic is finished. Which panel is the most exciting one — and why? Write one or two sentences.",
+          starters: ["The most exciting panel is number … , because …"],
+        },
       ],
     },
   ],

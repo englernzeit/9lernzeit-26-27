@@ -510,6 +510,13 @@ export default {
           ],
           help: "Tip: every sign needs its modal (must, must not, should, shouldn't, have to, don't have to, may, can). Keep it short — signs are read from far away.",
         },
+        {
+          type: "written",
+          kind: "Schreiben · Deine Meinung",
+          title: "The most important rule",
+          intro: "Which camp rule is the most important one for you? Explain why in one or two sentences — use a modal (must, mustn't, should, have to …).",
+          starters: ["The most important rule is … , because you …"],
+        },
       ],
     },
   ],

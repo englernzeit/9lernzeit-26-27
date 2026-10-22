@@ -107,6 +107,14 @@ export default {
           intro: "Answer without looking at the other pages first. Then Check.",
           items: [MIXED[0], MIXED[4], MIXED[5], MIXED[6]],
         },
+        {
+          type: "written",
+          kind: "Schreiben · leicht",
+          title: "My most important word",
+          intro: "Which word from this unit is the most important one for you? Write one or two sentences.",
+          starters: ["The most important word for me is … , because …"],
+          help: "Hilfe: the most important = das wichtigste · because = weil",
+        },
       ],
     },
 
@@ -139,6 +147,13 @@ export default {
           intro: "Tick only the sheets you really still need to look at before the test.",
           lines: REVISION_PLAN,
           checklist: true,
+        },
+        {
+          type: "written",
+          kind: "Schreiben · Selbstcheck",
+          title: "Before the test",
+          intro: "What was the hardest thing in this unit for you — and what will you do about it before the test? Write two sentences.",
+          starters: ["The hardest thing for me was …", "Before the test I will …"],
         },
       ],
     },
