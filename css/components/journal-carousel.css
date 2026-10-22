@@ -282,6 +282,31 @@
   font-size: 9px;
 }
 
+/* Cut-out stamp artwork: the image IS the stamp (perforations included),
+   so no drawn frame; the postmark overlaps it like a real cancellation */
+.wordcard__stamp--art {
+  width: 6.6rem;
+  height: auto;
+  border: none;
+  padding: 0;
+  background: none;
+  transform: rotate(3deg);
+  filter: drop-shadow(0 3px 5px rgba(60, 50, 30, 0.22));
+}
+
+.wordcard__stamp--art .wordcard__stamp-img {
+  display: block;
+  height: auto;
+  object-fit: contain;
+}
+
+.wordcard__stamp--art + .wordcard__postmark {
+  position: relative;
+  margin-top: -2.4rem;
+  margin-left: 2.6rem;
+  background: rgba(253, 250, 241, 0.55);
+}
+
 /* Monogram stamp when a word has no photo */
 .wordcard__stamp-mono {
   width: 100%;
@@ -592,4 +617,5 @@
 
   .wordcard__en { font-size: 2.6rem; }
   .wordcard__side { width: 7rem; padding-left: 0.9rem; }
+  .wordcard__stamp--art { width: 5.2rem; }
 }

@@ -16,19 +16,21 @@
  * the Word Master — eight German sentences to translate (LE with hints).
  */
 
-// New words — postcard pile at the top of the page
+// New words — postcard pile at the top of the page (stamps cut from the
+// user's watercolour stamp sheet)
+const STAMPS = "assets/images/unit2/stamps";
 const WORD_CARDS = {
   subtitle: "Die acht Wörter der Unit — wisch dich durch die Karten, tippe 🔊 zum Anhören",
   stampLabel: "RESPECT",
   words: [
-    { en: "victim", pos: "noun", de: "das Opfer", ex: "The victim of the rumour didn't want to come to school for a week." },
-    { en: "bystander", pos: "noun", de: "der Zuschauer / die Zuschauerin", ex: "A bystander who films the fight on their phone is part of the problem." },
-    { en: "bully", pos: "noun / verb", de: "der Mobber · mobben", ex: "The bully only stopped when the whole class stood up to him." },
-    { en: "cyberbullying", pos: "noun", de: "das Cybermobbing", ex: "Cyberbullying follows you home, because your phone is always with you." },
-    { en: "tease", pos: "verb", de: "jemanden hänseln", ex: "Friends tease each other, but it stops being fun when only one person is laughing." },
-    { en: "horrible", pos: "adjective", de: "schrecklich, gemein", ex: "Someone posted a horrible comment under her new profile picture." },
-    { en: "support", pos: "noun / verb", de: "die Unterstützung · unterstützen", ex: "When Lina was new, two buddies gave her real support." },
-    { en: "delete", pos: "verb", de: "löschen", ex: "If you get a mean photo of a classmate, delete it and don't send it on." },
+    { en: "victim", pos: "noun", de: "das Opfer", ex: "The victim of the rumour didn't want to come to school for a week.", image: `${STAMPS}/victim.webp` },
+    { en: "bystander", pos: "noun", de: "der Zuschauer / die Zuschauerin", ex: "A bystander who films the fight on their phone is part of the problem.", image: `${STAMPS}/bystander.webp` },
+    { en: "bully", pos: "noun / verb", de: "der Mobber · mobben", ex: "The bully only stopped when the whole class stood up to him.", image: `${STAMPS}/bully.webp` },
+    { en: "cyberbullying", pos: "noun", de: "das Cybermobbing", ex: "Cyberbullying follows you home, because your phone is always with you.", image: `${STAMPS}/cyberbullying.webp` },
+    { en: "tease", pos: "verb", de: "jemanden hänseln", ex: "Friends tease each other, but it stops being fun when only one person is laughing.", image: `${STAMPS}/tease.webp` },
+    { en: "horrible", pos: "adjective", de: "schrecklich, gemein", ex: "Someone posted a horrible comment under her new profile picture.", image: `${STAMPS}/horrible.webp` },
+    { en: "support", pos: "noun / verb", de: "die Unterstützung · unterstützen", ex: "When Lina was new, two buddies gave her real support.", image: `${STAMPS}/support.webp` },
+    { en: "delete", pos: "verb", de: "löschen", ex: "If you get a mean photo of a classmate, delete it and don't send it on.", image: `${STAMPS}/delete.webp` },
   ],
 };
 
@@ -51,8 +53,8 @@ const wordMasterCard = (withHints) => ({
   kind: "Word Master · Übersetzen",
   title: "Word Master",
   intro: withHints
-    ? "Übersetze jeden Satz ins Englische — mit den neuen Wörtern. Die Hilfe zeigt dir die Wörter. Dann Check."
-    : "Translate each sentence into English, using the new words. Then Check — green is right, amber means check your spelling.",
+    ? "Übersetze ins Englische — mit den neuen Wörtern. Dann Check."
+    : "Translate into English with the new words, then Check.",
   items: WORD_MASTER.map(({ de, en, le }) => (withHints ? { de, en, hint: le } : { de, en })),
 });
 

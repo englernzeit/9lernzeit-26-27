@@ -1533,6 +1533,9 @@ function buildWordCardsSection(wordCards) {
     const stamp = document.createElement("div");
     stamp.className = "wordcard__stamp";
     if (word.image) {
+      // A cut-out postage stamp (perforated edge, transparent outside):
+      // shown whole, without the drawn frame
+      stamp.classList.add("wordcard__stamp--art");
       const img = document.createElement("img");
       img.className = "wordcard__stamp-img";
       img.src = word.image;

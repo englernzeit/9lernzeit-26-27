@@ -712,24 +712,33 @@
 
 /* --- Translate (Word Master: German → English) ------------------ */
 
+/* Compact: two columns of sentences on wide cards, one on phones */
 .exo-trans {
-  gap: 0.7rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem 0.6rem;
 }
+
+@media (max-width: 640px) {
+  .exo-trans { grid-template-columns: 1fr; }
+}
+
+.exo-trans > .exo__checkbar { grid-column: 1 / -1; }
 
 .exo-trans__item {
   background: rgba(255, 255, 255, 0.45);
   border: 1.5px solid rgba(120, 105, 80, 0.22);
-  border-radius: 12px;
-  padding: 0.7rem 0.9rem 0.6rem;
+  border-radius: 10px;
+  padding: 0.4rem 0.6rem 0.4rem;
   transition: border-color 0.2s, background 0.2s;
 }
 
 .exo-trans__de {
   display: flex;
   align-items: baseline;
-  gap: 0.55rem;
-  font-size: 1.15rem;
-  line-height: 1.45;
+  gap: 0.4rem;
+  font-size: 1rem;
+  line-height: 1.3;
   color: var(--j-ink);
 }
 
@@ -737,35 +746,36 @@
   flex: 0 0 auto;
   display: inline-grid;
   place-items: center;
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.3rem;
+  height: 1.3rem;
   border-radius: 50%;
   background: rgba(79, 127, 150, 0.16);
   color: var(--j-teal-deep);
   font-family: var(--j-font-display);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 0.9rem;
 }
 
 .exo-trans__hint {
-  margin: 0.15rem 0 0 2.15rem;
+  margin: 0.05rem 0 0 1.7rem;
   font-family: var(--j-font-display);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
+  line-height: 1.2;
   color: var(--j-khaki);
 }
 
 .exo-trans__input {
   display: block;
-  width: calc(100% - 2.15rem);
-  margin: 0.45rem 0 0 2.15rem;
+  width: calc(100% - 1.7rem);
+  margin: 0.25rem 0 0 1.7rem;
   font-family: var(--j-font-display);
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   color: var(--j-ink);
   background: var(--j-paper-1);
   border: none;
   border-bottom: 2px solid var(--j-teal);
   border-radius: 4px 4px 0 0;
-  padding: 0.15rem 0.5rem;
+  padding: 0.05rem 0.4rem;
 }
 
 .exo-trans__input:focus-visible {
@@ -774,10 +784,9 @@
 }
 
 .exo-trans__note {
-  min-height: 0;
-  margin: 0.2rem 0 0 2.15rem;
+  margin: 0.1rem 0 0 1.7rem;
   font-family: var(--j-font-display);
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .exo-trans__note:empty { display: none; }
