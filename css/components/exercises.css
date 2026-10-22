@@ -566,6 +566,32 @@
   color: var(--j-khaki);
 }
 
+/* Read-aloud player: a "Show text" toggle + collapsible transcript */
+.exo-audio--tts { flex-wrap: wrap; }
+.exo-audio__text-toggle {
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  color: var(--j-teal-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0.2rem 0.4rem;
+  flex: 0 0 auto;
+}
+.exo-audio__text-toggle:hover { color: var(--j-coral-deep); }
+.exo-audio__transcript {
+  flex: 1 0 100%;
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 2px dashed rgba(138, 125, 99, 0.4);
+}
+.exo-audio__transcript p {
+  font-family: var(--j-font-body);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--j-ink);
+  margin: 0 0 0.45rem;
+}
+
 /* --- Image ↔ word match ----------------------------------------- */
 
 .exo-imatch__grid {

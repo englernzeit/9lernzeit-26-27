@@ -27,6 +27,7 @@ import {
   createProfileBuilder,
   createGapFill,
   createAudioPlayer,
+  createReadAloud,
   createImageMatch,
   createEventOrder,
   createInlineChoice,
@@ -918,6 +919,11 @@ function buildCard(step, data, index, taskNo, ctx) {
   // Optional listening track above the task body.
   if (data.audio) {
     body.appendChild(createAudioPlayer(data.audio));
+  }
+
+  // Optional read-aloud "listen" player (no audio file — browser speech).
+  if (data.readAloud) {
+    body.appendChild(createReadAloud(data.readAloud));
   }
 
   // Optional picture above the task body (e.g. Speaking picture-description).

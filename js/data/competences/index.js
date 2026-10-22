@@ -20,6 +20,7 @@ import speaking from "./generation-like-speaking.js";
 import revision from "./generation-like-revision.js";
 import respectVocabulary from "./respect-community-vocabulary.js";
 import respectReading from "./respect-community-reading.js";
+import respectListening from "./respect-community-listening.js";
 
 const CONTENT = {
   "australia/reading-reef": readingReef,
@@ -36,6 +37,7 @@ const CONTENT = {
   "generation-like/revision": revision,
   "respect-community/vocabulary": respectVocabulary,
   "respect-community/reading": respectReading,
+  "respect-community/listening": respectListening,
 };
 
 /**

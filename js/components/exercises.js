@@ -630,6 +630,143 @@ export function createAudioPlayer({ src, label }) {
   return wrap;
 }
 
+/* ---------- Read-aloud "listen" player (Web Speech API) -------- */
+
+/**
+ * A listening player with no audio file: the browser reads the transcript
+ * aloud, exactly like "the read-aloud function on your phone" from the
+ * source. Same look as the audio player (round play button + progress
+ * bar). A "Show text" toggle reveals the transcript (hidden by default so
+ * it is listening, not reading). Degrades gracefully where the Web Speech
+ * API is missing (shows the text with a note to have someone read it).
+ *
+ * @param {{ label?: string, note?: string, lines: Array<string | {speaker?: string, text: string}> }} opts
+ */
+export function createReadAloud({ label, note, lines }) {
+  const items = (lines ?? []).map((l) =>
+    typeof l === "string" ? l : `${l.speaker ? `${l.speaker}: ` : ""}${l.text}`,
+  );
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo-audio exo-audio--tts";
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "exo-audio__btn";
+  btn.setAttribute("aria-label", "Listen");
+  btn.textContent = "▶";
+
+  const body = document.createElement("div");
+  body.className = "exo-audio__body";
+  const cap = document.createElement("div");
+  cap.className = "exo-audio__label";
+  cap.textContent = label ?? "Listen — read aloud";
+  const bar = document.createElement("div");
+  bar.className = "exo-audio__bar";
+  const fill = document.createElement("div");
+  fill.className = "exo-audio__fill";
+  bar.appendChild(fill);
+  const status = document.createElement("div");
+  status.className = "exo-audio__time";
+  status.textContent = note ?? "You hear it twice. Press play.";
+  body.append(cap, bar, status);
+
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "exo-audio__text-toggle";
+  toggle.textContent = "Show text";
+
+  const text = document.createElement("div");
+  text.className = "exo-audio__transcript";
+  text.hidden = true;
+  for (const line of items) {
+    const p = document.createElement("p");
+    p.textContent = line;
+    text.appendChild(p);
+  }
+  toggle.addEventListener("click", () => {
+    text.hidden = !text.hidden;
+    toggle.textContent = text.hidden ? "Show text" : "Hide text";
+  });
+
+  wrap.append(btn, body, toggle, text);
+
+  const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
+  if (!synth) {
+    // No speech synthesis — fall back to the transcript, always visible.
+    status.textContent = "Your browser can't read aloud — have someone read the text, or use your phone.";
+    text.hidden = false;
+    toggle.hidden = true;
+    return wrap;
+  }
+
+  // Pick an English voice once they are available.
+  let voice = null;
+  const pickVoice = () => {
+    const voices = synth.getVoices();
+    voice =
+      voices.find((v) => /en[-_]GB/i.test(v.lang)) ||
+      voices.find((v) => /^en/i.test(v.lang)) ||
+      voices[0] ||
+      null;
+  };
+  pickVoice();
+  synth.addEventListener?.("voiceschanged", pickVoice);
+
+  let playing = false;
+  let idx = 0;
+
+  const setPlaying = (on) => {
+    playing = on;
+    btn.textContent = on ? "■" : "▶";
+    btn.setAttribute("aria-label", on ? "Stop" : "Listen");
+    wrap.classList.toggle("exo-audio--playing", on);
+  };
+
+  const stop = () => {
+    synth.cancel();
+    setPlaying(false);
+    fill.style.width = "0%";
+    status.textContent = note ?? "You hear it twice. Press play.";
+  };
+
+  const speakFrom = (start) => {
+    idx = start;
+    const speakNext = () => {
+      if (!playing || idx >= items.length) {
+        if (idx >= items.length) stop();
+        return;
+      }
+      const u = new SpeechSynthesisUtterance(items[idx]);
+      u.lang = (voice && voice.lang) || "en-GB";
+      if (voice) u.voice = voice;
+      u.rate = 0.95;
+      u.onend = () => {
+        idx += 1;
+        fill.style.width = `${Math.round((idx / items.length) * 100)}%`;
+        status.textContent = `${Math.min(idx + 1, items.length)} / ${items.length}`;
+        speakNext();
+      };
+      u.onerror = () => stop();
+      synth.speak(u);
+    };
+    speakNext();
+  };
+
+  btn.addEventListener("click", () => {
+    if (playing) {
+      stop();
+      return;
+    }
+    synth.cancel();
+    setPlaying(true);
+    status.textContent = `1 / ${items.length}`;
+    speakFrom(0);
+  });
+
+  return wrap;
+}
+
 /* ---------- Image ↔ word match (vocabulary) -------------------- */
 
 /**
