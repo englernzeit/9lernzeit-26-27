@@ -94,6 +94,7 @@ export default {
           type: "match-up",
           kind: "Interaktiv · Zuordnen",
           title: "Match the words",
+          introDe: "Wähle für jedes Wort die richtige deutsche Übersetzung, dann Check.",
           intro: "Choose the correct German translation for each word, then Check.",
           options: ["Ablenkung", "recherchieren", "Meinung", "Regel"],
           items: [
@@ -107,6 +108,7 @@ export default {
           type: "match-up",
           kind: "Interaktiv · Zuordnen",
           title: "What does each starter do?",
+          introDe: "Ordne jeden Satzanfang seiner Aufgabe in der Erörterung zu, dann Check.",
           intro: "Match each sentence starter to its job in a discussion, then Check.",
           options: ["a first argument", "the opposite side", "a second point on one side", "the conclusion"],
           items: [
@@ -120,6 +122,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "Your opinion",
+          introDe: "Beende diese Sätze mit deinen eigenen Ideen.",
           intro: "Finish these sentences with your own ideas.",
           starters: [
             "In my opinion, the internet is …",
@@ -132,6 +135,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Your topic",
+          introDe: "Über welches Thema würdest du gern eine Erörterung schreiben? Schreib ein oder zwei Sätze.",
           intro: "Which topic would you like to discuss in a written discussion? Write one or two sentences.",
           starters: ["I would like to discuss … , because …"],
           help: "Hilfe: to discuss = diskutieren · because = weil",

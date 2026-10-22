@@ -105,6 +105,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Hören & wählen",
           title: "First listening — a, b or c?",
+          introDe: "Hör dir die kurze Sendung an und wähle die richtige Antwort. Du hörst sie zweimal.",
           intro: "Listen to the short programme, then choose the right answer. You hear it twice.",
           audio: LISTEN_SHORT,
           questions: [
@@ -119,6 +120,7 @@ export default {
           type: "gap-fill",
           kind: "Interaktiv · Lücken",
           title: "Second listening — complete the sentences",
+          introDe: "Hör noch einmal zu und füll jede Lücke. Im Wörterkasten bleiben zwei Wörter übrig.",
           intro:
             "Listen again and fill each gap. Word box (two are left over): eight seconds · eleven weeks · fourteen days · Monday · Thursday · two buddies.",
           audio: LISTEN_SHORT,
@@ -133,6 +135,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "In your own words",
+          introDe: "Jemand zu Hause fragt dich, was ein Buddy ist. Beende den Satz.",
           intro: "Somebody at home asks you what a buddy is. Finish the sentence.",
           starters: ["A buddy is a student who …"],
           help: "Hilfe: a buddy = ein Pate / eine Patin für neue Schüler.",
@@ -141,6 +144,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "A buddy for you",
+          introDe: "Würdest du gern Buddy für einen neuen Schüler oder eine neue Schülerin sein? Schreib ein oder zwei Sätze.",
           intro: "Would you like to be a buddy for a new student? Write one or two sentences.",
           starters: ["I would / would not like to be a buddy, because …"],
           help: "Hilfe: a buddy = ein Pate / eine Patin · because = weil",

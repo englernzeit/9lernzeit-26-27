@@ -97,6 +97,7 @@ export default {
           type: "image-match",
           kind: "Interaktiv · Bilder",
           title: "Match the picture to the word",
+          introDe: "Hör zu, tippe dann auf ein Bild und auf das passende Wort.",
           intro: "Listen, then tap a picture and tap the word that matches it.",
           audio: { src: `${AUD}/8_06.mp3`, label: "Audio 1 · the ten words" },
           pairs: [
@@ -116,6 +117,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Quiz",
           title: "What does it mean?",
+          introDe: "Wähle die richtige Bedeutung. Du siehst sofort, ob sie stimmt.",
           intro: "Choose the correct meaning. You see at once if you are right.",
           questions: [
             { q: "to subscribe to a channel means…", options: ["to agree to receive its videos regularly", "to delete a video", "to switch off your phone", "to write a bad comment", "to lose your password"], correct: 0 },
@@ -129,6 +131,7 @@ export default {
           type: "gap-fill",
           kind: "Interaktiv · Lücken",
           title: "The right verb",
+          introDe: "Schreib das fehlende Social-Media-Verb, dann Check.",
           intro: "Type the missing social-media verb, then press Check.",
           items: [
             { hint: "= abonnieren", segments: ["I ", { answer: "subscribe", accept: ["subscribe to"], size: 12 }, " to three gaming channels."] },
@@ -141,6 +144,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "Use it — about you",
+          introDe: "Beende jeden Satz so, dass er für dich stimmt.",
           intro: "Finish each sentence so it is true for you.",
           starters: [
             "Something I have subscribed to: …",
@@ -153,6 +157,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Who do you follow?",
+          introDe: "Wem folgst du online — und warum? Schreib ein oder zwei Sätze.",
           intro: "Who do you follow online — and why? Write one or two sentences.",
           starters: ["I follow … , because …"],
           help: "Hilfe: I follow = ich folge · because = weil",

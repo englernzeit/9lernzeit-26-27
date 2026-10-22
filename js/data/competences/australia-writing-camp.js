@@ -120,6 +120,7 @@ export default {
           type: "event-order",
           kind: "Interaktiv · Reihenfolge",
           title: "Find the 5 parts",
+          introDe: "Nummeriere die fünf Zeilen von Lenas E-Mail von 1 bis 5, dann Check.",
           intro: "Number the five lines of Lena's email from 1 to 5, then Check.",
           events: [
             { text: "Subject: Question about a surf course" },
@@ -133,6 +134,7 @@ export default {
           type: "group-sort",
           kind: "Interaktiv · OK?",
           title: "OK in an official email?",
+          introDe: "Sortiere jede Zeile: Passt sie in eine formelle E-Mail, oder ist sie zu locker? Dann Check.",
           intro: "Sort each line: is it OK in a formal email, or too informal? Check when you are ready.",
           groups: [
             { label: "✅ OK — formal", items: ["Dear Sir or Madam,", "Could you please tell me …?", "I would like some information.", "Yours sincerely, Lena Wagner"] },
@@ -143,6 +145,7 @@ export default {
           type: "match-up",
           kind: "Interaktiv · Zuordnen",
           title: "Match English & German",
+          introDe: "Wähle für jeden englischen Ausdruck den richtigen deutschen, dann Check.",
           intro: "Choose the correct German phrase for each English one, then Check.",
           options: ["Sehr geehrte Damen und Herren,", "Ich schreibe, weil …", "Könnten Sie mir bitte sagen …?", "Vielen Dank.", "Mit freundlichen Grüßen"],
           items: [
@@ -157,6 +160,7 @@ export default {
           type: "gap-fill",
           kind: "Interaktiv · Lücken",
           title: "Fill in the email",
+          introDe: "Ergänze Jonas' E-Mail an den Sydney Zoo mit den Wörtern aus dem Wörterkasten.",
           intro: "Complete Jonas's email to Sydney Zoo. Word box: Dear · writing · Could · Thank · sincerely",
           items: [
             { segments: [{ answer: "Dear", size: 8 }, " Sir or Madam,"], hint: "die Anrede" },
@@ -170,6 +174,7 @@ export default {
           type: "email-builder",
           kind: "Kreativ · Deine E-Mail",
           title: "Be creative: your own email",
+          introDe: "Schreib an den Blue Gum Koala Park in Brisbane. Füll rechts jeden Teil aus — deine E-Mail entsteht in der Vorschau.",
           intro:
             "Write to the Blue Gum Koala Park in Brisbane. Fill in every part on the right — your email builds itself in the live preview.",
           to: "info@bluegum-koalapark.com.au",
@@ -178,6 +183,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Your dream visit",
+          introDe: "An welchen Ort in Australien würdest du eine E-Mail schreiben — und was würdest du fragen? Schreib ein oder zwei Sätze.",
           intro: "Which place in Australia would you write an email to — and what would you ask? Write one or two sentences.",
           starters: ["I would write to … and ask …"],
           help: "Hilfe: I would write to = Ich würde … schreiben · ask = fragen",

@@ -92,6 +92,7 @@ export default {
           type: "match-up",
           kind: "Interaktiv · Zuordnen",
           title: "Where is it?",
+          introDe: "Ordne jedem englischen Ortswort seine deutsche Bedeutung zu, dann Check.",
           intro: "Match each English position word to its German meaning, then Check.",
           options: ["der Vordergrund", "der Hintergrund", "in der Mitte", "links", "rechts", "oben"],
           items: [
@@ -107,6 +108,7 @@ export default {
           type: "written",
           kind: "Sprechen · leicht",
           title: "Describe this picture",
+          introDe: "Schau dir das Bild an und beende jeden Satz. Sprich deine Beschreibung dann laut.",
           intro: "Look at the picture and finish each sentence. Then say your description out loud.",
           image: `${PIC}/scene-1.jpg`,
           imageAlt: "Speaking picture 1",
@@ -123,6 +125,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Your kind of picture",
+          introDe: "Welche Art von Bild beschreibst du gern — und warum? Schreib ein oder zwei Sätze.",
           intro: "Which kind of picture do you like to describe — and why? Write one or two sentences.",
           starters: ["I like pictures of … , because …"],
           help: "Hilfe: I like = ich mag · because = weil",

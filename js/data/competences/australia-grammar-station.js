@@ -153,6 +153,7 @@ export default {
           type: "tap-match",
           kind: "Interaktiv · Zuordnen",
           title: "Match the modals",
+          introDe: "Tippe auf ein Modalverb und dann auf seine deutsche Bedeutung. Richtige Paare werden grün, ein falsches Paar wackelt und verschwindet.",
           intro: "Tap a modal verb, then tap its German meaning. Correct pairs lock in green; a wrong pair shakes and clears.",
           pairs: [
             { left: "can / can't", right: "können" },
@@ -167,6 +168,7 @@ export default {
           type: "group-sort",
           kind: "Interaktiv · Sortieren",
           title: "Today or yesterday?",
+          introDe: "Sortiere jede Form: Geht es um HEUTE (Gegenwart) oder um GESTERN (Vergangenheit)? Dann Check.",
           intro: "Sort each modal form: does it talk about TODAY (present) or YESTERDAY (past)? Check when you are ready.",
           groups: [
             { label: "🟢 TODAY (present)", items: ["can", "can't", "must", "am able to", "have to"] },
@@ -177,6 +179,7 @@ export default {
           type: "inline-choice",
           kind: "Interaktiv · Auswählen",
           title: "Today or yesterday? Choose!",
+          introDe: "Tippe in jedem Satz auf die richtige Form, dann Check.",
           intro: "Tap the correct form in each sentence, then Check.",
           layout: "dialogue",
           lines: [
@@ -198,6 +201,7 @@ export default {
           type: "gap-fill",
           kind: "Interaktiv · Lücken",
           title: "Fill in the right form",
+          introDe: "Ergänze jeden Satz mit einem Wort aus dem Wörterkasten.",
           intro: "Complete each sentence. Word box: can · can't · must · had to · was able to",
           items: [
             { hint: "sie ist zu klein", segments: ["Ben's sister is small. She ", { answer: "can't", size: 8 }, " swim in the deep water."] },
@@ -211,6 +215,7 @@ export default {
           type: "inline-choice",
           kind: "Interaktiv · Zeitform",
           title: "Simple Present or Simple Past?",
+          introDe: "Wähle für jeden Satz aus dem Text die richtige Zeitform, dann Check.",
           intro: "Choose the correct tense for each sentence from the text, then Check.",
           layout: "dialogue",
           lines: [
@@ -232,6 +237,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "Today → yesterday",
+          introDe: "Schreib jeden Satz im Simple Past. Beginne mit „Yesterday …“.",
           intro: "Write each sentence in the Simple Past, starting with “Yesterday …”.",
           starters: [
             "Today Ben can meet his friends. → Yesterday Ben …",
@@ -244,6 +250,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Your day",
+          introDe: "Was kannst du gut — und was musst du jeden Tag machen? Schreib ein oder zwei Sätze.",
           intro: "What can you do well — and what must you do every day? Write one or two sentences.",
           starters: ["I can … well, but I must …"],
           help: "Hilfe: can = kann · must = muss · every day = jeden Tag",

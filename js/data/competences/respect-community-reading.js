@@ -132,6 +132,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Richtig / Falsch",
           title: "True or false?",
+          introDe: "Lies den Artikel noch einmal und wähle True (richtig) oder False (falsch). Dann Check.",
           intro: "Read the article again, then choose True or False. Check when you are ready.",
           columns: 2,
           questions: [
@@ -140,12 +141,13 @@ export default {
             { q: "Leon liked the idea.", de: "Leon fand die Idee gut.", options: ["True", "False"], correct: 1 },
             { q: "All the tables talked to each other.", de: "An allen Tischen wurde miteinander geredet.", options: ["True", "False"], correct: 1 },
           ],
-          help: "Hilfe: True = richtig · False = falsch. Klassenarbeit-Tipp: Dort musst du auch die Zeile angeben, z. B. l. 1.",
+          help: "Klassenarbeit-Tipp: Dort musst du bei „richtig / falsch“ auch die Zeile angeben, z. B. l. 1.",
         },
         {
           type: "event-order",
           kind: "Interaktiv · Reihenfolge",
           title: "What happened first?",
+          introDe: "Bring die vier Momente in die richtige Reihenfolge — 1 ist, was zuerst passiert ist. Dann Check.",
           intro: "Put the four moments in order — 1 is what happened first. Then Check.",
           events: [
             { text: "Amira has an idea for Mix-It-Up Day.", de: "Amira hat eine Idee für den Mix-It-Up Day." },
@@ -153,7 +155,6 @@ export default {
             { text: "On the day, nobody speaks for ten minutes.", de: "An dem Tag spricht zehn Minuten lang niemand." },
             { text: "A boy asks about the football match and the room gets loud.", de: "Ein Junge fragt nach dem Fußballspiel, und es wird laut." },
           ],
-          help: "Hilfe: Bring die vier Momente in die richtige Reihenfolge — 1 = was zuerst passiert ist.",
         },
         {
           type: "idea-pick",
@@ -169,6 +170,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Mix-It-Up Day at your school?",
+          introDe: "Hättest du gern einen Mix-It-Up Day an deiner Schule? Schreib ein oder zwei Sätze.",
           intro: "Would you like a Mix-It-Up Day at your school? Write one or two sentences.",
           starters: ["I would / would not like a Mix-It-Up Day, because …"],
           help: "Hilfe: I would like = Ich würde gern · new people = neue Leute · because = weil",

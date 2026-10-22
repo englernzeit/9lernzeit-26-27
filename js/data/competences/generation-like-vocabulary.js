@@ -92,6 +92,7 @@ export default {
           type: "image-match",
           kind: "Interaktiv · Bild & Wort",
           title: "Match the online words",
+          introDe: "Tippe auf ein Bild, dann auf sein englisches Wort. Ordne alle sechs zu.",
           intro: "Tap a picture, then tap its English word. Match all six.",
           pairs: [
             { word: "footprint", image: `${IMG}/vocab-footprint.jpg` },
@@ -106,6 +107,7 @@ export default {
           type: "group-sort",
           kind: "Interaktiv · Sortieren",
           title: "Naming words or action words?",
+          introDe: "Sortiere jedes Wort: Ist es ein Ding (Nomen) oder eine Handlung (Verb)? Dann Check.",
           intro: "Sort each word: is it a thing (noun) or an action (verb)? Check when ready.",
           groups: [
             { label: "🏷️ Naming word (noun)", items: ["media", "habit", "generation", "advertising", "footprint"] },
@@ -116,6 +118,7 @@ export default {
           type: "match-up",
           kind: "Interaktiv · Zuordnen",
           title: "Match the German meaning",
+          introDe: "Wähle für jedes Wort die richtige deutsche Übersetzung, dann Check.",
           intro: "Choose the correct German translation for each word, then Check.",
           options: ["die Medien", "die Gewohnheit", "posten", "teilen", "die Werbung", "beeinflussen"],
           items: [
@@ -131,6 +134,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Your online day",
+          introDe: "Welche dieser Online-Wörter benutzt du jeden Tag? Schreib ein oder zwei Sätze.",
           intro: "Which of these online words do you use every day? Write one or two sentences.",
           starters: ["Every day I …", "I never …"],
           help: "Hilfe: every day = jeden Tag · never = nie",

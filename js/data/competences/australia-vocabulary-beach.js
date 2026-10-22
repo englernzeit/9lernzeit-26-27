@@ -117,6 +117,7 @@ export default {
           type: "group-sort",
           kind: "Interaktiv · Sortieren",
           title: "Deadly or safe?",
+          introDe: "Hier sind alle 18 Tiere. Tippe auf ein Bild, dann auf die richtige Box — ist das Tier tödlich oder harmlos? Dann Check.",
           intro: "Here are all 18 creatures. Tap a picture, then tap the box it belongs in — is it deadly or harmless? Check when you are ready.",
           groups: [
             {
@@ -153,6 +154,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Quiz",
           title: "Creature quiz — amazing facts",
+          introDe: "Lies jede Info und wähle das Tier, um das es geht. Zehn Fragen, zehn Tiere!",
           intro: "Read each fact and choose the animal it is about. Ten questions, ten animals!",
           columns: 2,
           questions: [
@@ -172,6 +174,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "You and the creatures",
+          introDe: "Welches australische Tier würdest du gern sehen — und welches nie? Schreib ein oder zwei Sätze.",
           intro: "Which Australian creature would you like to see — and which one never? Write one or two sentences.",
           starters: ["I would like to see a … , because …", "I never want to meet a … , because …"],
           help: "Hilfe: I would like to see = Ich würde gern … sehen · never = nie · because = weil",

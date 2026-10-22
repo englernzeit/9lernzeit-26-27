@@ -94,6 +94,7 @@ export default {
           type: "group-sort",
           kind: "Interaktiv · Sortieren",
           title: "Type 1 or Type 2?",
+          introDe: "Tippe auf einen Satz, dann auf eine Box. Sortiere alle sechs. Dann Check.",
           intro: "Tap a sentence, then tap a box. Sort all six. Check when you are ready.",
           groups: [
             {
@@ -118,6 +119,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Quiz",
           title: "Choose the correct form",
+          introDe: "Wähle die richtige Verbform. Du siehst sofort, ob sie stimmt.",
           intro: "Pick the right verb form. You see at once if it is correct.",
           questions: [
             { q: "If it rains, we ___ inside.", options: ["will stay", "would stay", "stayed", "will stayed", "staying"], correct: 0 },
@@ -130,6 +132,7 @@ export default {
           type: "gap-fill",
           kind: "Interaktiv · Lücken",
           title: "Fill in — Type 1",
+          introDe: "Schreib die richtige Verbform in jede Lücke, dann Check.",
           intro: "Type the correct verb form in each gap, then press Check.",
           items: [
             {
@@ -154,6 +157,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "Your real plans",
+          introDe: "Beende jeden Satz über DICH. Benutze will + Verb.",
           intro: "Finish each sentence about YOU. Use will + verb.",
           starters: [
             "If I have time tonight, I will …",
@@ -168,6 +172,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "If it rains",
+          introDe: "Was machst du, wenn es am Samstag regnet? Schreib einen Satz (Typ 1).",
           intro: "What will you do if it rains on Saturday? Write one sentence (Type 1).",
           starters: ["If it rains on Saturday, I will …"],
           help: "Hilfe: Type 1 = if + present → will",

@@ -959,6 +959,13 @@ function buildCard(step, data, index, taskNo, ctx) {
       intro.textContent = data.intro;
       body.appendChild(intro);
     }
+    // LE: the task directions in German, right under the English
+    if (data.introDe) {
+      const de = document.createElement("p");
+      de.className = "taskcard__intro-de";
+      de.textContent = data.introDe;
+      body.appendChild(de);
+    }
   }
 
   // Optional listening track above the task body.

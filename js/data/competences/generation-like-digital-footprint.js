@@ -102,6 +102,7 @@ export default {
           type: "group-sort",
           kind: "Interaktiv · Sortieren",
           title: "Safe or risky?",
+          introDe: "Tippe auf eine Karte, dann auf eine Box. Sortiere alle zehn. Dann Check.",
           intro: "Tap a card, then tap a box. Sort all ten. Check when you are ready.",
           groups: [
             {
@@ -118,6 +119,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Quiz",
           title: "Read and choose",
+          introDe: "Wähle die richtige Antwort. Du siehst das Ergebnis sofort.",
           intro: "Choose the correct answer. You get the result at once.",
           questions: [
             { q: "What do you leave every time you go online?", options: ["A trail", "A password", "A photo", "A sandwich", "A shoe"], correct: 0 },
@@ -132,6 +134,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "Five safety sentences",
+          introDe: "Schreib fünf Sätze darüber, wie man online sicher bleibt. Beende jeden Satzanfang.",
           intro: "Write five sentences about staying safe online. Finish each sentence starter.",
           starters: [
             "Online, I always …",
@@ -146,6 +149,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Your footprint",
+          introDe: "Was postest du online am meisten? Schreib ein oder zwei Sätze.",
           intro: "What do you post online most? Write one or two sentences.",
           starters: ["I mostly post …"],
           help: "Hilfe: mostly = meistens · to post = posten",

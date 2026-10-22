@@ -102,6 +102,7 @@ export default {
           type: "written",
           kind: "Mediation · Deutsch & Englisch",
           title: "Help your brother",
+          introDe: "Dein Bruder fragt auf Deutsch. Antworte auf Deutsch — nur das, was er gefragt hat. Sagt er „frag mal…“, antwortest du auf Englisch. Die Satzanfänge helfen dir.",
           intro: "Your brother asks in German. Answer in German — only what he asked. When he says „frag mal…“, answer in English. The starters help you.",
           starters: [
             "Bruder: „Was macht Daniel genau?“ → Du auf Deutsch (2 Infos): Er hat einen … gegründet, bei dem …",
@@ -114,6 +115,7 @@ export default {
           type: "written",
           kind: "Mediation · Nachfragen",
           title: "Ask in English",
+          introDe: "Dein Bruder will noch zwei Dinge wissen. Schreib die Frage auf Englisch.",
           intro: "Your brother wants to know two more things. Write the question in English.",
           starters: [
             "Frag Daniel, wie lange die Ausstellung dauert. → How long …?",
@@ -124,6 +126,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Richtig dosiert",
           title: "Too much, too little, or right?",
+          introDe: "Drei Schüler haben deinem Bruder geantwortet. Wähle die Antwort, die genau die zwei Infos gibt, nach denen er gefragt hat.",
           intro: "Three students answered your brother. Tick the answer that gives exactly the two pieces of information he asked for.",
           questions: [{ q: ASK_B, options: ASK_OPTS, correct: 1 }],
         },
@@ -140,6 +143,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Helping in two languages",
+          introDe: "Wann hast du zuletzt jemandem geholfen, der eine Sprache nicht verstanden hat? Schreib ein oder zwei Sätze.",
           intro: "When did you last help someone who did not understand a language? Write one or two sentences.",
           starters: ["I helped … , when …"],
           help: "Hilfe: I helped = ich habe geholfen · when = als",

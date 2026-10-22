@@ -155,6 +155,7 @@ export default {
           type: "group-sort",
           kind: "Interaktiv · Sortieren",
           title: "Where is the danger?",
+          introDe: "Tippe auf eine Karte, dann auf eine Box. Sortiere alle zehn Gefahren. Dann Check.",
           intro: "Tap a card, then tap a box. Sort all ten dangers. Check when you are ready.",
           groups: [
             { label: "🏜️ On land (outback)", items: ["Your car breaks down", "There is no shade", "You have no water", "You get lost in the desert", "A long walk in the heat"] },
@@ -165,6 +166,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Quiz",
           title: "Read and choose",
+          introDe: "Wähle für jede Frage die richtige Antwort.",
           intro: "Choose the correct answer for each question.",
           questions: [
             { q: "Where is the outback?", options: ["On the coast near the cities", "Far from the cities, in the middle of Australia", "In New Zealand", "Under the sea", "In a big city"], correct: 1 },
@@ -179,6 +181,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "Five sentences about the outback",
+          introDe: "Beende jeden Satz mit deinen eigenen Ideen.",
           intro: "Finish each sentence with your own ideas.",
           starters: [
             "The outback is …",
@@ -193,6 +196,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Would you fly with them?",
+          introDe: "Würdest du gern für die Flying Doctors arbeiten? Schreib ein oder zwei Sätze.",
           intro: "Would you like to work for the Flying Doctors? Write one or two sentences.",
           starters: ["I would / would not like to work for the Flying Doctors, because …"],
           help: "Hilfe: I would like to = Ich würde gern · because = weil",

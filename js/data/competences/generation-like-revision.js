@@ -41,6 +41,7 @@ export default {
           type: "match-up",
           kind: "Interaktiv · Zuordnen",
           title: "Key words from the whole unit",
+          introDe: "Ordne jedem englischen Wort seine deutsche Bedeutung zu, dann Check.",
           intro: "Match each English word to its German meaning, then Check.",
           options: ["der Fußabdruck", "die Werbung", "süchtig (nach)", "überzeugen", "die Generation", "die Gewohnheit", "abonnieren", "der Einfluss"],
           items: [
@@ -58,6 +59,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Quiz",
           title: "Reading recap — your digital footprint",
+          introDe: "Erinnerst du dich an den Lesetext? Wähle die richtige Antwort.",
           intro: "Remember the reading text? Choose the correct answer.",
           questions: [
             { q: "What is a digital footprint?", options: ["A type of shoe", "The trail of information you leave online", "A password app", "A social media star", "A school subject"], correct: 1 },
@@ -71,6 +73,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Never again",
+          introDe: "Denk an deinen digitalen Fußabdruck. Was würdest du nie online posten? Schreib ein oder zwei Sätze.",
           intro: "Think about your digital footprint. What is one thing you would never post online? Write one or two sentences.",
           starters: ["I would never post … , because …"],
         },

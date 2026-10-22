@@ -108,6 +108,7 @@ export default {
           type: "match-up",
           kind: "Interaktiv · Zuordnen",
           title: "Which word is described?",
+          introDe: "Welches Wort wird beschrieben? Wähle für jede Beschreibung das richtige Wort aus der Liste, dann Check.",
           intro: "Match each description to the right word. Pick from the list, then Check.",
           options: ["victim", "bystander", "cyberbullying", "bully", "tease", "support", "delete", "horrible"],
           items: [
@@ -125,6 +126,7 @@ export default {
           type: "inline-choice",
           kind: "Interaktiv · Auswählen",
           title: "Our class agreement",
+          introDe: "Unsere Klasse hat Klassenregeln geschrieben. Tippe in jeder Regel auf das passende Wort, dann Check.",
           intro: "Our class wrote a class agreement. Tap the word that fits in each rule, then Check.",
           layout: "dialogue",
           lines: [
@@ -152,6 +154,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "Explain two words yourself",
+          introDe: "Das ist die Aufgabe aus der Klassenarbeit. Beende jeden Satz mit einem Muster von oben in Step 1.",
           intro: "This is the class-test task. Finish each sentence with the pattern from the top of Step 1.",
           starters: [
             "A bystander is a person who …",
@@ -177,6 +180,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "A word for you",
+          introDe: "Welches der acht Wörter war neu für dich? Schreib einen Satz damit.",
           intro: "Which of the eight words was new for you? Write one sentence with it.",
           starters: ["The new word for me was … : …"],
           help: "Hilfe: new for me = neu für mich",

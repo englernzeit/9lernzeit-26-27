@@ -101,6 +101,7 @@ export default {
           type: "multiple-choice",
           kind: "Interaktiv · Quiz",
           title: "Listen and choose",
+          introDe: "Hör dir die Sendung an und wähle die richtige Antwort. Du siehst sofort, ob sie stimmt.",
           intro: "Listen to the show, then choose the right answer. You see at once if you are right.",
           audio: { src: `${AUD}/au-teens.mp3`, label: "Radio phone-in · Charlene & Oscar" },
           questions: [
@@ -115,6 +116,7 @@ export default {
           type: "group-sort",
           kind: "Interaktiv · Wer ist das?",
           title: "Charlene or Oscar?",
+          introDe: "Hör noch einmal zu und ordne jede Info dem richtigen Anrufer zu. Dann Check.",
           intro: "Listen again, then sort each fact under the right caller. Check when you are ready.",
           audio: { src: `${AUD}/au-teens.mp3`, label: "Radio phone-in · Charlene & Oscar" },
           groups: [
@@ -126,6 +128,7 @@ export default {
           type: "gap-fill",
           kind: "Interaktiv · Lücken",
           title: "The basic facts",
+          introDe: "Schreib das fehlende Wort oder die fehlende Zahl, dann Check.",
           intro: "Type the missing word or number, then press Check.",
           audio: { src: `${AUD}/au-teens.mp3`, label: "Radio phone-in · Charlene & Oscar" },
           items: [
@@ -140,6 +143,7 @@ export default {
           type: "written",
           kind: "Schreiben · leicht",
           title: "Use it — about you",
+          introDe: "Beende jeden Satz so, dass er für dich stimmt.",
           intro: "Finish each sentence so it is true for you.",
           starters: [
             "My favourite hobby is …",
@@ -152,6 +156,7 @@ export default {
           type: "written",
           kind: "Offene Frage",
           title: "Charlene, Oscar and you",
+          introDe: "Wer ist dir ähnlicher — Charlene oder Oscar? Schreib ein oder zwei Sätze.",
           intro: "Who is more like you — Charlene or Oscar? Write one or two sentences.",
           starters: ["I am more like … , because …"],
           help: "Hilfe: more like = ähnlicher · because = weil",
