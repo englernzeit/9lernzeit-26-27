@@ -56,7 +56,7 @@ export default {
         accent: "olive",
         formula: "verb one step back · I → he / she · my → his / her · drop the speech marks",
         de: "Aussagen",
-        example: "“I am late.” → He said that he was late.",
+        example: "I am late. → He said that he was late.",
       },
       {
         name: "Questions",
@@ -64,7 +64,7 @@ export default {
         accent: "slate",
         formula: "yes/no → if or whether · normal word order (subject, then verb) · no question mark",
         de: "Fragen",
-        example: "“Are you new?” → She asked me if I was new.",
+        example: "Are you new? → She asked me if I was new.",
       },
       {
         name: "Commands & requests",
@@ -72,7 +72,7 @@ export default {
         accent: "ochre",
         formula: "command / request → to + verb · Don’t … → not to + verb · the person comes first",
         de: "Aufforderungen",
-        example: "“Don’t shout.” → She told us not to shout.",
+        example: "Don’t shout. → She told us not to shout.",
       },
       {
         name: "Time & place words",
@@ -80,7 +80,7 @@ export default {
         accent: "coral",
         formula: "today → that day · tomorrow → the next day · yesterday → the day before · here → there",
         de: "Zeit- und Ortsangaben",
-        example: "“I’ll call tomorrow.” → He said he would call the next day.",
+        example: "I’ll call tomorrow. → He said he would call the next day.",
       },
     ],
     tensesLabel: "One step back — the backshift (know it by heart)",
