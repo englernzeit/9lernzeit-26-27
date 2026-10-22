@@ -474,6 +474,45 @@
 }
 .taskcard__intro-de::before { content: "🇩🇪 "; font-style: normal; }
 
+/* A model answer pinned on like a newspaper clipping */
+.taskcard__example {
+  position: relative;
+  margin: 1rem auto 0.4rem;
+  max-width: 34rem;
+  padding: 1.1rem 1.2rem 0.9rem;
+  background: #fbf6ea;
+  border: 1px solid rgba(120, 105, 80, 0.28);
+  box-shadow: 0 2px 6px rgba(60, 45, 20, 0.12);
+  transform: rotate(-0.6deg);
+}
+.taskcard__example-tag {
+  position: absolute;
+  top: -0.7rem;
+  left: 1rem;
+  padding: 0.05rem 0.6rem;
+  background: var(--j-ochre, #c8973a);
+  color: #fff;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 3px;
+}
+.taskcard__example-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--j-ink);
+  border-bottom: 1px solid rgba(120, 105, 80, 0.3);
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
+}
+.taskcard__example-text {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--j-ink);
+}
+
 /* Read-only "received email" shown above a reply task */
 .received-mail {
   margin: 0.9rem 0 1.1rem;

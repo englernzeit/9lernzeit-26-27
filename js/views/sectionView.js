@@ -966,6 +966,26 @@ function buildCard(step, data, index, taskNo, ctx) {
       de.textContent = data.introDe;
       body.appendChild(de);
     }
+    // A short model answer, shown as a newspaper clipping
+    if (data.example) {
+      const ex = document.createElement("figure");
+      ex.className = "taskcard__example";
+      const tag = document.createElement("figcaption");
+      tag.className = "taskcard__example-tag";
+      tag.textContent = "Example · Beispiel";
+      ex.appendChild(tag);
+      if (data.example.title) {
+        const h = document.createElement("p");
+        h.className = "taskcard__example-title";
+        h.textContent = data.example.title;
+        ex.appendChild(h);
+      }
+      const p = document.createElement("p");
+      p.className = "taskcard__example-text";
+      p.textContent = data.example.text;
+      ex.appendChild(p);
+      body.appendChild(ex);
+    }
   }
 
   // Optional listening track above the task body.

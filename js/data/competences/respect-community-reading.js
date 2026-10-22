@@ -316,24 +316,30 @@ export default {
     /* ============ STEP 4 — Challenge ============ */
     {
       step: 4,
-      subtitle: "Challenge · Write the school-newspaper report",
+      subtitle: "Challenge · Your own newspaper report",
       accent: "ochre",
       layout: "single",
       cards: [
         {
           type: "written",
-          kind: "Projekt · Challenge",
+          kind: "Kreativ · Challenge",
           title: "You are the school reporter",
           intro:
-            "Your class has just held its own Mix-It-Up Day. Write a short report for the school newspaper, like the one you read. Give it a headline, say what happened, add one real-sounding quote from a classmate, and end — like Amira — with an honest result.",
+            "Imagine: last Friday YOUR class had its own Mix-It-Up Day — everybody sat at a different table at lunch. Write a short report about it for the school newspaper. Fill in the five parts below, one or two sentences each.",
+          introDe:
+            "Stell dir vor: Letzten Freitag hatte DEINE Klasse einen eigenen Mix-It-Up Day — beim Mittagessen saß jeder an einem anderen Tisch. Schreib darüber einen kurzen Bericht für die Schülerzeitung. Füll die fünf Teile unten aus, jeweils ein oder zwei Sätze.",
+          example: {
+            title: "Lunch with strangers",
+            text: "Last Friday our class sat at mixed tables. At my table I sat with Tom and Lea. Tom said: “I didn't know you play football too!” I think it was a good idea, because now I know two new people.",
+          },
           starters: [
-            "Headline: …",
-            "What we did: On our Mix-It-Up Day, …",
-            "One table that worked: …",
-            "A quote from a classmate: “…”",
-            "The honest result: …",
+            "1 · Headline (a short title): …",
+            "2 · What happened? Last Friday our class …",
+            "3 · Who did you sit with? At my table …",
+            "4 · What did someone say? … said: “…”",
+            "5 · Was it a good idea? I think …, because …",
           ],
-          help: "Tipp: Schreib wie eine Zeitung — kurze, klare Sätze und ein Zitat machen den Bericht lebendig.",
+          help: "Hilfe: headline = Überschrift · at my table = an meinem Tisch · said = sagte · I think = ich finde · because = weil",
         },
       ],
     },
