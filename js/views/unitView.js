@@ -3,8 +3,8 @@
  *
  * Units with full page art (banner/centerImage/cards) render the
  * "island layout": cloudy backdrop, painted title banner, central
- * island scene, and 7 location cards linked by dashed ink lines.
- * Units without art (2–4, build-in-stages rule) fall back to the
+ * island scene, and location cards linked by dashed ink lines.
+ * Units without art yet (build-in-stages rule) fall back to the
  * simple carousel shell.
  *
  * The router re-renders the whole shell per route, which guarantees
@@ -36,7 +36,7 @@ export function renderUnitView(root, unitId) {
 /** Island layout — used by units with full page art. */
 function buildIslandView(unit) {
   const view = document.createElement("div");
-  view.className = "view unit-map";
+  view.className = `view unit-map${unit.wideCards ? " unit-map--wide-cards" : ""}`;
   view.style.backgroundImage = `url("${unit.pageBackground}")`;
 
   view.appendChild(createBackTab("Back to Journey", "/"));

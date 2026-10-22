@@ -87,6 +87,11 @@
   transform: translate(-50%, -50%) scale(0.97);
 }
 
+/* Landscape (≈5:3) location cards need more width for the same label size */
+.unit-map--wide-cards .unit-map__card {
+  width: clamp(9rem, 17vw, 14rem);
+}
+
 /* Portrait: banner → island → cards grid, page scrolls */
 @media (orientation: portrait) {
   .unit-map {
@@ -121,7 +126,8 @@
     max-width: 34rem;
   }
 
-  .unit-map__card {
+  .unit-map__card,
+  .unit-map--wide-cards .unit-map__card {
     position: static;
     transform: none;
     width: 100%;

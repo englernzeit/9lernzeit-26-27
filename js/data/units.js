@@ -50,22 +50,29 @@ export const UNITS = [
     number: 2,
     label: "Respect & Community",
     tagline: "Speak up, don't stand by",
-    active: true, // Unit 2 build in progress — being activated page by page
+    active: true,
     // Left-center (schoolyard scene)
     mapPosition: { x: 18, y: 50 },
     mapPositionPortrait: { x: 34, y: 37 },
     sticker: "assets/images/sticker-unit2-community.webp",
     labelImage: "assets/images/label-unit2.png",
+    // Unit page art (assets/images/unit2/); shares Unit 1's cloud backdrop
+    pageBackground: "assets/images/unit1/bg-clouds.jpg",
+    banner: "assets/images/unit2/banner-community.png",
+    centerImage: "assets/images/unit2/island-community.webp",
+    wideCards: true, // landscape (≈5:3) location cards
     // Theme 2 "Respect" — eight competences, built from the LE/G/E source.
+    // pos = % of the unit page (landscape): down the left side, across the
+    // bottom, up the right — sheet order 1–7, then Revision top right.
     sections: [
-      { id: "vocabulary", label: "Vocabulary · Respect Words" },
-      { id: "reading", label: "Reading · Mix-It-Up Day" },
-      { id: "listening", label: "Listening · Fairfield Live" },
-      { id: "mediation", label: "Mediation · Pass It On" },
-      { id: "writing", label: "Writing · Blog Comment" },
-      { id: "speaking", label: "Speaking · Keep Talking" },
-      { id: "grammar", label: "Grammar · Reported Speech" },
-      { id: "revision", label: "Revision · Ready for the Test" },
+      { id: "vocabulary", label: "Vocabulary Village", card: "assets/images/unit2/card-vocabulary.webp", pos: { x: 13, y: 28 } },
+      { id: "reading", label: "Reading Room", card: "assets/images/unit2/card-reading.webp", pos: { x: 12, y: 52 } },
+      { id: "listening", label: "Listening Studio", card: "assets/images/unit2/card-listening.webp", pos: { x: 13, y: 76 } },
+      { id: "mediation", label: "Mediation Bridge", card: "assets/images/unit2/card-mediation.webp", pos: { x: 36, y: 89 } },
+      { id: "writing", label: "Writing Corner", card: "assets/images/unit2/card-writing.webp", pos: { x: 64, y: 89 } },
+      { id: "speaking", label: "Speaking Square", card: "assets/images/unit2/card-speaking.webp", pos: { x: 87, y: 76 } },
+      { id: "grammar", label: "Grammar Garden", card: "assets/images/unit2/card-grammar.webp", pos: { x: 88, y: 52 } },
+      { id: "revision", label: "Revision Tower", card: "assets/images/unit2/card-revision.webp", pos: { x: 87, y: 28 } },
     ],
   },
   {
