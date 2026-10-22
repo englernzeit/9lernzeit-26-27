@@ -849,7 +849,8 @@ function buildStepSection(step, ctx) {
     holder.className = "jcar jcar--single";
     const stage = document.createElement("div");
     stage.className = "jcar__stage";
-    stage.appendChild(cards[0]);
+    // Usually one challenge card; any extra cards (e.g. a word game) stack below
+    for (const card of cards) stage.appendChild(card);
     holder.appendChild(stage);
     section.appendChild(holder);
   } else {

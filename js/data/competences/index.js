@@ -26,6 +26,7 @@ import respectGrammar from "./respect-community-grammar.js";
 import respectWriting from "./respect-community-writing.js";
 import respectSpeaking from "./respect-community-speaking.js";
 import respectRevision from "./respect-community-revision.js";
+import { withGames } from "./respect-community-games.js";
 
 const CONTENT = {
   "australia/reading-reef": readingReef,
@@ -40,14 +41,14 @@ const CONTENT = {
   "generation-like/vocabulary": vocabulary,
   "generation-like/speaking": speaking,
   "generation-like/revision": revision,
-  "respect-community/vocabulary": respectVocabulary,
-  "respect-community/reading": respectReading,
-  "respect-community/listening": respectListening,
-  "respect-community/mediation": respectMediation,
-  "respect-community/grammar": respectGrammar,
-  "respect-community/writing": respectWriting,
-  "respect-community/speaking": respectSpeaking,
-  "respect-community/revision": respectRevision,
+  "respect-community/vocabulary": withGames("vocabulary", respectVocabulary),
+  "respect-community/reading": withGames("reading", respectReading),
+  "respect-community/listening": withGames("listening", respectListening),
+  "respect-community/mediation": withGames("mediation", respectMediation),
+  "respect-community/grammar": withGames("grammar", respectGrammar),
+  "respect-community/writing": withGames("writing", respectWriting),
+  "respect-community/speaking": withGames("speaking", respectSpeaking),
+  "respect-community/revision": withGames("revision", respectRevision),
 };
 
 /**
