@@ -27,6 +27,7 @@ import {
   createProfileBuilder,
   createGapFill,
   createTranslate,
+  createIdeaPick,
   createAudioPlayer,
   createReadAloud,
   createImageMatch,
@@ -444,6 +445,30 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
         }
         if (card.type === "essay-editor") {
           return [{ label: card.title, answer: answers[`${base}-essay`] ?? "" }];
+        }
+        if (card.type === "idea-pick") {
+          const RATE = { up: "works", maybe: "maybe", down: "won't work" };
+          const best = answers[`${base}-idea-best`] ?? "";
+          const worst = answers[`${base}-idea-worst`] ?? "";
+          const ratings = card.ideas
+            .map((_, k) => {
+              const r = answers[`${base}-idea-rate-${k}`];
+              return r ? `Idea ${k + 1}: ${RATE[r] ?? r}` : "";
+            })
+            .filter(Boolean)
+            .join(" · ");
+          const items = [
+            { label: `${card.title} — my ratings`, answer: ratings },
+            { label: `${card.title} — best idea`, answer: best ? `Idea ${best}: ${card.ideas[best - 1] ?? ""}` : "" },
+          ];
+          if (ideaPickAsksWorst(card)) {
+            items.push({ label: `${card.title} — weakest idea`, answer: worst ? `Idea ${worst}: ${card.ideas[worst - 1] ?? ""}` : "" });
+          }
+          (card.starters ?? []).forEach((starter, k) => {
+            const pick = /worse|weak/i.test(starter) ? worst : /best/i.test(starter) ? best : "";
+            items.push({ label: pick ? starter.replace("___", pick) : starter, answer: answers[`${base}s${k + 1}`] ?? "" });
+          });
+          return items;
         }
         if (card.starters?.length) {
           return card.starters.map((starter, k) => ({
@@ -975,6 +1000,27 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "translate":
       body.appendChild(createTranslate({ items: data.items }));
       break;
+    case "idea-pick": {
+      // Starters keep the plain written-card keys (…s1, s2); picks get their own
+      const base = `step${step.step}-task${index + 1}`;
+      const keyFor = (k) => (/^s\d+$/.test(k) ? `${base}${k}` : `${base}-idea-${k}`);
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const values = {};
+      for (const [k, full] of ideaPickKeys(data).map((k) => [k, keyFor(k)])) values[k] = saved[full] ?? "";
+      body.appendChild(
+        createIdeaPick({
+          situation: data.situation,
+          ideas: data.ideas,
+          starters: data.starters ?? [],
+          askWorst: ideaPickAsksWorst(data),
+          reasons: data.reasons,
+          values,
+          keyFor,
+          onChange: (k, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(k), v),
+        }),
+      );
+      break;
+    }
     case "gap-fill":
       body.appendChild(createGapFill({ items: data.items }));
       break;
@@ -1387,14 +1433,21 @@ function normalizeParagraphs(paragraphs) {
   return (paragraphs ?? []).map((p) => (typeof p === "string" ? [p] : p));
 }
 
-/* ================= shared chrome ================================ */
+/** Problem-solving card: does it ask for the weakest idea too? */
+function ideaPickAsksWorst(card) {
+  return (card.starters ?? []).some((s) => /worse|weak/i.test(s));
+}
 
-/**
- * Section shell: skewed label swatch + khaki subtitle.
- * @param {string} accent
- * @param {string} label
- * @param {string} subtitle
- */
+/** Every saved key of an idea-pick card (short form, see createIdeaPick). */
+function ideaPickKeys(card) {
+  return [
+    ...card.ideas.map((_, i) => `rate-${i}`),
+    "best",
+    "worst",
+    ...(card.starters ?? []).map((_, k) => `s${k + 1}`),
+  ];
+}
+
 /* ================= New words: postcard word cards ================ */
 
 // Each postcard gets its own ink colour, cycling through the journal palette
@@ -1512,6 +1565,14 @@ function buildWordCardsSection(wordCards) {
   return section;
 }
 
+/* ================= shared chrome ================================ */
+
+/**
+ * Section shell: skewed label swatch + khaki subtitle.
+ * @param {string} accent
+ * @param {string} label
+ * @param {string} subtitle
+ */
 function sectionShell(accent, label, subtitle) {
   const section = document.createElement("section");
   section.className = "journal__section";

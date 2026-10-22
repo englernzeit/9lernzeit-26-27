@@ -88,8 +88,14 @@ const SAY_IT = {
   ],
 };
 
-const PROBLEM_INTRO =
-  "In the speaking test your partner says almost nothing — four minutes, and they have answered “yes” three times. Idea 1: keep talking yourself so there is no silence. · Idea 2: ask short open questions — and then wait. · Idea 3: agree before the test that you take two topics and your partner takes the other two.";
+const PROBLEM = {
+  situation: "In the speaking test your partner says almost nothing — four minutes, and they have answered “yes” three times.",
+  ideas: [
+    "keep talking yourself so there is no silence.",
+    "ask short open questions — and then wait.",
+    "agree before the test that you take two topics and your partner takes the other two.",
+  ],
+};
 
 export default {
   title: "Keep Talking",
@@ -217,10 +223,12 @@ export default {
           checklist: true,
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Choose — and defend your choice",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best AND the weakest, then defend your choice.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
       ],

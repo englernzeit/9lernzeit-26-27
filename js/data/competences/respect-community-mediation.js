@@ -69,8 +69,14 @@ const ASK_OPTS = [
   "Daniel sagt, das sei die Frage, die alle stellen.",
 ];
 
-const PROBLEM_INTRO =
-  "Your class wants to take part, but only one piece of work may be sent in. There are four ideas and the vote ends 7 – 7 – 7 – 6. Idea 1: vote again, only between the three ideas with seven votes. · Idea 2: put the three ideas together into one piece of work. · Idea 3: let the four people who had the ideas talk for two minutes each, then vote again.";
+const PROBLEM = {
+  situation: "Your class wants to take part, but only one piece of work may be sent in. There are four ideas and the vote ends 7 – 7 – 7 – 6.",
+  ideas: [
+    "vote again, only between the three ideas with seven votes.",
+    "put the three ideas together into one piece of work.",
+    "let the four people who had the ideas talk for two minutes each, then vote again.",
+  ],
+};
 
 export default {
   title: "Pass It On",
@@ -122,10 +128,12 @@ export default {
           questions: [{ q: ASK_B, options: ASK_OPTS, correct: 1 }],
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Which idea is best?",
-          intro: PROBLEM_INTRO,
+          intro: "Bewerte jede Idee, wähle die beste — und schreib, warum.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …"],
         },
       ],
@@ -178,10 +186,12 @@ export default {
           questions: [{ q: ASK_B, options: ASK_OPTS, correct: 1 }],
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Which idea is best?",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best one, then say why it beats the others.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "The other ideas are not as good, because …"],
         },
       ],
@@ -246,10 +256,12 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Choose — and defend your choice",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best AND the weakest, then defend your choice.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
       ],

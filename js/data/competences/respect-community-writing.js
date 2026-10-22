@@ -92,8 +92,14 @@ const LINK_CHIPS = [
   { n: "06", label: "To sum up, …" },
 ];
 
-const PROBLEM_INTRO =
-  "Your class has to decide on its project. Half want to make a film; the other half say nobody will watch a school film. Idea 1: make the film anyway and show it in assembly, not on a website. · Idea 2: make something that stays on a wall instead — a poster or a photo series. · Idea 3: make a 60-second film, short enough that people really watch it.";
+const PROBLEM = {
+  situation: "Your class has to decide on its project. Half want to make a film; the other half say nobody will watch a school film.",
+  ideas: [
+    "make the film anyway and show it in assembly, not on a website.",
+    "make something that stays on a wall instead — a poster or a photo series.",
+    "make a 60-second film, short enough that people really watch it.",
+  ],
+};
 
 export default {
   title: "Blog Comment",
@@ -259,10 +265,12 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Choose — and defend your choice",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best AND the weakest, then defend your choice.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
       ],

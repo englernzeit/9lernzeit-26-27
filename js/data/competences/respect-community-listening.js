@@ -73,8 +73,14 @@ const HOW_TO_LISTEN = [
   ["Listen the first time for the whole story. Listen the second time to fill in what is still missing."],
 ];
 
-const PROBLEM_INTRO =
-  "Seven of the twenty-six buddy pairs stopped meeting after the first two weeks. Grace wants to change something before September. Idea 1: give those seven new students a different buddy. · Idea 2: ask the seven pairs what went wrong before changing anything. · Idea 3: make the buddy time longer — six weeks instead of two.";
+const PROBLEM = {
+  situation: "Seven of the twenty-six buddy pairs stopped meeting after the first two weeks. Grace wants to change something before September.",
+  ideas: [
+    "give those seven new students a different buddy.",
+    "ask the seven pairs what went wrong before changing anything.",
+    "make the buddy time longer — six weeks instead of two.",
+  ],
+};
 
 export default {
   title: "Fairfield Live",
@@ -236,10 +242,12 @@ export default {
           starters: ["The buddy system …", "Its weakest point is …"],
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Choose — and defend your choice",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best AND the weakest, then defend your choice.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
       ],

@@ -158,11 +158,16 @@ export default {
         },
         wordMasterCard(true),
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Which idea is best?",
-          intro:
-            "Somebody posts a photo of a classmate with a joke under it. Four people send a laughing face; nobody else writes anything. Idea 1: write “Take that down, it is not funny.” · Idea 2: say nothing, but sit next to that classmate tomorrow. · Idea 3: show it to your class teacher. Finish the sentence.",
+          intro: "Bewerte jede Idee, wähle die beste — und schreib, warum.",
+          situation: "Somebody posts a photo of a classmate with a joke under it. Four people send a laughing face; nobody else writes anything.",
+          ideas: [
+            "write “Take that down, it is not funny.”",
+            "say nothing, but sit next to that classmate tomorrow.",
+            "show it to your class teacher.",
+          ],
           starters: ["Idea ___ is best, because …"],
         },
       ],
@@ -226,11 +231,16 @@ export default {
         },
         wordMasterCard(false),
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Which idea is best?",
-          intro:
-            "Somebody posts a photo of a classmate with a joke under it; four people send a laughing face and nobody else writes anything. Idea 1: write “Take that down, it is not funny.” · Idea 2: say nothing, but sit next to that classmate tomorrow. · Idea 3: show it to your class teacher. Write two sentences.",
+          intro: "Rate every idea, pick the best one, then say why it beats the others.",
+          situation: "Somebody posts a photo of a classmate with a joke under it; four people send a laughing face and nobody else writes anything.",
+          ideas: [
+            "write “Take that down, it is not funny.”",
+            "say nothing, but sit next to that classmate tomorrow.",
+            "show it to your class teacher.",
+          ],
           starters: ["Idea ___ is best, because …", "The other ideas are not as good, because …"],
         },
       ],
@@ -291,11 +301,16 @@ export default {
         },
         wordMasterCard(false),
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Choose — and defend your choice",
-          intro:
-            "A photo of a classmate with a joke under it is in a 29-person chat; four laughing faces, nobody else writes anything. Idea 1: write “Take that down, it is not funny.” · Idea 2: say nothing, but sit next to that classmate tomorrow. · Idea 3: show it to your class teacher. Answer in two full sentences.",
+          intro: "Rate every idea, pick the best AND the weakest, then defend your choice.",
+          situation: "A photo of a classmate with a joke under it is in a 29-person chat; four laughing faces, nobody else writes anything.",
+          ideas: [
+            "write “Take that down, it is not funny.”",
+            "say nothing, but sit next to that classmate tomorrow.",
+            "show it to your class teacher.",
+          ],
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
       ],

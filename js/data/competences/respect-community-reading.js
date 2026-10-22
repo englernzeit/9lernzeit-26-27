@@ -51,8 +51,14 @@ const ARTICLE_FULL = [
   "Ms Obi, who organised the day together with Amira, wants to do it again in June. This time the cards will not be in a box at the door. Every student writes their own name on a card, and somebody else pulls it out.",
 ];
 
-const PROBLEM_INTRO =
-  "Your class wants to try Mix-It-Up Day. Seven people say they will not come to the canteen that day. Idea 1: do it anyway — seven out of 28 is not a reason to stop. · Idea 2: ask the seven what would make them come, and change that one thing. · Idea 3: make it shorter — mixed tables for the first fifteen minutes, then everybody sits where they want.";
+const PROBLEM = {
+  situation: "Your class wants to try Mix-It-Up Day. Seven people say they will not come to the canteen that day.",
+  ideas: [
+    "do it anyway — seven out of 28 is not a reason to stop.",
+    "ask the seven what would make them come, and change that one thing.",
+    "make it shorter — mixed tables for the first fifteen minutes, then everybody sits where they want.",
+  ],
+};
 
 // Paraphrase → the line of the article that means the same.
 const PARAPHRASE = {
@@ -113,10 +119,12 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Which idea is best?",
-          intro: PROBLEM_INTRO,
+          intro: "Bewerte jede Idee, wähle die beste — und schreib, warum.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …"],
           help: "Klassenarbeit-Tipp: Bei „richtig / falsch“ musst du auch die Zeile angeben, z. B. l. 1.",
         },
@@ -171,10 +179,12 @@ export default {
           items: PARAPHRASE.items,
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Which idea is best?",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best one, then say why it beats the others.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "The other ideas are not as good, because …"],
           help: "Klassenarbeit-Tipp: Bei „richtig / falsch“ und „gleiche Aussage“ immer die Zeile angeben (l. 7 / ll. 7–8).",
         },
@@ -230,10 +240,12 @@ export default {
           items: PARAPHRASE.items,
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Choose — and defend your choice",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best AND the weakest, then defend your choice.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
           help: "Klassenarbeit-Tipp: Belege jede Antwort mit der genauen Zeile (l. 12 / ll. 12–13).",
         },

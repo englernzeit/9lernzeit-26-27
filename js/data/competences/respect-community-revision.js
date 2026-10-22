@@ -64,8 +64,14 @@ const REVISION_PLAN = [
   "7 Grammar — one step back, if for questions, to for requests",
 ];
 
-const PROBLEM_INTRO =
-  "The test is on Friday. You have two evenings and you got four of the seven mixed questions wrong — all four from different lessons. Idea 1: read all seven sheets again from the beginning. · Idea 2: take only the four sheets where something went wrong — two each evening. · Idea 3: do the four tasks again without looking, then check, then redo the ones still wrong.";
+const PROBLEM = {
+  situation: "The test is on Friday. You have two evenings and you got four of the seven mixed questions wrong — all four from different lessons.",
+  ideas: [
+    "read all seven sheets again from the beginning.",
+    "take only the four sheets where something went wrong — two each evening.",
+    "do the four tasks again without looking, then check, then redo the ones still wrong.",
+  ],
+};
 
 export default {
   title: "Ready for the Test",
@@ -181,10 +187,12 @@ export default {
           checklist: true,
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Choose — and defend your choice",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best AND the weakest, then defend your choice.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
       ],

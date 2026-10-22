@@ -39,8 +39,14 @@ const COMMANDS = [
   { hint: '“Don’t believe the first thing you read.”', segments: ["She advised us ", { answer: "not to", size: 9 }, " believe the first thing we read."] },
 ];
 
-const PROBLEM_INTRO =
-  "You wrote the class report about the journalist's visit. Your teacher gives it back: “Everything is right, but you used said seventeen times.” Idea 1: replace every second said with a different verb from the list. · Idea 2: choose the verb that says what she was doing — explaining, promising, admitting. · Idea 3: leave it — said is not a mistake and the report is correct.";
+const PROBLEM = {
+  situation: "You wrote the class report about the journalist's visit. Your teacher gives it back: “Everything is right, but you used said seventeen times.”",
+  ideas: [
+    "replace every second said with a different verb from the list.",
+    "choose the verb that says what she was doing — explaining, promising, admitting.",
+    "leave it — said is not a mistake and the report is correct.",
+  ],
+};
 
 export default {
   title: "Reported Speech",
@@ -212,10 +218,12 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "idea-pick",
           kind: "Problem solving",
           title: "Choose — and defend your choice",
-          intro: PROBLEM_INTRO,
+          intro: "Rate every idea, pick the best AND the weakest, then defend your choice.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
           starters: ["Idea ___ is best, because …", "Idea ___ is worse, because …"],
         },
       ],

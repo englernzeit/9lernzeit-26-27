@@ -1903,6 +1903,253 @@ export function createTranslate({ items }) {
   return wrap;
 }
 
+/* ---------- Idea pick (problem solving) ------------------------- */
+
+const IDEA_RATINGS = [
+  { v: "up", icon: "👍", label: "works" },
+  { v: "maybe", icon: "🤔", label: "maybe" },
+  { v: "down", icon: "👎", label: "won't work" },
+];
+
+/** Reason chips: tap one and it is added to the sentence you are writing. */
+const IDEA_REASONS = [
+  { en: "it is fair to everybody", de: "fair für alle" },
+  { en: "it solves the real problem", de: "löst das eigentliche Problem" },
+  { en: "nobody is left out", de: "niemand wird ausgeschlossen" },
+  { en: "it is quick and easy", de: "schnell und einfach" },
+  { en: "it works for a long time", de: "wirkt lange" },
+  { en: "we find out more first", de: "wir erfahren erst mehr" },
+  { en: "it does not change anything", de: "ändert nichts" },
+  { en: "it could make things worse", de: "könnte es schlimmer machen" },
+];
+
+/**
+ * Problem solving, made interactive: read the problem, rate every idea
+ * (👍 / 🤔 / 👎), tap ★ for the best one (and ✗ for the weakest when
+ * the starters ask for it), then write why. Reason chips drop a phrase
+ * into the sentence being written, and "Idea ___" in each starter fills
+ * in with the chosen number. Everything is saved (and goes to the PDF).
+ *
+ * Keys (via keyFor): "rate-<i>", "best", "worst" and "s<k>" (starters).
+ *
+ * @param {{
+ *   situation: string, ideas: string[], starters: string[], askWorst?: boolean,
+ *   reasons?: Array<{en: string, de?: string}>,
+ *   values: Record<string, string>, keyFor: (k: string) => string,
+ *   onChange: (k: string, v: string) => void,
+ * }} opts
+ */
+export function createIdeaPick({ situation, ideas, starters, askWorst, reasons, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-idea";
+
+  const state = {
+    rate: ideas.map((_, i) => values[`rate-${i}`] ?? ""),
+    best: values.best ?? "",
+    worst: values.worst ?? "",
+  };
+  const set = (k, v) => {
+    values[k] = v;
+    onChange(k, v);
+  };
+  const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+
+  // --- The problem ------------------------------------------------
+  const problem = document.createElement("div");
+  problem.className = "exo-idea__problem";
+  const tag = document.createElement("span");
+  tag.className = "exo-idea__tag";
+  tag.textContent = "The problem";
+  const sit = document.createElement("p");
+  sit.textContent = situation;
+  problem.append(tag, sit);
+  wrap.appendChild(problem);
+
+  const stepLine = (n, text) => {
+    const p = document.createElement("p");
+    p.className = "exo-idea__step";
+    const b = document.createElement("span");
+    b.className = "exo-idea__step-n";
+    b.textContent = n;
+    p.append(b, document.createTextNode(text));
+    return p;
+  };
+
+  wrap.appendChild(
+    stepLine("1", askWorst ? "Rate every idea — then tap ★ for the best and ✗ for the weakest." : "Rate every idea — then tap ★ for the best one."),
+  );
+
+  // --- Idea tiles -------------------------------------------------
+  const grid = document.createElement("div");
+  grid.className = "exo-idea__grid";
+  const tiles = ideas.map((text, i) => {
+    const tile = document.createElement("article");
+    tile.className = "exo-idea__tile";
+
+    const head = document.createElement("div");
+    head.className = "exo-idea__head";
+    const num = document.createElement("span");
+    num.className = "exo-idea__num";
+    num.textContent = `Idea ${i + 1}`;
+    const stamp = document.createElement("span");
+    stamp.className = "exo-idea__stamp";
+    head.append(num, stamp);
+
+    const p = document.createElement("p");
+    p.className = "exo-idea__text";
+    p.textContent = cap(text);
+
+    const rate = document.createElement("div");
+    rate.className = "exo-idea__rate";
+    const rateBtns = IDEA_RATINGS.map((r) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = `exo-idea__rate-btn exo-idea__rate-btn--${r.v}`;
+      b.innerHTML = `<span aria-hidden="true">${r.icon}</span> ${r.label}`;
+      b.addEventListener("click", () => {
+        state.rate[i] = state.rate[i] === r.v ? "" : r.v;
+        set(`rate-${i}`, state.rate[i]);
+        paint();
+      });
+      rate.appendChild(b);
+      return { b, v: r.v };
+    });
+
+    const pick = document.createElement("div");
+    pick.className = "exo-idea__pick";
+    const bestBtn = document.createElement("button");
+    bestBtn.type = "button";
+    bestBtn.className = "exo-idea__pick-btn exo-idea__pick-btn--best";
+    bestBtn.textContent = "★ Best";
+    bestBtn.addEventListener("click", () => {
+      const v = String(i + 1);
+      state.best = state.best === v ? "" : v;
+      if (state.best && state.worst === v) {
+        state.worst = "";
+        set("worst", "");
+      }
+      set("best", state.best);
+      paint();
+    });
+    pick.appendChild(bestBtn);
+    let worstBtn = null;
+    if (askWorst) {
+      worstBtn = document.createElement("button");
+      worstBtn.type = "button";
+      worstBtn.className = "exo-idea__pick-btn exo-idea__pick-btn--worst";
+      worstBtn.textContent = "✗ Weakest";
+      worstBtn.addEventListener("click", () => {
+        const v = String(i + 1);
+        state.worst = state.worst === v ? "" : v;
+        if (state.worst && state.best === v) {
+          state.best = "";
+          set("best", "");
+        }
+        set("worst", state.worst);
+        paint();
+      });
+      pick.appendChild(worstBtn);
+    }
+
+    tile.append(head, p, rate, pick);
+    grid.appendChild(tile);
+    return { tile, stamp, rateBtns, bestBtn, worstBtn };
+  });
+  wrap.appendChild(grid);
+
+  const nudge = document.createElement("p");
+  nudge.className = "exo-idea__nudge";
+  nudge.hidden = true;
+  wrap.appendChild(nudge);
+
+  // --- Why? reason chips + starters --------------------------------
+  wrap.appendChild(stepLine("2", "Why? Tap a reason to add it to your sentence — then finish it in your own words."));
+
+  const chips = document.createElement("div");
+  chips.className = "exo-idea__chips";
+  wrap.appendChild(chips);
+
+  const list = document.createElement("div");
+  list.className = "taskcard__starters exo-idea__starters";
+  let lastInput = null;
+  const rows = starters.map((starter, k) => {
+    const row = document.createElement("div");
+    row.className = "taskcard__starter";
+    const label = document.createElement("span");
+    label.className = "taskcard__starter-label";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "taskcard__starter-input";
+    input.dataset.answerKey = keyFor(`s${k + 1}`);
+    input.value = values[`s${k + 1}`] ?? "";
+    // Remember the sentence being written, so a reason chip lands there
+    for (const ev of ["focus", "pointerdown"]) input.addEventListener(ev, () => (lastInput = input));
+    input.addEventListener("input", () => {
+      lastInput = input;
+      set(`s${k + 1}`, input.value);
+    });
+    row.append(label, input);
+    list.appendChild(row);
+    return { label, input, starter, k };
+  });
+
+  for (const reason of reasons ?? IDEA_REASONS) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "exo-idea__chip";
+    chip.innerHTML = `<span class="exo-idea__chip-en"></span><span class="exo-idea__chip-de"></span>`;
+    chip.querySelector(".exo-idea__chip-en").textContent = `+ ${reason.en}`;
+    chip.querySelector(".exo-idea__chip-de").textContent = reason.de ?? "";
+    // Keep the focus (and caret) in the sentence being written
+    chip.addEventListener("pointerdown", (e) => e.preventDefault());
+    chip.addEventListener("click", () => {
+      const target = lastInput ?? rows.find((r) => !r.input.value.trim())?.input ?? rows[0]?.input;
+      if (!target) return;
+      const cur = target.value.replace(/\s+$/, "");
+      target.value = cur ? `${cur}${/[,;]$/.test(cur) ? "" : ","} ${reason.en}` : reason.en;
+      target.dispatchEvent(new Event("input"));
+      target.focus();
+      chip.classList.add("exo-idea__chip--used");
+    });
+    chips.appendChild(chip);
+  }
+  wrap.appendChild(list);
+
+  function paint() {
+    tiles.forEach((t, i) => {
+      const v = String(i + 1);
+      t.tile.classList.remove("exo-idea__tile--up", "exo-idea__tile--maybe", "exo-idea__tile--down");
+      if (state.rate[i]) t.tile.classList.add(`exo-idea__tile--${state.rate[i]}`);
+      t.rateBtns.forEach(({ b, v: rv }) => b.setAttribute("aria-pressed", String(state.rate[i] === rv)));
+      const isBest = state.best === v;
+      const isWorst = state.worst === v;
+      t.tile.classList.toggle("exo-idea__tile--best", isBest);
+      t.tile.classList.toggle("exo-idea__tile--worst", isWorst);
+      t.bestBtn.setAttribute("aria-pressed", String(isBest));
+      t.worstBtn?.setAttribute("aria-pressed", String(isWorst));
+      t.stamp.textContent = isBest ? "★ best" : isWorst ? "✗ weakest" : "";
+    });
+
+    // Starters: "Idea ___" becomes the chosen number as soon as there is one
+    for (const r of rows) {
+      const pickFor = /worse|weak/i.test(r.starter) ? state.worst : /best/i.test(r.starter) ? state.best : "";
+      r.label.textContent = pickFor ? r.starter.replace("___", pickFor) : r.starter;
+    }
+
+    // A gentle nudge when the choice contradicts the rating
+    const bi = Number(state.best) - 1;
+    const wi = Number(state.worst) - 1;
+    let msg = "";
+    if (state.best && state.rate[bi] === "down") msg = `You said Idea ${state.best} won't work — are you sure it is the best?`;
+    else if (state.worst && state.rate[wi] === "up") msg = `You said Idea ${state.worst} works — are you sure it is the weakest?`;
+    nudge.textContent = msg;
+    nudge.hidden = !msg;
+  }
+  paint();
+
+  return wrap;
+}
+
 /* ---------- Profile builder (Step 4 challenge) ----------------- */
 
 const PROFILE_FIELDS = ["username", "bio", "post1", "post2", "post3", "nevershare"];
