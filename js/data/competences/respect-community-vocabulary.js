@@ -11,10 +11,55 @@
  *   Step 2 (G-Kurs)  — same tasks, type the word, lighter support
  *   Step 3 (E-Kurs)  — recall without a word box + explain four words
  *   Step 4 (Challenge)— design the class "Respect Agreement" poster
+ *
+ * Above the steps: "New words" postcards (wordCards). Steps 1–3 each carry
+ * the Word Master — eight German sentences to translate (LE with hints).
  */
+
+// New words — postcard pile at the top of the page
+const WORD_CARDS = {
+  subtitle: "Die acht Wörter der Unit — wisch dich durch die Karten, tippe 🔊 zum Anhören",
+  stampLabel: "RESPECT",
+  words: [
+    { en: "victim", pos: "noun", de: "das Opfer", ex: "The victim of the rumour didn't want to come to school for a week." },
+    { en: "bystander", pos: "noun", de: "der Zuschauer / die Zuschauerin", ex: "A bystander who films the fight on their phone is part of the problem." },
+    { en: "bully", pos: "noun / verb", de: "der Mobber · mobben", ex: "The bully only stopped when the whole class stood up to him." },
+    { en: "cyberbullying", pos: "noun", de: "das Cybermobbing", ex: "Cyberbullying follows you home, because your phone is always with you." },
+    { en: "tease", pos: "verb", de: "jemanden hänseln", ex: "Friends tease each other, but it stops being fun when only one person is laughing." },
+    { en: "horrible", pos: "adjective", de: "schrecklich, gemein", ex: "Someone posted a horrible comment under her new profile picture." },
+    { en: "support", pos: "noun / verb", de: "die Unterstützung · unterstützen", ex: "When Lina was new, two buddies gave her real support." },
+    { en: "delete", pos: "verb", de: "löschen", ex: "If you get a mean photo of a classmate, delete it and don't send it on." },
+  ],
+};
+
+// Word Master — eight sentences to translate, one per word, in a different
+// order from the cards. `en` is an answer pattern: (a|b) = either, [x] =
+// optional; case, punctuation and short forms never count.
+const WORD_MASTER = [
+  { de: "Lösch das Foto sofort!", en: "Delete (the|this|that) (photo|picture) (immediately|right now|now|at once|straight away|right away)", le: "löschen = delete · sofort = immediately / right now" },
+  { de: "Ein Zuschauer, der nichts sagt, hilft dem Mobber.", en: "(A|One) bystander (who|that) (says nothing|does not say anything) (helps|is helping) the bully", le: "der Zuschauer = bystander · der Mobber = bully" },
+  { de: "Neue Schüler brauchen unsere Unterstützung.", en: "New (students|pupils|kids) need our support", le: "die Unterstützung = support" },
+  { de: "Das war ein schrecklicher Kommentar.", en: "(That|It) was a horrible comment", le: "schrecklich = horrible" },
+  { de: "Das Opfer brauchte Hilfe.", en: "The victim needed [some] help", le: "das Opfer = victim · brauchte = needed" },
+  { de: "Hör auf, ihn zu hänseln!", en: "[Please] stop teasing him[ please]", le: "hänseln = tease · Hör auf … = Stop …-ing" },
+  { de: "Cybermobbing hört nicht am Schultor auf.", en: "Cyberbullying does not stop at the school (gate|gates)", le: "Cybermobbing = cyberbullying · das Schultor = the school gate" },
+  { de: "Der Mobber hat sich entschuldigt.", en: "The bully (apologised|apologized|said sorry|has apologised|has apologized|has said sorry)", le: "der Mobber = bully · sich entschuldigen = apologise / say sorry" },
+];
+
+const wordMasterCard = (withHints) => ({
+  type: "translate",
+  kind: "Word Master · Übersetzen",
+  title: "Word Master",
+  intro: withHints
+    ? "Übersetze jeden Satz ins Englische — mit den neuen Wörtern. Die Hilfe zeigt dir die Wörter. Dann Check."
+    : "Translate each sentence into English, using the new words. Then Check — green is right, amber means check your spelling.",
+  items: WORD_MASTER.map(({ de, en, le }) => (withHints ? { de, en, hint: le } : { de, en })),
+});
 
 export default {
   title: "Respect — the eight words",
+
+  wordCards: WORD_CARDS,
 
   steps: [
     /* ============ STEP 1 — LE ============ */
@@ -111,6 +156,7 @@ export default {
           ],
           help: "Hilfe: a person who … (für Personen) · something that … (für Dinge) · to … so that … (für Verben).",
         },
+        wordMasterCard(true),
         {
           type: "written",
           kind: "Problem solving",
@@ -178,6 +224,7 @@ export default {
           ],
           help: "Patterns: a person who … · something that … · to … so that …",
         },
+        wordMasterCard(false),
         {
           type: "written",
           kind: "Problem solving",
@@ -242,6 +289,7 @@ export default {
           ],
           help: "Patterns: a person who … · something that … · to … so that …",
         },
+        wordMasterCard(false),
         {
           type: "written",
           kind: "Problem solving",

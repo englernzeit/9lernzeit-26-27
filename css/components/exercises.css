@@ -502,6 +502,102 @@
   color: var(--j-khaki);
 }
 
+/* --- Translate (Word Master: German → English) ------------------ */
+
+.exo-trans {
+  gap: 0.7rem;
+}
+
+.exo-trans__item {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(120, 105, 80, 0.22);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem 0.6rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.exo-trans__de {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-size: 1.15rem;
+  line-height: 1.45;
+  color: var(--j-ink);
+}
+
+.exo-trans__num {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: rgba(79, 127, 150, 0.16);
+  color: var(--j-teal-deep);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.exo-trans__hint {
+  margin: 0.15rem 0 0 2.15rem;
+  font-family: var(--j-font-display);
+  font-size: 1.05rem;
+  color: var(--j-khaki);
+}
+
+.exo-trans__input {
+  display: block;
+  width: calc(100% - 2.15rem);
+  margin: 0.45rem 0 0 2.15rem;
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  color: var(--j-ink);
+  background: var(--j-paper-1);
+  border: none;
+  border-bottom: 2px solid var(--j-teal);
+  border-radius: 4px 4px 0 0;
+  padding: 0.15rem 0.5rem;
+}
+
+.exo-trans__input:focus-visible {
+  outline: none;
+  background: rgba(79, 127, 150, 0.1);
+}
+
+.exo-trans__note {
+  min-height: 0;
+  margin: 0.2rem 0 0 2.15rem;
+  font-family: var(--j-font-display);
+  font-size: 1rem;
+}
+
+.exo-trans__note:empty { display: none; }
+
+.exo-trans__item--right {
+  border-color: rgba(109, 143, 78, 0.6);
+  background: rgba(109, 143, 78, 0.12);
+}
+.exo-trans__item--right .exo-trans__input {
+  border-bottom-color: var(--j-olive);
+  color: var(--j-olive);
+  background: transparent;
+}
+
+.exo-trans__item--near {
+  border-color: rgba(176, 138, 52, 0.65);
+  background: rgba(214, 170, 70, 0.12);
+}
+.exo-trans__item--near .exo-trans__input { border-bottom-color: #b08a34; }
+.exo-trans__item--near .exo-trans__note { color: #8a6a22; }
+
+.exo-trans__item--wrong {
+  border-color: rgba(163, 85, 69, 0.55);
+  background: rgba(192, 106, 88, 0.1);
+}
+.exo-trans__item--wrong .exo-trans__input { border-bottom-color: var(--j-coral-deep); }
+.exo-trans__item--wrong .exo-trans__note { color: var(--j-coral-deep); }
+
 /* --- Audio player ----------------------------------------------- */
 
 .exo-audio {

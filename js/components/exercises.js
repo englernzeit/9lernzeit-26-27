@@ -1766,6 +1766,143 @@ export function createGapFill({ items }) {
   return wrap;
 }
 
+/* ---------- Translate (Word Master: German → English) ---------- */
+
+/**
+ * Expand an answer pattern into every sentence it allows:
+ * "(a|b)" = one of the alternatives, "[x]" = optional.
+ * "Delete the (photo|picture) [now]" → 4 sentences.
+ */
+function expandPattern(pattern) {
+  const m = pattern.match(/\(([^()]*)\)|\[([^[\]]*)\]/);
+  if (!m) return [pattern];
+  const alts = m[1] !== undefined ? m[1].split("|") : [m[2], ""];
+  const head = pattern.slice(0, m.index);
+  const tail = pattern.slice(m.index + m[0].length);
+  return alts.flatMap((alt) => expandPattern(head + alt + tail));
+}
+
+/** Sentence-level normaliser: case, punctuation and short forms don't count. */
+function normSentence(s) {
+  return ` ${(s ?? "").toLowerCase().replace(/[’‘`´]/g, "'")} `
+    .replace(/[.,!?;:"“”„«»()]/g, " ")
+    .replace(/\bcan't\b/g, "cannot")
+    .replace(/\bwon't\b/g, "will not")
+    .replace(/\bshan't\b/g, "shall not")
+    .replace(/n't\b/g, " not")
+    .replace(/\bcan not\b/g, "cannot")
+    .replace(/'m\b/g, " am")
+    .replace(/'re\b/g, " are")
+    .replace(/'ve\b/g, " have")
+    .replace(/'ll\b/g, " will")
+    .replace(/'d\b/g, " would")
+    .replace(/\b(it|that|he|she|what|there|who|this)'s\b/g, "$1 is")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Edit distance, capped: enough to tell "almost — a typo" from "wrong". */
+function editDistance(a, b, cap = 3) {
+  if (Math.abs(a.length - b.length) > cap) return cap + 1;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let rowMin = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      rowMin = Math.min(rowMin, cur[j]);
+    }
+    if (rowMin > cap) return cap + 1;
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+/**
+ * Word Master as a task card: a German sentence per row, the learner
+ * types the whole English sentence. `en` is an answer pattern (see
+ * expandPattern) so natural variants count; case, punctuation and short
+ * forms (don't = do not) never matter. Like every self-check here, the
+ * answer is never shown: right rows lock green, a near-miss (1–2
+ * letters off) turns amber "check your spelling", the rest turn red.
+ *
+ * @param {{ items: Array<{ de: string, en: string, hint?: string }> }} data
+ */
+export function createTranslate({ items }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-trans";
+
+  const rows = items.map((item, i) => {
+    const row = document.createElement("div");
+    row.className = "exo-trans__item";
+
+    const de = document.createElement("p");
+    de.className = "exo-trans__de";
+    const num = document.createElement("span");
+    num.className = "exo-trans__num";
+    num.textContent = String(i + 1);
+    de.append(num, document.createTextNode(item.de));
+    row.appendChild(de);
+
+    if (item.hint) {
+      const hint = document.createElement("p");
+      hint.className = "exo-trans__hint";
+      hint.textContent = item.hint;
+      row.appendChild(hint);
+    }
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "exo-trans__input";
+    input.placeholder = "Write the English sentence …";
+    input.setAttribute("autocomplete", "off");
+    input.setAttribute("autocapitalize", "sentences");
+    input.spellcheck = false;
+    row.appendChild(input);
+
+    const note = document.createElement("p");
+    note.className = "exo-trans__note";
+    row.appendChild(note);
+
+    input.addEventListener("input", () => {
+      row.classList.remove("exo-trans__item--wrong", "exo-trans__item--near");
+      note.textContent = "";
+    });
+
+    wrap.appendChild(row);
+    return { row, input, note, accepted: expandPattern(item.en).map(normSentence), done: false };
+  });
+
+  const checkBtn = checkButton(wrap, () => {
+    let right = 0;
+    for (const r of rows) {
+      if (r.done) {
+        right += 1;
+        continue;
+      }
+      const given = normSentence(r.input.value);
+      r.row.classList.remove("exo-trans__item--wrong", "exo-trans__item--near");
+      r.note.textContent = "";
+      if (!given) continue;
+      if (r.accepted.includes(given)) {
+        r.done = true;
+        r.input.disabled = true;
+        r.row.classList.add("exo-trans__item--right");
+        right += 1;
+      } else if (r.accepted.some((a) => editDistance(given, a, 2) <= 2)) {
+        r.row.classList.add("exo-trans__item--near");
+        r.note.textContent = "Almost — check your spelling.";
+      } else {
+        r.row.classList.add("exo-trans__item--wrong");
+        r.note.textContent = "Not yet — try again.";
+      }
+    }
+    checkBtn.result(`${right} / ${rows.length} correct`);
+  });
+
+  return wrap;
+}
+
 /* ---------- Profile builder (Step 4 challenge) ----------------- */
 
 const PROFILE_FIELDS = ["username", "bio", "post1", "post2", "post3", "nevershare"];

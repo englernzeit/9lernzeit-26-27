@@ -26,6 +26,7 @@ import {
   createGame,
   createProfileBuilder,
   createGapFill,
+  createTranslate,
   createAudioPlayer,
   createReadAloud,
   createImageMatch,
@@ -181,6 +182,13 @@ export function renderSectionView(root, unitId, sectionId) {
   view.appendChild(header);
 
   const ctx = { unitId, sectionId };
+
+  // --- New words: postcard word cards (optional) -----------------
+  // `wordCards`, not the retired `newWords`, so older pages that still
+  // carry newWords data keep their current look.
+  if (content.wordCards?.words?.length) {
+    view.appendChild(buildWordCardsSection(content.wordCards));
+  }
 
   // --- Reading passage (optional) --------------------------------
   if (content.passage) {
@@ -964,6 +972,9 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "sentence-build":
       body.appendChild(createSentenceBuild({ sentences: data.sentences }));
       break;
+    case "translate":
+      body.appendChild(createTranslate({ items: data.items }));
+      break;
     case "gap-fill":
       body.appendChild(createGapFill({ items: data.items }));
       break;
@@ -1384,6 +1395,123 @@ function normalizeParagraphs(paragraphs) {
  * @param {string} label
  * @param {string} subtitle
  */
+/* ================= New words: postcard word cards ================ */
+
+// Each postcard gets its own ink colour, cycling through the journal palette
+const WORDCARD_INKS = [
+  ["var(--j-teal)", "var(--j-teal-deep)"],
+  ["var(--j-coral)", "var(--j-coral-deep)"],
+  ["var(--j-olive)", "var(--j-olive)"],
+  ["var(--j-slate)", "var(--j-slate)"],
+  ["var(--j-ochre)", "var(--j-ochre)"],
+];
+
+/** Say a word aloud with the browser's English voice (if it has one). */
+function speakWord(text) {
+  const synth = window.speechSynthesis;
+  if (!synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-GB";
+  u.rate = 0.85;
+  const voice = synth.getVoices().find((v) => v.lang === "en-GB") ?? synth.getVoices().find((v) => v.lang?.startsWith("en"));
+  if (voice) u.voice = voice;
+  synth.speak(u);
+}
+
+/**
+ * Postcard pile of the page's new words (stack carousel): English word +
+ * word class + 🔊, German, an example sentence, and a stamp (artwork if
+ * given, else a monogram) with a numbered postmark.
+ *
+ * @param {{ subtitle?: string, stampLabel?: string, words: Array<{en: string, de: string, ex: string, pos?: string, image?: string}> }} wordCards
+ */
+function buildWordCardsSection(wordCards) {
+  const section = sectionShell("teal", "New words", wordCards.subtitle ?? "");
+
+  const cards = wordCards.words.map((word, i) => {
+    const card = document.createElement("article");
+    card.className = "wordcard";
+    const [ink, inkDeep] = WORDCARD_INKS[i % WORDCARD_INKS.length];
+    card.style.setProperty("--wc", ink);
+    card.style.setProperty("--wc-deep", inkDeep);
+
+    const main = document.createElement("div");
+    main.className = "wordcard__main";
+
+    const eyebrow = document.createElement("div");
+    eyebrow.className = "wordcard__eyebrow";
+    eyebrow.textContent = word.pos ? `Word ${i + 1} · ${word.pos}` : `Word ${i + 1}`;
+
+    const enRow = document.createElement("div");
+    enRow.className = "wordcard__en-row";
+    const en = document.createElement("div");
+    en.className = "wordcard__en";
+    en.textContent = word.en;
+    enRow.appendChild(en);
+    if (window.speechSynthesis) {
+      const say = document.createElement("button");
+      say.type = "button";
+      say.className = "wordcard__say";
+      say.textContent = "🔊";
+      say.setAttribute("aria-label", `Say “${word.en}”`);
+      // Don't let the tap start a card swipe
+      say.addEventListener("pointerdown", (e) => e.stopPropagation());
+      say.addEventListener("click", (e) => {
+        e.stopPropagation();
+        speakWord(word.en);
+      });
+      enRow.appendChild(say);
+    }
+
+    const de = document.createElement("div");
+    de.className = "wordcard__de";
+    de.textContent = word.de;
+
+    const ex = document.createElement("div");
+    ex.className = "wordcard__ex";
+    ex.textContent = word.ex;
+
+    main.append(eyebrow, enRow, de, ex);
+
+    const side = document.createElement("div");
+    side.className = "wordcard__side";
+
+    const stamp = document.createElement("div");
+    stamp.className = "wordcard__stamp";
+    if (word.image) {
+      const img = document.createElement("img");
+      img.className = "wordcard__stamp-img";
+      img.src = word.image;
+      img.alt = "";
+      img.draggable = false;
+      stamp.appendChild(img);
+    } else {
+      const mono = document.createElement("div");
+      mono.className = "wordcard__stamp-mono";
+      mono.textContent = (word.en.replace(/^to\s+/i, "").trim()[0] ?? "?").toUpperCase();
+      stamp.appendChild(mono);
+    }
+
+    const postmark = document.createElement("div");
+    postmark.className = "wordcard__postmark";
+    const pmLabel = document.createElement("span");
+    pmLabel.className = "wordcard__postmark-label";
+    pmLabel.textContent = wordCards.stampLabel ?? "";
+    const pmNum = document.createElement("span");
+    pmNum.className = "wordcard__postmark-num";
+    pmNum.textContent = `№ ${i + 1}`;
+    postmark.append(pmLabel, pmNum);
+
+    side.append(stamp, postmark);
+    card.append(main, side);
+    return card;
+  });
+
+  section.appendChild(createJournalCarousel({ mode: "stack", accent: "teal", cards }));
+  return section;
+}
+
 function sectionShell(accent, label, subtitle) {
   const section = document.createElement("section");
   section.className = "journal__section";

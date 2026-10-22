@@ -214,8 +214,31 @@
   font-weight: 700;
   font-size: 3.25rem;
   line-height: 1;
-  color: var(--j-teal-deep);
+  color: var(--wc-deep, var(--j-teal-deep));
 }
+
+/* English word + 🔊 pronunciation button */
+.wordcard__en-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.wordcard__say {
+  flex: 0 0 auto;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--wc, var(--j-teal)) 55%, transparent);
+  background: color-mix(in srgb, var(--wc, var(--j-teal)) 12%, var(--j-paper-2));
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.wordcard__say:hover { transform: scale(1.08); }
+.wordcard__say:active { transform: scale(0.94); }
 
 .wordcard__de {
   font-size: 1.5rem;
@@ -247,7 +270,7 @@
 .wordcard__stamp {
   width: 4.9rem;
   height: 5.75rem;
-  border: 2px solid rgba(79, 127, 150, 0.45);
+  border: 2px solid color-mix(in srgb, var(--wc, var(--j-teal)) 50%, transparent);
   padding: 3px;
   background: var(--j-paper-2);
   transform: rotate(2deg);
@@ -269,21 +292,25 @@
   font-family: var(--j-font-display);
   font-weight: 700;
   font-size: 2.6rem;
-  color: var(--j-teal);
-  background: repeating-linear-gradient(45deg, rgba(79, 127, 150, 0.12) 0 7px, rgba(79, 127, 150, 0.03) 7px 14px);
+  color: var(--wc, var(--j-teal));
+  background: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--wc, var(--j-teal)) 14%, transparent) 0 7px,
+    color-mix(in srgb, var(--wc, var(--j-teal)) 4%, transparent) 7px 14px
+  );
 }
 
 .wordcard__postmark {
   width: 4.6rem;
   height: 4.6rem;
   border-radius: 50%;
-  border: 2px dashed rgba(79, 127, 150, 0.55);
+  border: 2px dashed color-mix(in srgb, var(--wc, var(--j-teal)) 60%, transparent);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   transform: rotate(-9deg);
-  color: var(--j-teal);
+  color: var(--wc, var(--j-teal));
   font-family: var(--j-font-display);
   line-height: 1.05;
 }
