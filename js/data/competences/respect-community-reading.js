@@ -321,25 +321,59 @@ export default {
       layout: "single",
       cards: [
         {
-          type: "written",
+          type: "report-builder",
           kind: "Kreativ · Challenge",
           title: "You are the school reporter",
           intro:
             "Imagine: last Friday YOUR class had its own Mix-It-Up Day — everybody sat at a different table at lunch. Write a short report about it for the school newspaper. Fill in the five parts below, one or two sentences each.",
           introDe:
             "Stell dir vor: Letzten Freitag hatte DEINE Klasse einen eigenen Mix-It-Up Day — beim Mittagessen saß jeder an einem anderen Tisch. Schreib darüber einen kurzen Bericht für die Schülerzeitung. Füll die fünf Teile unten aus, jeweils ein oder zwei Sätze.",
+          deskImage: "assets/images/unit2/reporter-desk.webp",
           example: {
             title: "Lunch with strangers",
             text: "Last Friday our class sat at mixed tables. At my table I sat with Tom and Lea. Tom said: “I didn't know you play football too!” I think it was a good idea, because now I know two new people.",
+            note: "This is an example report.",
           },
-          starters: [
-            "1 · Headline (a short title): …",
-            "2 · What happened? Last Friday our class …",
-            "3 · Who did you sit with? At my table …",
-            "4 · What did someone say? … said: “…”",
-            "5 · Was it a good idea? I think …, because …",
+          parts: [
+            {
+              q: "Headline",
+              starter: "(a short title):",
+              placeholder: "Write your headline here…",
+              max: 60,
+              starters: ["Lunch with …", "A day at the wrong table", "New tables, new friends", "Forty minutes with strangers"],
+            },
+            {
+              q: "What happened?",
+              starter: "Last Friday our class …",
+              starters: ["Last Friday our class …", "At lunch everybody …", "At the door we got …", "Nobody sat …"],
+            },
+            {
+              q: "Who did you sit with?",
+              starter: "At my table …",
+              starters: ["At my table I sat with …", "Next to me was …", "I did not know …", "At first nobody …"],
+            },
+            {
+              q: "What did someone say?",
+              starter: "… said: “…”",
+              starters: ["My friend … said: “…”", "Our teacher said: “…”", "A girl from … said: “…”", "Somebody laughed and said: “…”"],
+            },
+            {
+              q: "Was it a good idea?",
+              starter: "I think …, because …",
+              starters: ["I think it was a good idea, because …", "I think it was not a good idea, because …", "Next time we should …", "Now I know …"],
+            },
           ],
-          help: "Hilfe: headline = Überschrift · at my table = an meinem Tisch · said = sagte · I think = ich finde · because = weil",
+          vocab: [
+            ["headline", "Überschrift"],
+            ["at my table", "an meinem Tisch"],
+            ["next to me", "neben mir"],
+            ["said", "sagte"],
+            ["I think", "ich finde"],
+            ["because", "weil"],
+            ["next time", "nächstes Mal"],
+          ],
+          tip: "Use short and clear sentences. You don't need to write a lot — just one or two sentences for each part.",
+          tipDe: "Kurze, klare Sätze! Ein oder zwei Sätze pro Teil reichen.",
         },
       ],
     },

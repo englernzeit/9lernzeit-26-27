@@ -50,6 +50,7 @@ import {
   createBilingualPoster,
   createComicSpeech,
   createPosterFill,
+  createReportBuilder,
 } from "../components/exercises.js";
 import {
   getName,
@@ -446,6 +447,12 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
           return card.paragraph.sentences.map((sentence, k) => ({
             label: `${card.paragraph.title} — ${sentence.starter}`,
             answer: answers[`${base}-para-s${k}`] ?? "",
+          }));
+        }
+        if (card.type === "report-builder") {
+          return card.parts.map((p, k) => ({
+            label: `${card.title} — ${k + 1}. ${p.q}`,
+            answer: answers[`${base}-report-p${k}`] ?? "",
           }));
         }
         if (card.type === "essay-editor") {
@@ -926,7 +933,9 @@ function buildCard(step, data, index, taskNo, ctx) {
   card.appendChild(body);
 
   // The game card is nothing but the game — no header, title or intro.
-  if (data.type !== "game") {
+  // The report builder draws its own (newspaper-style) header.
+  if (data.type === "report-builder") card.classList.add("taskcard--report");
+  if (data.type !== "game" && data.type !== "report-builder") {
     const head = document.createElement("div");
     head.className = "taskcard__head";
     const num = document.createElement("span");
@@ -1185,6 +1194,29 @@ function buildCard(step, data, index, taskNo, ctx) {
         createSpotFix({ paragraphs: data.paragraphs, fixes: data.fixes, hint: data.hint, checkLabel: data.checkLabel }),
       );
       break;
+    case "report-builder": {
+      const base = `step${step.step}-task${index + 1}-report`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createReportBuilder({
+          taskNo,
+          kind: data.kind,
+          title: data.title,
+          intro: data.intro,
+          introDe: data.introDe,
+          example: data.example,
+          parts: data.parts,
+          vocab: data.vocab,
+          tip: data.tip,
+          tipDe: data.tipDe,
+          image: data.deskImage,
+          values: saved,
+          keyFor: (k) => `${base}-p${k}`,
+          onChange: (k, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-p${k}`, v),
+        }),
+      );
+      break;
+    }
     case "poster-builder": {
       const base = `step${step.step}-task${index + 1}-poster`;
       const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};

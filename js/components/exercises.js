@@ -3605,3 +3605,262 @@ export function createPosterFill({ base, img, posters, zones, values, keyFor, on
 
   return wrap;
 }
+
+/**
+ * School-reporter workspace — a guided five-part newspaper report.
+ *
+ * Header (task title, directions EN + DE, progress dots, "Your report"),
+ * a model clipping, one numbered row per part with a character counter,
+ * sentence starters on demand (tap one to put it into the active row),
+ * and a side panel with German vocabulary help and a tip. "Your report"
+ * opens a live newspaper page built from the learner's own answers.
+ *
+ * @param {{
+ *   taskNo: number, kind?: string, title: string, intro: string, introDe?: string,
+ *   example?: {title: string, text: string, note?: string},
+ *   parts: Array<{q: string, starter?: string, placeholder?: string, max?: number, starters?: string[]}>,
+ *   vocab?: Array<[string, string]>, tip?: string, tipDe?: string,
+ *   image?: string, values?: Record<string,string>,
+ *   keyFor: (k: number) => string, onChange: (k: number, v: string) => void,
+ * }} opts
+ */
+export function createReportBuilder({
+  taskNo, kind, title, intro, introDe, example, parts, vocab = [], tip, tipDe, image,
+  values = {}, keyFor, onChange,
+}) {
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+
+  const wrap = el("div", "exo exo-rep");
+
+  // ----- Header -----
+  const head = el("header", "exo-rep__head");
+  const headText = el("div", "exo-rep__head-text");
+  if (kind) headText.appendChild(el("p", "exo-rep__kind", kind));
+  const h = el("h3", "exo-rep__title");
+  h.append(el("span", "exo-rep__task", `Task ${taskNo}`), document.createTextNode(title));
+  headText.appendChild(h);
+  const introBox = el("div", "exo-rep__intro");
+  introBox.appendChild(el("p", "exo-rep__intro-en", intro));
+  if (introDe) introBox.appendChild(el("p", "exo-rep__intro-de", introDe));
+  headText.appendChild(introBox);
+
+  const art = el("div", "exo-rep__head-art");
+  if (image) {
+    const img = el("img", "exo-rep__desk");
+    img.src = image;
+    img.alt = "";
+    img.loading = "lazy";
+    art.appendChild(img);
+  }
+  const motto = el("p", "exo-rep__motto");
+  ["Real stories.", "Real voices.", "Your report."].forEach((t) => motto.appendChild(el("span", "", t)));
+  art.appendChild(motto);
+
+  const bar = el("div", "exo-rep__bar");
+  const dots = el("div", "exo-rep__dots");
+  const dotEls = parts.map((_, k) => {
+    const d = el("button", "exo-rep__dot", String(k + 1));
+    d.type = "button";
+    d.setAttribute("aria-label", `Part ${k + 1}`);
+    d.addEventListener("click", () => rows[k].field.focus());
+    dots.appendChild(d);
+    return d;
+  });
+  const showBtn = el("button", "exo-rep__show");
+  showBtn.type = "button";
+  showBtn.innerHTML =
+    '<span>Your report</span><span class="exo-rep__show-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 4h11l3 3v13H5z M8 4v5h7V4 M8 20v-6h8v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>';
+  bar.append(dots, showBtn);
+
+  head.append(headText, art, bar);
+  wrap.appendChild(head);
+
+  // ----- Body grid: main column + help panel -----
+  const grid = el("div", "exo-rep__grid");
+  const main = el("div", "exo-rep__main");
+  const aside = el("aside", "exo-rep__aside");
+  grid.append(main, aside);
+  wrap.appendChild(grid);
+
+  if (example) {
+    const ex = el("figure", "exo-rep__example");
+    ex.appendChild(el("figcaption", "exo-rep__example-tag", "Example · Beispiel"));
+    ex.appendChild(el("p", "exo-rep__example-title", example.title));
+    ex.appendChild(el("p", "exo-rep__example-text", example.text));
+    const note = el("p", "exo-rep__example-note");
+    note.innerHTML =
+      '<svg viewBox="0 0 120 40" width="96" height="32" aria-hidden="true"><path d="M116 8 C 90 34, 40 38, 8 22 M8 22 l12 -8 M8 22 l14 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    note.appendChild(el("span", "", example.note ?? "This is an example report."));
+    ex.appendChild(note);
+    main.appendChild(ex);
+  }
+
+  // ----- The five parts -----
+  let active = 0;
+  const list = el("ol", "exo-rep__parts");
+  const rows = parts.map((p, k) => {
+    const li = el("li", "exo-rep__part");
+    const num = el("span", "exo-rep__num", String(k + 1));
+    const label = el("div", "exo-rep__label");
+    label.appendChild(el("strong", "", p.q));
+    if (p.starter) label.appendChild(el("span", "exo-rep__starter", p.starter));
+    const box = el("div", "exo-rep__box");
+    const field = el("textarea", "exo-rep__field");
+    field.rows = k === 0 ? 1 : 2;
+    field.maxLength = p.max ?? 120;
+    field.placeholder = p.placeholder ?? "Write your sentence here…";
+    field.dataset.answerKey = keyFor(k);
+    field.value = values[keyFor(k)] ?? "";
+    const count = el("span", "exo-rep__count");
+    box.append(field, count);
+    li.append(num, label, box);
+    list.appendChild(li);
+
+    // focus alone is not reliable on every device — a tap or typing
+    // also makes this row the active one (where starters go)
+    field.addEventListener("focus", () => setActive(k));
+    field.addEventListener("pointerdown", () => setActive(k));
+    field.addEventListener("input", () => {
+      onChange(k, field.value);
+      if (active !== k) setActive(k);
+      else paint();
+    });
+    return { li, field, count, max: field.maxLength };
+  });
+  main.appendChild(list);
+
+  // ----- Sentence starters on demand -----
+  const helpBar = el("div", "exo-rep__helpbar");
+  helpBar.appendChild(el("span", "exo-rep__need", "Need some help?"));
+  const startBtn = el("button", "exo-rep__starters-btn");
+  startBtn.type = "button";
+  startBtn.setAttribute("aria-expanded", "false");
+  const startLabel = el("span", "", "Show sentence starters");
+  startBtn.append(el("span", "", "💡"), startLabel, el("span", "exo-rep__chev", "▾"));
+  helpBar.appendChild(startBtn);
+  const startPanel = el("div", "exo-rep__starters");
+  startPanel.hidden = true;
+  main.append(helpBar, startPanel);
+
+  const fillStarters = () => {
+    startPanel.replaceChildren();
+    startPanel.appendChild(el("p", "exo-rep__starters-for", `Part ${active + 1} · ${parts[active].q} — tap one to use it:`));
+    const chips = el("div", "exo-rep__chips");
+    (parts[active].starters ?? []).forEach((s) => {
+      const c = el("button", "exo-rep__chip", s);
+      c.type = "button";
+      // keep the row's focus: the chip goes into the active field
+      c.addEventListener("pointerdown", (e) => e.preventDefault());
+      c.addEventListener("click", () => {
+        const r = rows[active];
+        const text = s.replace(/…$/, "").trimEnd();
+        r.field.value = (r.field.value.trim() ? `${r.field.value.trimEnd()} ${text} ` : `${text} `).slice(0, r.max);
+        onChange(active, r.field.value);
+        paint();
+        r.field.focus();
+        r.field.setSelectionRange(r.field.value.length, r.field.value.length);
+      });
+      chips.appendChild(c);
+    });
+    startPanel.appendChild(chips);
+  };
+  startBtn.addEventListener("click", () => {
+    startPanel.hidden = !startPanel.hidden;
+    startBtn.setAttribute("aria-expanded", String(!startPanel.hidden));
+    startBtn.classList.toggle("exo-rep__starters-btn--open", !startPanel.hidden);
+    startLabel.textContent = startPanel.hidden ? "Show sentence starters" : "Hide sentence starters";
+    if (!startPanel.hidden) fillStarters();
+  });
+
+  // ----- Help panel -----
+  if (vocab.length) {
+    const v = el("section", "exo-rep__vocab");
+    const vh = el("h4", "exo-rep__aside-title");
+    vh.innerHTML =
+      '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 5.5C5.5 4.5 9 4.5 12 6.5c3-2 6.5-2 9-1V19c-2.5-1-6-1-9 1-3-2-6.5-2-9-1z M12 6.5V20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+    vh.appendChild(el("span", "", "Vocabulary help"));
+    v.appendChild(vh);
+    const dl = el("dl", "exo-rep__vocab-list");
+    vocab.forEach(([en, de]) => dl.append(el("dt", "", en), el("dd", "", de)));
+    v.appendChild(dl);
+    aside.appendChild(v);
+  }
+  if (tip) {
+    const t = el("section", "exo-rep__tip");
+    const th = el("h4", "exo-rep__tip-title");
+    th.append(el("span", "exo-rep__bulb", "💡"), el("span", "", "Quick tip"));
+    t.append(th, el("p", "", tip));
+    if (tipDe) t.appendChild(el("p", "exo-rep__tip-de", tipDe));
+    aside.appendChild(t);
+  }
+  const pencil = el("div", "exo-rep__pencil");
+  pencil.innerHTML =
+    '<svg viewBox="0 0 64 96" width="46" height="70" aria-hidden="true"><path d="M44 6l12 8-30 66-14 10 2-17z M38 18l12 8 M18 73l9 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+  const pm = el("p", "exo-rep__pencil-motto");
+  pm.append(el("span", "", "Small moments."), el("span", "", "Big stories."));
+  pencil.appendChild(pm);
+  aside.appendChild(pencil);
+
+  // ----- "Your report": the learner's own newspaper page -----
+  const paper = el("section", "exo-rep__paper");
+  paper.hidden = true;
+  wrap.appendChild(paper);
+  const renderPaper = () => {
+    paper.replaceChildren();
+    const mast = el("div", "exo-rep__mast");
+    mast.append(
+      el("span", "exo-rep__mast-name", "The School Reporter"),
+      el("span", "exo-rep__mast-date", new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })),
+    );
+    paper.appendChild(mast);
+    const vals = rows.map((r) => r.field.value.trim());
+    paper.appendChild(el("h4", "exo-rep__paper-head", vals[0] || "Your headline"));
+    const name = /** @type {HTMLInputElement|null} */ (document.querySelector(".journal__nametag-input"))?.value.trim();
+    if (name) paper.appendChild(el("p", "exo-rep__paper-by", `by ${name}`));
+    const bodyText = vals.slice(1).filter(Boolean).join(" ");
+    paper.appendChild(
+      el("p", bodyText ? "exo-rep__paper-body" : "exo-rep__paper-body exo-rep__paper-body--empty",
+        bodyText || "Fill in parts 2–5 — your report appears here."),
+    );
+    const done = vals.filter(Boolean).length;
+    paper.appendChild(
+      el("p", "exo-rep__paper-status",
+        done === parts.length ? "✔ All five parts done — great report!" : `${done} of ${parts.length} parts done`),
+    );
+  };
+  showBtn.addEventListener("click", () => {
+    paper.hidden = !paper.hidden;
+    showBtn.classList.toggle("exo-rep__show--on", !paper.hidden);
+    if (!paper.hidden) {
+      renderPaper();
+      paper.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  });
+
+  // ----- State painting -----
+  function setActive(k) {
+    active = k;
+    paint();
+    if (!startPanel.hidden) fillStarters();
+  }
+  function paint() {
+    rows.forEach((r, k) => {
+      const filled = r.field.value.trim().length > 0;
+      r.li.classList.toggle("exo-rep__part--active", k === active);
+      r.li.classList.toggle("exo-rep__part--done", filled);
+      r.count.textContent = `${r.field.value.length}/${r.max}`;
+      r.count.classList.toggle("exo-rep__count--near", r.field.value.length > r.max * 0.85);
+      dotEls[k].classList.toggle("exo-rep__dot--done", filled);
+      dotEls[k].classList.toggle("exo-rep__dot--active", k === active);
+    });
+    if (!paper.hidden) renderPaper();
+  }
+  paint();
+
+  return wrap;
+}
