@@ -53,6 +53,7 @@ import {
   createReportBuilder,
   createListenPrep,
   createMediationFlow,
+  createChangeWriter,
 } from "../components/exercises.js";
 import {
   getName,
@@ -450,6 +451,14 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
             label: `${card.paragraph.title} — ${sentence.starter}`,
             answer: answers[`${base}-para-s${k}`] ?? "",
           }));
+        }
+        if (card.type === "change-writer") {
+          const pick = answers[`${base}-chg-idea`] ?? "";
+          const idea = pick === "own" ? answers[`${base}-chg-own`] ?? "" : pick !== "" ? card.ideas[Number(pick)]?.en ?? "" : "";
+          return [
+            { label: `${card.title} — My idea`, answer: idea },
+            { label: `${card.title} — My comment (${card.min ?? 80}–${card.max ?? 100} words)`, answer: answers[`${base}-chg-text`] ?? "" },
+          ];
         }
         if (card.type === "mediation-flow") {
           return [
@@ -946,8 +955,9 @@ function buildCard(step, data, index, taskNo, ctx) {
 
   // The game card is nothing but the game — no header, title or intro.
   // The report builder draws its own (newspaper-style) header.
-  if (data.type === "report-builder" || data.type === "mediation-flow") card.classList.add("taskcard--report");
-  if (data.type !== "game" && data.type !== "report-builder" && data.type !== "mediation-flow") {
+  const ownHeader = ["report-builder", "mediation-flow", "change-writer"].includes(data.type);
+  if (ownHeader) card.classList.add("taskcard--report");
+  if (data.type !== "game" && !ownHeader) {
     const head = document.createElement("div");
     head.className = "taskcard__head";
     const num = document.createElement("span");
@@ -1213,6 +1223,18 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "listen-prep":
       body.appendChild(createListenPrep(data));
       break;
+    case "change-writer": {
+      const base = `step${step.step}-task${index + 1}-chg`;
+      body.appendChild(
+        createChangeWriter({
+          ...data,
+          values: ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {},
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
     case "mediation-flow": {
       const base = `step${step.step}-task${index + 1}-med`;
       body.appendChild(

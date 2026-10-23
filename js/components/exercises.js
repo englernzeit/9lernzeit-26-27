@@ -4324,3 +4324,247 @@ export function createMediationFlow({
 
   return wrap;
 }
+
+/**
+ * "Make a change!" — persuasive-writing challenge. The learner picks one
+ * improvement for their school (picture tiles, or their own idea), writes
+ * an 80–100-word comment on a notebook page with a live word count, taps
+ * colour-coded sentence starters into the text, and ticks a "Before you
+ * submit" checklist.
+ *
+ * @param {{
+ *   eyebrow?: string, title: string, tagline?: string, intro: string, introDe?: string,
+ *   megaphone?: string, photo?: string, sticky?: string, corner?: string[],
+ *   ideasTitle?: string, ideas: Array<{icon: string, en: string, de?: string}>, ownIdea?: string,
+ *   editorTitle?: string, min?: number, max?: number, placeholder?: string, side?: string[],
+ *   starters: Array<{label: string, tone: string, items: string[]}>,
+ *   checksTitle?: string, checks: string[], footer?: string,
+ *   values?: Record<string,string>,
+ *   keyFor: (f: string) => string, onChange: (f: string, v: string) => void,
+ * }} opts
+ */
+export function createChangeWriter({
+  eyebrow, title, tagline, intro, introDe, megaphone, photo, sticky, corner,
+  ideasTitle = "Ideas for improvement", ideas, ownIdea = "Or come up with your own idea!",
+  editorTitle = "Write your comment", min = 80, max = 100, placeholder = "Write your comment here…", side,
+  starters, checksTitle = "Before you submit", checks, footer,
+  values = {}, keyFor, onChange,
+}) {
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const img = (src, cls, alt = "") => {
+    const i = el("img", cls);
+    i.src = src;
+    i.alt = alt;
+    i.loading = "lazy";
+    return i;
+  };
+
+  const wrap = el("div", "exo exo-chg");
+
+  // ----- Header: title + tagline + art -----
+  const head = el("header", "exo-chg__head");
+  const ht = el("div", "exo-chg__head-text");
+  if (eyebrow) ht.appendChild(el("p", "exo-chg__eyebrow", eyebrow));
+  ht.appendChild(el("h3", "exo-chg__title", title));
+  if (tagline) ht.appendChild(el("p", "exo-chg__tagline", tagline));
+  const p = el("p", "exo-chg__intro");
+  appendBolded(p, intro);
+  ht.appendChild(p);
+  if (introDe) ht.appendChild(el("p", "exo-chg__intro-de", introDe));
+  head.appendChild(ht);
+
+  const art = el("div", "exo-chg__art");
+  if (photo) art.appendChild(img(photo, "exo-chg__photo"));
+  if (megaphone) art.appendChild(img(megaphone, "exo-chg__mega"));
+  if (sticky) art.appendChild(el("p", "exo-chg__sticky", sticky));
+  if (corner) {
+    const c = el("p", "exo-chg__corner");
+    c.appendChild(el("span", "exo-chg__crown", "♛"));
+    corner.forEach((t) => c.appendChild(el("span", "", t)));
+    art.appendChild(c);
+  }
+  head.appendChild(art);
+  wrap.appendChild(head);
+
+  // ----- Body: ideas (left) + notebook (right) -----
+  const body = el("div", "exo-chg__body");
+  wrap.appendChild(body);
+
+  const ideasBox = el("section", "exo-chg__ideas");
+  ideasBox.appendChild(el("h4", "exo-chg__ideas-title", ideasTitle));
+  const grid = el("div", "exo-chg__grid");
+  const ownWrap = el("div", "exo-chg__own");
+  const ownInput = el("input", "exo-chg__own-input");
+  ownInput.type = "text";
+  ownInput.placeholder = "My idea: …";
+  ownInput.maxLength = 80;
+  ownInput.dataset.answerKey = keyFor("own");
+  ownInput.value = values[keyFor("own")] ?? "";
+  let chosen = values[keyFor("idea")] ?? "";
+  const tiles = ideas.map((idea, i) => {
+    const t = el("button", "exo-chg__tile");
+    t.type = "button";
+    t.setAttribute("aria-pressed", "false");
+    t.appendChild(img(idea.icon, "exo-chg__tile-icon"));
+    t.appendChild(el("span", "exo-chg__tile-en", idea.en));
+    if (idea.de) t.appendChild(el("span", "exo-chg__tile-de", idea.de));
+    t.addEventListener("click", () => choose(String(i)));
+    grid.appendChild(t);
+    return t;
+  });
+  ideasBox.appendChild(grid);
+  const ownBtn = el("button", "exo-chg__own-btn", ownIdea);
+  ownBtn.type = "button";
+  ownBtn.addEventListener("click", () => {
+    choose("own");
+    ownInput.focus();
+  });
+  ownWrap.append(ownBtn, ownInput);
+  ideasBox.appendChild(ownWrap);
+  ownInput.addEventListener("input", () => {
+    onChange("own", ownInput.value);
+    if (chosen !== "own") choose("own");
+    else paintChoice();
+  });
+  body.appendChild(ideasBox);
+
+  // notebook page
+  const book = el("section", "exo-chg__book");
+  const bh = el("div", "exo-chg__book-head");
+  const penIc = el("span", "exo-chg__pen");
+  penIc.innerHTML =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 20l1-5L16 4l4 4L9 19z M14 6l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+  bh.append(penIc, el("h4", "exo-chg__book-title", editorTitle));
+  const target = el("div", "exo-chg__target");
+  target.append(el("span", "", `Target: ${min}–${max} words`), el("span", "exo-chg__count"));
+  bh.appendChild(target);
+  book.appendChild(bh);
+  const choiceLine = el("p", "exo-chg__choice");
+  book.appendChild(choiceLine);
+
+  const page = el("div", "exo-chg__page");
+  const ta = el("textarea", "exo-chg__text");
+  ta.placeholder = placeholder;
+  ta.rows = 7;
+  ta.dataset.answerKey = keyFor("text");
+  ta.value = values[keyFor("text")] ?? "";
+  ta.setAttribute("aria-label", editorTitle);
+  page.appendChild(ta);
+  if (side) {
+    const s = el("p", "exo-chg__side");
+    side.forEach((t) => s.appendChild(el("span", "", t)));
+    page.appendChild(s);
+  }
+  book.appendChild(page);
+  const count = target.querySelector(".exo-chg__count");
+  const words = () => (ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0);
+  const paintCount = () => {
+    const n = words();
+    count.textContent = `${n}/${max}`;
+    count.className = `exo-chg__count${n >= min && n <= max ? " exo-chg__count--ok" : n > max ? " exo-chg__count--over" : ""}`;
+  };
+  ta.addEventListener("input", () => {
+    onChange("text", ta.value);
+    paintCount();
+  });
+
+  // sentence starters (tap to insert at the cursor)
+  const st = el("div", "exo-chg__starters");
+  const sth = el("button", "exo-chg__starters-head");
+  sth.type = "button";
+  sth.setAttribute("aria-expanded", "true");
+  sth.append(el("span", "exo-chg__bulb", "💡"), el("span", "", "Sentence starters"), el("span", "exo-chg__chev", "▾"));
+  st.appendChild(sth);
+  const cols = el("div", "exo-chg__cols");
+  starters.forEach((g, gi) => {
+    const col = el("div", `exo-chg__col exo-chg__col--${g.tone}`);
+    col.appendChild(el("span", "exo-chg__col-label", `${gi + 1}. ${g.label}`));
+    const ul = el("ul");
+    g.items.forEach((s) => {
+      const li = el("li");
+      const b = el("button", "exo-chg__chip", s);
+      b.type = "button";
+      b.addEventListener("pointerdown", (e) => e.preventDefault());
+      b.addEventListener("click", () => {
+        const text = s.replace(/\s*…$/, "").trimEnd() + " ";
+        const at = ta.selectionStart ?? ta.value.length;
+        const before = ta.value.slice(0, at);
+        const pad = before && !/\s$/.test(before) ? " " : "";
+        ta.value = before + pad + text + ta.value.slice(ta.selectionEnd ?? at);
+        const pos = (before + pad + text).length;
+        ta.focus();
+        ta.setSelectionRange(pos, pos);
+        onChange("text", ta.value);
+        paintCount();
+      });
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+    col.appendChild(ul);
+    cols.appendChild(col);
+  });
+  st.appendChild(cols);
+  sth.addEventListener("click", () => {
+    cols.hidden = !cols.hidden;
+    sth.setAttribute("aria-expanded", String(!cols.hidden));
+    st.classList.toggle("exo-chg__starters--closed", cols.hidden);
+  });
+  book.appendChild(st);
+  body.appendChild(book);
+
+  // ----- Before you submit -----
+  const fin = el("section", "exo-chg__finish");
+  const fh = el("div", "exo-chg__finish-head");
+  fh.innerHTML =
+    '<svg viewBox="0 0 32 32" width="34" height="34" aria-hidden="true"><rect x="6" y="5" width="20" height="24" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="11" y="2.5" width="10" height="5" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M11 18l4 4 7-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  fh.appendChild(el("span", "", checksTitle));
+  fin.appendChild(fh);
+  checks.forEach((c, i) => {
+    const lab = el("label", "exo-chg__check");
+    const cb = el("input");
+    cb.type = "checkbox";
+    const key = `c${i}`;
+    cb.checked = values[keyFor(key)] === "1";
+    cb.addEventListener("change", () => onChange(key, cb.checked ? "1" : ""));
+    lab.append(cb, el("span", "", c));
+    fin.appendChild(lab);
+  });
+  if (footer) {
+    const f = el("p", "exo-chg__footer");
+    f.appendChild(el("span", "", footer));
+    fin.appendChild(f);
+  }
+  wrap.appendChild(fin);
+
+  // ----- Idea choice -----
+  function paintChoice() {
+    tiles.forEach((t, i) => {
+      const on = chosen === String(i);
+      t.classList.toggle("exo-chg__tile--on", on);
+      t.setAttribute("aria-pressed", String(on));
+    });
+    ownWrap.classList.toggle("exo-chg__own--on", chosen === "own");
+    const label =
+      chosen === "own"
+        ? ownInput.value.trim() || "your own idea"
+        : chosen !== ""
+          ? ideas[Number(chosen)]?.en
+          : "";
+    choiceLine.textContent = label ? `Your idea: ${label}` : "First choose an idea on the left — or your own.";
+    choiceLine.classList.toggle("exo-chg__choice--set", !!label);
+  }
+  function choose(v) {
+    chosen = chosen === v && v !== "own" ? "" : v;
+    onChange("idea", chosen);
+    paintChoice();
+  }
+  paintChoice();
+  paintCount();
+
+  return wrap;
+}
