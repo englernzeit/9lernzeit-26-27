@@ -92,6 +92,63 @@ const LINK_CHIPS = [
   { n: "06", label: "To sum up, …" },
 ];
 
+// ----- LE: the same task in short, simple sentences -----
+const BLOG_POST_LE = {
+  from: "School council · 14 March",
+  subject: "A project for every class?",
+  body: [
+    "From September, every class makes one project against discrimination. It can be a poster, a short film or a song. It takes four lessons.",
+    "Some students say: “Four lessons is too much time.” Other students say: “A project is good. We remember it.”",
+    "What do you think? Write a comment!",
+  ],
+};
+
+const WORDS_LE = [
+  "Words for the post: ",
+  { w: "project", de: "das Projekt" },
+  " · ",
+  { w: "discrimination", de: "die Diskriminierung (jemanden unfair behandeln)" },
+  " · ",
+  { w: "lesson", de: "die Unterrichtsstunde" },
+  " · ",
+  { w: "remember", de: "sich erinnern" },
+  " · ",
+  { w: "comment", de: "der Kommentar" },
+  " · ",
+  { w: "for", de: "dafür" },
+  " · ",
+  { w: "against", de: "dagegen" },
+];
+
+const FOR_AGAINST_LE = {
+  groups: [
+    { label: "👍 FOR", items: ["You remember a poster for a long time.", "Everybody learns about respect."] },
+    { label: "👎 AGAINST", items: ["Four lessons is a lot of time.", "Some students don't want to do it."] },
+  ],
+};
+
+const LINKING_LE = {
+  options: ["In my opinion", "Firstly", "For example", "To sum up"],
+  items: [
+    { left: "___, every class should do a project.", answer: "In my opinion" },
+    { left: "___, you remember a poster for a long time.", answer: "Firstly" },
+    { left: "___, our poster from Year 7 is still on the wall.", answer: "For example" },
+    { left: "___, the project is a good idea.", answer: "To sum up" },
+  ],
+};
+
+const COMMENT_LE = {
+  title: "My comment",
+  goal: "Five sentences: your opinion, two reasons, one example, the end.",
+  sentences: [
+    { label: "Sentence 1 — Your opinion", starter: "Hi, I have read your post. In my opinion, every class", placeholder: "should / should not do the project.", hint: "Deine Meinung: should = sollte · should not = sollte nicht", example: "Hi, I have read your post. In my opinion, every class should do the project." },
+    { label: "Sentence 2 — Reason 1", starter: "Firstly,", placeholder: "your first reason…", hint: "Erstens … (Tipp: Nimm ein Argument aus „For or against?“)", example: "Firstly, you remember a poster for a long time." },
+    { label: "Sentence 3 — Reason 2", starter: "Secondly,", placeholder: "your second reason…", hint: "Zweitens …", example: "Secondly, everybody learns about respect." },
+    { label: "Sentence 4 — An example", starter: "For example,", placeholder: "something from your class or school…", hint: "Zum Beispiel … (aus deiner Klasse / Schule)", example: "For example, our class made a poster about friendship and it is still in the classroom." },
+    { label: "Sentence 5 — The end", starter: "To sum up, I think", placeholder: "say your opinion again…", hint: "Zusammenfassend denke ich … (Sag deine Meinung noch einmal.)", example: "To sum up, I think the project is a good idea." },
+  ],
+};
+
 const PROBLEM = {
   situation: "Your class has to decide on its project. Half want to make a film; the other half say nobody will watch a school film.",
   ideas: [
@@ -116,53 +173,47 @@ export default {
           type: "text",
           kind: "Schreiben · LE",
           title: "The blog post you answer",
-          paragraphs: [GLOSS_INTRO],
-          incoming: BLOG_POST,
-          highlight: true,
-          help: "Reihenfolge: erst sammeln, dann ordnen, dann mit Verbindungswörtern verbinden — und dann schreiben.",
+          intro: "Read the post from the school council. Tap the words if you need help.",
+          introDe: "Die Schülervertretung fragt: Soll jede Klasse ein Projekt gegen Diskriminierung machen (z. B. ein Poster)? Du schreibst deine Meinung als Kommentar.",
+          paragraphs: [WORDS_LE],
+          incoming: BLOG_POST_LE,
+          help: "So geht's: 1) sortieren — 2) Verbindungswörter — 3) deinen Kommentar Satz für Satz schreiben.",
         },
         {
           type: "group-sort",
           kind: "Interaktiv · Sortieren",
           title: "For or against?",
-          introDe: "Sortiere jedes Argument: FÜR (for) oder GEGEN (against) das Projekt? Dann Check.",
-          intro: "Sort each argument under FOR or AGAINST the project, then Check.",
-          groups: FOR_AGAINST.groups,
+          introDe: "Ist das ein Argument FÜR (for) oder GEGEN (against) das Projekt? Sortiere, dann Check.",
+          intro: "Is it FOR or AGAINST the project? Sort the four sentences, then Check.",
+          groups: FOR_AGAINST_LE.groups,
+          help: "Hilfe: remember = sich erinnern · a long time = lange · everybody = alle · a lot of time = viel Zeit · want = wollen",
         },
         {
           type: "match-up",
           kind: "Interaktiv · Verbindungswörter",
           title: "Linking words",
-          introDe: "Ordne jedes Verbindungswort dem Satz zu, in den es passt. Jedes Wort nur einmal. Dann Check.",
-          intro: "Match each linking word to the sentence where it fits. Each word is used once. Then Check.",
-          options: LINKING.options,
-          items: LINKING.items,
+          introDe: "Welches Verbindungswort passt in welchen Satz? Jedes Wort nur einmal. Dann Check.",
+          intro: "Which linking word fits? Use each word once. Then Check.",
+          options: LINKING_LE.options,
+          items: LINKING_LE.items,
+          help: "Hilfe: In my opinion = Meiner Meinung nach · Firstly = Erstens · For example = Zum Beispiel · To sum up = Zusammenfassend",
         },
         {
-          type: "essay-editor",
-          kind: "Schreiben · leicht",
+          type: "paragraph-builder",
+          kind: "Schreiben · Satz für Satz",
           title: "Write your comment",
-          introDe: "Schreib deinen Kommentar zum Blog (ca. 80 Wörter). Beginne mit dem Satz unten und nenne mindestens zwei Gründe.",
-          intro: "Write your comment on the blog (about 80 words). Start with the sentence below and give at least two reasons.",
-          min: 70,
-          max: 120,
-          placeholder: "Hi, I have read your post and I think …",
-          chips: LINK_CHIPS,
-          checklist: [
-            "I started with “Hi, I have read your post and I think …”.",
-            "I give at least two reasons.",
-            "I used at least two different linking words.",
-            "My last sentence says what I think.",
-          ],
+          introDe: "Schreib deinen Kommentar in fünf Sätzen. Die Satzanfänge stehen schon da. Brauchst du Hilfe? Tippe auf „Show example“.",
+          intro: "Write your comment in five sentences. The starters are already there. Tap “Show example” if you need help.",
+          paragraph: COMMENT_LE,
         },
         {
           type: "written",
           kind: "Offene Frage",
-          title: "Your opinion in one sentence",
-          introDe: "Vor dem ganzen Kommentar: Sollte jede Klasse das Projekt machen? Schreib ein oder zwei Sätze.",
-          intro: "Before the whole comment: should every class do the project? Write one or two sentences.",
-          starters: ["I think every class should / should not do the project, because …"],
-          help: "Hilfe: should = sollte · should not = sollte nicht",
+          title: "Your class project",
+          introDe: "Was würdest du mit deiner Klasse gern machen — ein Poster, einen Film oder ein Lied? Schreib ein oder zwei Sätze.",
+          intro: "What would you like to make with your class — a poster, a film or a song? Write one or two sentences.",
+          starters: ["I would like to make a … , because …"],
+          help: "Hilfe: I would like to = ich würde gern · make = machen · because = weil",
         },
       ],
     },
