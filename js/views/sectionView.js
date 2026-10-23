@@ -944,7 +944,9 @@ function buildCard(step, data, index, taskNo, ctx) {
     num.className = "taskcard__num";
     num.textContent =
       data.type === "text"
-        ? "Text"
+        ? data.audio
+          ? "Listen"
+          : "Text"
         : data.type === "video"
           ? "Video"
           : data.type === "image"

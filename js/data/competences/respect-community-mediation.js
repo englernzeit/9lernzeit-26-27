@@ -5,13 +5,17 @@
  * ("School Matters" — Daniel's Open Page Project) that the learner relays:
  * answer the (German-speaking) brother in German with only what he asked
  * for, and ask Daniel a question in English when the brother says "frag
- * mal…". The podcast is shown as text and played from
- * assets/audio/u2-schoolmatters-{short,full}.mp3 (two voices, mono 64k).
+ * mal…". The podcast is a listening task, played from
+ * assets/audio/u2-schoolmatters-{short,full}.mp3 (two voices, mono 64k):
+ * G/E hear it only; LE can open the transcript behind "Show text".
  *
  * Step 1 LE (short podcast, sentence starters) · Step 2 G-Kurs · Step 3
  * E-Kurs (full podcast, 11 points) · Step 4 challenge: be the interpreter.
  */
 
+// Script of the full recording — kept as the reference for the audio and
+// the answers; G/E listen only, so it is not shown on the page.
+// eslint-disable-next-line no-unused-vars
 const PODCAST_FULL = [
   "Host: You are listening to School Matters. I am sitting in the library of a school in Leeds with Daniel Okafor, who is seventeen, and who started something called the Open Page Project. Daniel, what is it?",
   "Daniel: It is a competition for schools. Every class makes one piece of work against racism. A poster, a song, a short film, a poem — anything. We collect them and we show them in the town hall for a week in May.",
@@ -59,7 +63,7 @@ const GLOSS_INTRO = [
 ];
 
 const MED_RULES =
-  "Die 5 Regeln: 1) Was will die Person wissen? 2) Wo steht das — die eine Stelle. 3) Sag es in eigenen Worten. 4) Schau auf die Punkte: (2 P) = zwei Infos. 5) Steht da „frag mal…“? Dann antwortest du auf Englisch.";
+  "Die 5 Regeln: 1) Was will die Person wissen? 2) Wo kommt das im Podcast vor — die eine Stelle. 3) Sag es in eigenen Worten. 4) Schau auf die Punkte: (2 P) = zwei Infos. 5) Steht da „frag mal…“? Dann antwortest du auf Englisch.";
 
 const ASK_B =
   "Your brother asked: „Was gewinnt man denn?“ (2 P). Which German answer gives him both pieces of information?";
@@ -91,10 +95,16 @@ export default {
       cards: [
         {
           type: "text",
-          kind: "Mediation · LE",
-          title: "The podcast — School Matters",
-          paragraphs: [GLOSS_INTRO, ...PODCAST_SHORT],
-          audio: { src: "assets/audio/u2-schoolmatters-short.mp3", label: "School Matters — the podcast (short)" },
+          kind: "Mediation · Hören · LE",
+          title: "Listen: the podcast — School Matters",
+          introDe: "Hör dir den Podcast an. Danach fragt dich dein Bruder auf Deutsch, was Daniel gesagt hat. Den Text kannst du mit „Show text“ öffnen, wenn du Hilfe brauchst.",
+          intro: "Listen to the podcast. Then your brother asks you what Daniel said.",
+          paragraphs: [GLOSS_INTRO],
+          audio: {
+            src: "assets/audio/u2-schoolmatters-short.mp3",
+            label: "School Matters — the podcast (short)",
+            transcript: PODCAST_SHORT,
+          },
           highlight: true,
           help: MED_RULES,
         },
@@ -160,9 +170,10 @@ export default {
       cards: [
         {
           type: "text",
-          kind: "Mediation · G-Kurs",
-          title: "The podcast — School Matters",
-          paragraphs: [GLOSS_INTRO, ...PODCAST_FULL],
+          kind: "Mediation · Hören · G-Kurs",
+          title: "Listen: the podcast — School Matters",
+          intro: "Listen to the podcast — there is no text. Then your brother asks you what Daniel said.",
+          paragraphs: [GLOSS_INTRO],
           audio: { src: "assets/audio/u2-schoolmatters-full.mp3", label: "School Matters — the podcast" },
           help: MED_RULES,
         },
@@ -225,9 +236,10 @@ export default {
       cards: [
         {
           type: "text",
-          kind: "Mediation · E-Kurs",
-          title: "The podcast — School Matters",
-          paragraphs: [GLOSS_INTRO, ...PODCAST_FULL],
+          kind: "Mediation · Hören · E-Kurs",
+          title: "Listen: the podcast — School Matters",
+          intro: "Listen to the podcast — there is no text. Take notes on numbers, dates and the email address.",
+          paragraphs: [GLOSS_INTRO],
           audio: { src: "assets/audio/u2-schoolmatters-full.mp3", label: "School Matters — the podcast" },
           help: MED_RULES,
         },
