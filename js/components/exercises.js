@@ -3618,16 +3618,26 @@ export function createPosterFill({ base, img, posters, zones, values, keyFor, on
  * @param {{
  *   taskNo: number, kind?: string, title: string, intro: string, introDe?: string,
  *   example?: {title: string, text: string, note?: string},
- *   parts: Array<{q: string, starter?: string, placeholder?: string, max?: number, starters?: string[]}>,
+ *   parts: Array<{q: string, starter?: string, hint?: string, placeholder?: string, max?: number, starters?: string[]}>,
  *   vocab?: Array<[string, string]>, tip?: string, tipDe?: string,
  *   image?: string, values?: Record<string,string>,
+ *   theme?: "radio", motto?: string[], corner?: {icon?: "pencil"|"radio", lines: string[]},
+ *   partsTitle?: string, preview?: "newspaper"|"radio", showName?: string,
  *   keyFor: (k: number) => string, onChange: (k: number, v: string) => void,
  * }} opts
+ *
+ * The "radio" theme (Listening challenge) swaps the newspaper look for an
+ * on-air one: brush-stroke task tag, round photo, "Your spot" opens a
+ * radio script with a length check and a read-aloud button.
  */
 export function createReportBuilder({
   taskNo, kind, title, intro, introDe, example, parts, vocab = [], tip, tipDe, image,
+  theme, motto = ["Real stories.", "Real voices.", "Your report."],
+  corner = { icon: "pencil", lines: ["Small moments.", "Big stories."] },
+  partsTitle, preview = "newspaper", showName = "Fairfield Live",
   values = {}, keyFor, onChange,
 }) {
+  const isRadio = preview === "radio";
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -3636,6 +3646,7 @@ export function createReportBuilder({
   };
 
   const wrap = el("div", "exo exo-rep");
+  if (theme) wrap.classList.add(`exo-rep--${theme}`);
 
   // ----- Header -----
   const head = el("header", "exo-rep__head");
@@ -3657,9 +3668,9 @@ export function createReportBuilder({
     img.loading = "lazy";
     art.appendChild(img);
   }
-  const motto = el("p", "exo-rep__motto");
-  ["Real stories.", "Real voices.", "Your report."].forEach((t) => motto.appendChild(el("span", "", t)));
-  art.appendChild(motto);
+  const mottoEl = el("p", "exo-rep__motto");
+  motto.forEach((t) => mottoEl.appendChild(el("span", "", t)));
+  art.appendChild(mottoEl);
 
   const bar = el("div", "exo-rep__bar");
   const dots = el("div", "exo-rep__dots");
@@ -3674,7 +3685,8 @@ export function createReportBuilder({
   const showBtn = el("button", "exo-rep__show");
   showBtn.type = "button";
   showBtn.innerHTML =
-    '<span>Your report</span><span class="exo-rep__show-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 4h11l3 3v13H5z M8 4v5h7V4 M8 20v-6h8v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>';
+    '<span></span><span class="exo-rep__show-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 4h11l3 3v13H5z M8 4v5h7V4 M8 20v-6h8v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>';
+  showBtn.firstChild.textContent = isRadio ? "Your spot" : "Your report";
   bar.append(dots, showBtn);
 
   head.append(headText, art, bar);
@@ -3702,6 +3714,14 @@ export function createReportBuilder({
 
   // ----- The five parts -----
   let active = 0;
+  if (partsTitle) {
+    const pt = el("div", "exo-rep__parts-title");
+    const ic = el("span", "exo-rep__parts-icon");
+    ic.innerHTML =
+      '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+    pt.append(ic, el("span", "", partsTitle));
+    main.appendChild(pt);
+  }
   const list = el("ol", "exo-rep__parts");
   const rows = parts.map((p, k) => {
     const li = el("li", "exo-rep__part");
@@ -3709,6 +3729,7 @@ export function createReportBuilder({
     const label = el("div", "exo-rep__label");
     label.appendChild(el("strong", "", p.q));
     if (p.starter) label.appendChild(el("span", "exo-rep__starter", p.starter));
+    if (p.hint) label.appendChild(el("span", "exo-rep__hint", p.hint));
     const box = el("div", "exo-rep__box");
     const field = el("textarea", "exo-rep__field");
     field.rows = k === 0 ? 1 : 2;
@@ -3800,9 +3821,11 @@ export function createReportBuilder({
   }
   const pencil = el("div", "exo-rep__pencil");
   pencil.innerHTML =
-    '<svg viewBox="0 0 64 96" width="46" height="70" aria-hidden="true"><path d="M44 6l12 8-30 66-14 10 2-17z M38 18l12 8 M18 73l9 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+    corner.icon === "radio"
+      ? '<svg viewBox="0 0 72 64" width="60" height="54" aria-hidden="true"><rect x="6" y="20" width="52" height="38" rx="6" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="21" cy="40" r="8" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M36 33h15M36 40h15M36 47h15M14 20L40 6M60 14l7-5M62 22h8M60 30l7 4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>'
+      : '<svg viewBox="0 0 64 96" width="46" height="70" aria-hidden="true"><path d="M44 6l12 8-30 66-14 10 2-17z M38 18l12 8 M18 73l9 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>';
   const pm = el("p", "exo-rep__pencil-motto");
-  pm.append(el("span", "", "Small moments."), el("span", "", "Big stories."));
+  corner.lines.forEach((t) => pm.appendChild(el("span", "", t)));
   pencil.appendChild(pm);
   aside.appendChild(pencil);
 
@@ -3810,7 +3833,58 @@ export function createReportBuilder({
   const paper = el("section", "exo-rep__paper");
   paper.hidden = true;
   wrap.appendChild(paper);
+  // Radio: the learner's script, a length check (~2.5 words a second) and
+  // a button that reads the spot aloud like a presenter.
+  const renderScript = () => {
+    paper.replaceChildren();
+    const mast = el("div", "exo-rep__script-mast");
+    mast.append(el("span", "exo-rep__script-dot"), el("span", "", `On air · ${showName}`));
+    paper.appendChild(mast);
+    const vals = rows.map((r) => r.field.value.trim());
+    const ol = el("ol", "exo-rep__script");
+    parts.forEach((p, k) => {
+      const li = el("li", vals[k] ? "" : "exo-rep__script-empty");
+      li.append(el("span", "exo-rep__script-label", p.q), el("span", "", vals[k] || "…"));
+      ol.appendChild(li);
+    });
+    paper.appendChild(ol);
+    const text = vals.filter(Boolean).join(" ");
+    const words = text ? text.split(/\s+/).length : 0;
+    const secs = Math.round(words / 2.5);
+    const foot = el("div", "exo-rep__script-foot");
+    const len = el(
+      "p",
+      "exo-rep__paper-status",
+      !words
+        ? "Write your parts — then hear your spot."
+        : secs < 20
+          ? `About ${secs} seconds — a little short. Aim for about 30 seconds.`
+          : secs > 40
+            ? `About ${secs} seconds — a bit long. Aim for about 30 seconds.`
+            : `About ${secs} seconds — perfect radio length!`,
+    );
+    foot.appendChild(len);
+    if (words && window.speechSynthesis) {
+      const play = el("button", "exo-rep__script-play", "▶ Hear your spot");
+      play.type = "button";
+      play.addEventListener("click", () => {
+        try {
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = "en-GB";
+          u.rate = 0.95;
+          speechSynthesis.speak(u);
+        } catch {
+          /* no speech here — the script still shows */
+        }
+      });
+      foot.appendChild(play);
+    }
+    paper.appendChild(foot);
+  };
+
   const renderPaper = () => {
+    if (isRadio) return renderScript();
     paper.replaceChildren();
     const mast = el("div", "exo-rep__mast");
     mast.append(

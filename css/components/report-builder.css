@@ -520,3 +520,128 @@
   .exo-rep__show > span:first-child { display: none; }
   .exo-rep__show { padding-left: 0.5rem; }
 }
+
+/* ----- Part hints + "Your radio spot" heading (any theme) ----- */
+.exo-rep__hint {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--rep-ink-soft);
+}
+.exo-rep__parts-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0 0 0.7rem;
+  font: 700 0.9rem system-ui, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rep-ink);
+}
+.exo-rep__parts-icon {
+  display: grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  background: var(--rep-ink);
+  color: #fff;
+}
+
+/* ----- Radio theme (Listening challenge) ----- */
+.exo-rep--radio .exo-rep__task {
+  padding: 0.2rem 1.1rem 0.25rem 0.9rem;
+  border-radius: 46% 54% 40% 60% / 60% 40% 60% 40%;
+  background: #c9dbe8;
+  color: var(--rep-ink);
+  font-family: var(--j-font-display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  transform: rotate(-8deg);
+}
+.exo-rep--radio .exo-rep__intro { border-left: 0; padding-left: 0; }
+.exo-rep--radio .exo-rep__head-art { min-height: 13rem; margin-top: 2.4rem; }
+.exo-rep--radio .exo-rep__desk {
+  inset: 0 auto auto 0;
+  width: 86%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+  border-radius: 34% 46% 40% 30% / 30% 44% 36% 42%;
+  -webkit-mask-image: none;
+  mask-image: none;
+  opacity: 1;
+  box-shadow: 0 4px 18px rgba(29, 44, 76, 0.14);
+}
+.exo-rep--radio .exo-rep__motto {
+  top: auto;
+  bottom: 0.4rem;
+  right: 0;
+  font-size: 1.4rem;
+  transform: rotate(-16deg);
+}
+.exo-rep--radio .exo-rep__motto span:nth-child(2) { margin-right: 0; }
+
+/* the learner's radio script ("Your spot") */
+.exo-rep__script-mast {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #1a1a1a;
+  font: 700 0.9rem system-ui, sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.exo-rep__script-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #e5483a;
+  animation: lprep-pulse 1.6s infinite;
+}
+.exo-rep__script {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.08rem;
+  line-height: 1.5;
+}
+.exo-rep__script li { display: grid; grid-template-columns: 9.5rem 1fr; gap: 0.8rem; }
+.exo-rep__script-label {
+  font: 600 0.75rem/1.9 system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rep-ink-soft);
+}
+.exo-rep__script-empty span:last-child { color: #aaa; }
+.exo-rep__script-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #ddd;
+}
+.exo-rep__script-foot .exo-rep__paper-status { margin: 0; padding: 0; border: 0; }
+.exo-rep__script-play {
+  padding: 0.45rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--rep-ink);
+  color: #fff;
+  font: 600 0.85rem system-ui, sans-serif;
+  cursor: pointer;
+}
+.exo-rep__script-play:hover { background: #2d4373; }
+
+@media (max-width: 760px) {
+  .exo-rep__script li { grid-template-columns: 1fr; gap: 0; }
+}
