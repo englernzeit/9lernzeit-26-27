@@ -3864,3 +3864,158 @@ export function createReportBuilder({
 
   return wrap;
 }
+
+/**
+ * "Before you listen" for LE learners — a picture-led warm-up instead of
+ * a text: who is talking (picture + two speaker cards), the topic in one
+ * line (EN + DE), word cards that turn over to German and say the word
+ * aloud, the numbers to listen for (tap to hear them), and a three-step
+ * listening plan with German help.
+ *
+ * @param {{
+ *   picture?: string, show: string, showDe?: string,
+ *   speakers: Array<{icon: string, name: string, role: string, roleDe?: string}>,
+ *   topic: string, topicDe?: string,
+ *   words: Array<{icon: string, en: string, de: string}>,
+ *   numbers?: Array<{n: string, say: string, de?: string}>,
+ *   plan: Array<{icon: string, en: string, de?: string}>,
+ * }} opts
+ */
+export function createListenPrep({ picture, show, showDe, speakers, topic, topicDe, words, numbers = [], plan }) {
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const say = (text) => {
+    try {
+      const synth = window.speechSynthesis;
+      if (!synth) return;
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-GB";
+      u.rate = 0.85;
+      synth.speak(u);
+    } catch {
+      /* no speech on this device — the cards still work */
+    }
+  };
+  const section = (no, en, de) => {
+    const s = el("section", "exo-lprep__sec");
+    const h = el("h4", "exo-lprep__h");
+    h.append(el("span", "exo-lprep__h-no", String(no)), el("span", "", en));
+    if (de) h.appendChild(el("span", "exo-lprep__h-de", de));
+    s.appendChild(h);
+    return s;
+  };
+
+  const wrap = el("div", "exo exo-lprep");
+
+  // 1 · Who is talking?
+  const who = section(1, "Who is talking?", "Wer spricht?");
+  const stage = el("div", "exo-lprep__stage");
+  const left = el("div", "exo-lprep__left");
+  stage.appendChild(left);
+  if (picture) {
+    const fig = el("figure", "exo-lprep__pic");
+    const img = el("img");
+    img.src = picture;
+    img.alt = "A school radio studio with a microphone";
+    img.loading = "lazy";
+    fig.appendChild(img);
+    const onAir = el("figcaption", "exo-lprep__onair");
+    onAir.append(el("span", "exo-lprep__onair-dot"), el("span", "", show));
+    fig.appendChild(onAir);
+    left.appendChild(fig);
+  }
+  const side = el("div", "exo-lprep__who");
+  if (showDe) side.appendChild(el("p", "exo-lprep__show-de", showDe));
+  speakers.forEach((sp) => {
+    const c = el("div", "exo-lprep__speaker");
+    c.appendChild(el("span", "exo-lprep__avatar", sp.icon));
+    const t = el("div");
+    t.append(el("strong", "", sp.name), el("span", "exo-lprep__role", sp.role));
+    if (sp.roleDe) t.appendChild(el("span", "exo-lprep__de", sp.roleDe));
+    c.appendChild(t);
+    side.appendChild(c);
+  });
+  const topicBox = el("div", "exo-lprep__topic");
+  topicBox.appendChild(el("span", "exo-lprep__topic-tag", "Topic"));
+  topicBox.appendChild(el("p", "exo-lprep__topic-en", topic));
+  if (topicDe) topicBox.appendChild(el("p", "exo-lprep__de", topicDe));
+  left.appendChild(topicBox);
+  stage.appendChild(side);
+  who.appendChild(stage);
+  wrap.appendChild(who);
+
+  // 2 · Words you will hear — tap to turn over
+  const ws = section(2, "Words you will hear", "Tippe auf eine Karte: Du hörst das Wort und siehst es auf Deutsch.");
+  const grid = el("div", "exo-lprep__words");
+  const turned = new Set();
+  const counter = el("p", "exo-lprep__count");
+  const paintCount = () => {
+    counter.textContent = turned.size === words.length
+      ? `✔ All ${words.length} words — you are ready!`
+      : `${turned.size} / ${words.length} cards turned`;
+    counter.classList.toggle("exo-lprep__count--done", turned.size === words.length);
+  };
+  words.forEach((w, i) => {
+    const card = el("button", "exo-lprep__word");
+    card.type = "button";
+    card.setAttribute("aria-label", `${w.en} — ${w.de}`);
+    const inner = el("span", "exo-lprep__word-inner");
+    const front = el("span", "exo-lprep__face exo-lprep__face--front");
+    front.append(el("span", "exo-lprep__icon", w.icon), el("span", "exo-lprep__en", w.en));
+    const back = el("span", "exo-lprep__face exo-lprep__face--back");
+    back.append(el("span", "exo-lprep__icon", w.icon), el("span", "exo-lprep__de-word", w.de), el("span", "exo-lprep__en-small", w.en));
+    inner.append(front, back);
+    card.appendChild(inner);
+    card.addEventListener("click", () => {
+      card.classList.toggle("exo-lprep__word--turned");
+      say(w.en);
+      turned.add(i);
+      paintCount();
+    });
+    grid.appendChild(card);
+  });
+  ws.append(grid, counter);
+  paintCount();
+  wrap.appendChild(ws);
+
+  // 3 · Listen for these numbers
+  if (numbers.length) {
+    const ns = section(3, "Listen for these numbers!", "Diese Zahlen kommen vor. Tippe — du hörst, wie man sie sagt.");
+    const row = el("div", "exo-lprep__numbers");
+    numbers.forEach((nb) => {
+      const b = el("button", "exo-lprep__num");
+      b.type = "button";
+      b.append(el("span", "exo-lprep__num-n", nb.n), el("span", "exo-lprep__num-say", nb.say));
+      if (nb.de) b.appendChild(el("span", "exo-lprep__num-de", nb.de));
+      b.addEventListener("click", () => {
+        say(nb.say);
+        b.classList.add("exo-lprep__num--heard");
+      });
+      row.appendChild(b);
+    });
+    ns.appendChild(row);
+    wrap.appendChild(ns);
+  }
+
+  // 4 · Your listening plan
+  const ps = section(numbers.length ? 4 : 3, "Your listening plan", "So hörst du");
+  const steps = el("ol", "exo-lprep__plan");
+  plan.forEach((p, i) => {
+    const li = el("li", "exo-lprep__step");
+    li.append(el("span", "exo-lprep__step-icon", p.icon));
+    const t = el("div");
+    t.append(el("span", "exo-lprep__step-no", `Step ${i + 1}`), el("strong", "", p.en));
+    if (p.de) t.appendChild(el("span", "exo-lprep__de", p.de));
+    li.appendChild(t);
+    steps.appendChild(li);
+  });
+  ps.appendChild(steps);
+  wrap.appendChild(ps);
+
+  return wrap;
+}

@@ -51,6 +51,7 @@ import {
   createComicSpeech,
   createPosterFill,
   createReportBuilder,
+  createListenPrep,
 } from "../components/exercises.js";
 import {
   getName,
@@ -884,7 +885,8 @@ function buildStepSection(step, ctx) {
       data.type !== "game" &&
       data.type !== "phrase-reference" &&
       data.type !== "video" &&
-      data.type !== "image"
+      data.type !== "image" &&
+      data.type !== "listen-prep"
     )
       taskNo += 1;
     return buildCard(step, data, i, taskNo, ctx);
@@ -949,7 +951,9 @@ function buildCard(step, data, index, taskNo, ctx) {
             ? "Model"
             : data.type === "phrase-reference"
               ? "Words"
-              : `Task ${taskNo}`;
+              : data.type === "listen-prep"
+                ? "Start"
+                : `Task ${taskNo}`;
     const kind = document.createElement("span");
     kind.className = "taskcard__kind";
     kind.textContent = data.kind ?? "";
@@ -1193,6 +1197,9 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(
         createSpotFix({ paragraphs: data.paragraphs, fixes: data.fixes, hint: data.hint, checkLabel: data.checkLabel }),
       );
+      break;
+    case "listen-prep":
+      body.appendChild(createListenPrep(data));
       break;
     case "report-builder": {
       const base = `step${step.step}-task${index + 1}-report`;

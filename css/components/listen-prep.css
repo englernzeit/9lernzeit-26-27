@@ -1,0 +1,258 @@
+/* ============================================================
+   "Before you listen" — LE picture warm-up (createListenPrep)
+   ============================================================ */
+
+.exo-lprep {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  margin-top: 0.6rem;
+}
+
+/* section heading: coral number badge + English + German */
+.exo-lprep__h {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.6rem;
+  margin: 0 0 0.7rem;
+  font-family: var(--j-font-display);
+  font-size: 1.7rem;
+  line-height: 1.1;
+  color: var(--j-ink);
+}
+.exo-lprep__h-no {
+  display: inline-grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: #d9735a;
+  color: #fff;
+  font-family: var(--j-font-body);
+  font-size: 1.1rem;
+  transform: translateY(0.15rem);
+}
+.exo-lprep__h-de {
+  flex-basis: 100%;
+  padding-left: 2.5rem;
+  font-family: var(--j-font-body);
+  font-size: 0.98rem;
+  font-style: italic;
+  color: var(--j-khaki);
+}
+.exo-lprep__de {
+  display: block;
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.3;
+  color: var(--j-khaki);
+}
+.exo-lprep__de::before { content: "🇩🇪 "; font-style: normal; }
+
+/* ----- 1 · Who is talking? ----- */
+.exo-lprep__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 1.1rem;
+  align-items: start;
+}
+.exo-lprep__pic {
+  position: relative;
+  margin: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(60, 45, 20, 0.16);
+  transform: rotate(-1deg);
+}
+.exo-lprep__pic img { display: block; width: 100%; height: auto; }
+.exo-lprep__onair {
+  position: absolute;
+  left: 0.7rem;
+  top: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(32, 30, 28, 0.82);
+  color: #fff;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+}
+.exo-lprep__onair-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #e5483a;
+  box-shadow: 0 0 0 0 rgba(229, 72, 58, 0.6);
+  animation: lprep-pulse 1.6s infinite;
+}
+@keyframes lprep-pulse {
+  70% { box-shadow: 0 0 0 0.5rem rgba(229, 72, 58, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(229, 72, 58, 0); }
+}
+.exo-lprep__left { display: flex; flex-direction: column; gap: 1rem; }
+.exo-lprep__who { display: flex; flex-direction: column; gap: 0.6rem; }
+.exo-lprep__show-de { margin: 0; font-size: 0.98rem; font-style: italic; color: var(--j-khaki); }
+.exo-lprep__show-de::before { content: "🇩🇪 "; font-style: normal; }
+.exo-lprep__speaker {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1.5px solid rgba(217, 115, 90, 0.3);
+  font-family: var(--j-font-body);
+  color: var(--j-ink);
+}
+.exo-lprep__avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 50%;
+  background: #fbe3d8;
+  font-size: 1.6rem;
+}
+.exo-lprep__speaker strong { display: block; font-size: 1.2rem; }
+.exo-lprep__role { display: block; font-size: 1rem; }
+.exo-lprep__topic {
+  position: relative;
+  padding: 0.8rem 0.9rem 0.7rem;
+  border-radius: 4px;
+  background: #fff6b8;
+  box-shadow: 0 2px 6px rgba(60, 45, 20, 0.12);
+  font-family: var(--j-font-body);
+  transform: rotate(0.8deg);
+}
+.exo-lprep__topic-tag {
+  display: inline-block;
+  margin-bottom: 0.2rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a8452f;
+}
+.exo-lprep__topic-en { margin: 0 0 0.2rem; font-size: 1.2rem; line-height: 1.3; color: var(--j-ink); }
+
+/* ----- 2 · Word cards (tap to turn) ----- */
+.exo-lprep__words {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.2rem, 1fr));
+  gap: 0.7rem;
+}
+.exo-lprep__word {
+  height: 6.2rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  perspective: 700px;
+  cursor: pointer;
+}
+.exo-lprep__word-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+.exo-lprep__word--turned .exo-lprep__word-inner { transform: rotateY(180deg); }
+.exo-lprep__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.4rem;
+  border-radius: 14px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  font-family: var(--j-font-body);
+  box-shadow: 0 2px 6px rgba(60, 45, 20, 0.12);
+}
+.exo-lprep__face--front {
+  background: #fff;
+  border: 1.5px solid rgba(217, 115, 90, 0.35);
+}
+.exo-lprep__face--back {
+  background: #fbe3d8;
+  border: 1.5px solid #d9735a;
+  transform: rotateY(180deg);
+}
+.exo-lprep__icon { font-size: 2.1rem; line-height: 1; }
+.exo-lprep__en { font-size: 1.25rem; color: var(--j-ink); }
+.exo-lprep__de-word { font-size: 1.15rem; color: #a8452f; text-align: center; line-height: 1.15; }
+.exo-lprep__en-small { font-size: 0.85rem; color: var(--j-khaki); }
+.exo-lprep__word:hover .exo-lprep__face--front { border-color: #d9735a; }
+.exo-lprep__word:focus-visible { outline: 2px solid #d9735a; outline-offset: 3px; border-radius: 14px; }
+.exo-lprep__count {
+  margin: 0.6rem 0 0;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  color: var(--j-khaki);
+}
+.exo-lprep__count--done { color: #5c7a3a; font-weight: 600; }
+
+/* ----- 3 · Numbers ----- */
+.exo-lprep__numbers { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.exo-lprep__num {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 6.2rem;
+  padding: 0.5rem 0.8rem 0.45rem;
+  border: 2px dashed rgba(217, 115, 90, 0.55);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  font-family: var(--j-font-body);
+  color: var(--j-ink);
+  cursor: pointer;
+  transition: transform 0.15s, background 0.2s;
+}
+.exo-lprep__num:hover { transform: translateY(-2px); }
+.exo-lprep__num--heard { border-style: solid; background: #fbe3d8; }
+.exo-lprep__num-n { font-family: var(--j-font-display); font-size: 2.1rem; line-height: 1; color: #a8452f; }
+.exo-lprep__num-say { font-size: 1rem; }
+.exo-lprep__num-de { font-size: 0.82rem; font-style: italic; color: var(--j-khaki); }
+.exo-lprep__num-say::before { content: "🔊 "; font-size: 0.8rem; }
+
+/* ----- 4 · Listening plan ----- */
+.exo-lprep__plan {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.exo-lprep__step {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1.5px solid rgba(120, 105, 80, 0.2);
+  font-family: var(--j-font-body);
+  color: var(--j-ink);
+}
+.exo-lprep__step-icon { font-size: 1.9rem; line-height: 1; }
+.exo-lprep__step-no {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a8452f;
+}
+.exo-lprep__step strong { display: block; font-size: 1.12rem; font-weight: 400; line-height: 1.25; }
+
+@media (max-width: 760px) {
+  .exo-lprep__stage { grid-template-columns: 1fr; }
+  .exo-lprep__plan { grid-template-columns: 1fr; }
+  .exo-lprep__words { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
