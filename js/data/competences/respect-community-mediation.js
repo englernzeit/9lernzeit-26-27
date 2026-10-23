@@ -313,18 +313,37 @@ export default {
       layout: "single",
       cards: [
         {
-          type: "written",
-          kind: "Projekt · Challenge",
-          title: "A German friend wants to join in",
+          type: "mediation-flow",
+          kind: "Kreativ · Projekt · Challenge",
+          title: "A German friend wants to join in.",
+          underline: "friend",
           intro:
-            "A German-speaking friend heard about the Open Page Project and wants to take part with their class. Mediate for them: write a short German summary of the three things that matter most (what it is, when/where it is shown, how to enter), then write one English email question to Daniel that your friend still needs answered.",
-          starters: [
-            "Auf Deutsch — Was ist das Projekt? …",
-            "Auf Deutsch — Wann und wo? …",
-            "Auf Deutsch — Wie macht man mit? …",
-            "In English — one question for Daniel: …",
-          ],
-          help: "Tipp: Nur das Wichtigste auf Deutsch — kurz, in eigenen Worten. Die Frage auf Englisch beginnt mit einem Fragewort.",
+            "Imagine your German-speaking friend has just heard about the Open Page Project but still has questions. You listened to the dialogue. Now help your friend understand the essentials and write to Daniel about anything that is still unclear.",
+          introDe:
+            "Dein Freund / deine Freundin spricht kein Englisch und hat vom Open Page Project gehört. Erklär das Wichtigste auf Deutsch — und schreib Daniel eine Frage auf Englisch.",
+          badge: "Listen · Remember · Explain",
+          motto: "You are the bridge between two people.",
+          replay: { src: "assets/audio/u2-schoolmatters-full.mp3", label: "School Matters — the podcast" },
+          remember: {
+            title: "Remember the dialogue",
+            text: "Think back to what you heard. What were the most important facts? Tick each one you remember.",
+            facts: ["What is the project?", "When and where does it take place?", "How can someone take part?"],
+          },
+          explain: {
+            title: "Explain it to your friend",
+            text: "Use your own words. Write one or two short sentences for each point.",
+            items: [
+              { q: "Worum geht es bei dem Projekt?", hint: "Explain what the Open Page Project is.", placeholder: "Bei dem Projekt geht es um …" },
+              { q: "Wann und wo findet es statt?", hint: "Include the important details.", placeholder: "Es findet … statt." },
+              { q: "Wie kann man mitmachen?", hint: "Explain what your friend needs to do.", placeholder: "Man kann mitmachen, indem …" },
+            ],
+          },
+          ask: {
+            title: "Ask Daniel one question",
+            text: "What information do you still need? Write one clear question to Daniel about something the dialogue did not answer.",
+            placeholder: "Could you tell me …?",
+            motto: "One question can make a big difference!",
+          },
         },
       ],
     },

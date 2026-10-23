@@ -4093,3 +4093,234 @@ export function createListenPrep({ picture, show, showDe, speakers, topic, topic
 
   return wrap;
 }
+
+/**
+ * Mediation challenge as a three-stage flow: (1) remember the dialogue —
+ * tick off the key facts, optionally listen again; (2) explain it to a
+ * German friend — one short German answer per fact; (3) ask Daniel one
+ * question in English. A "Before you finish" bar checks the work live.
+ *
+ * @param {{
+ *   kind?: string, title: string, underline?: string, intro: string, introDe?: string,
+ *   badge?: string, motto?: string, audio?: {src: string, label?: string},
+ *   remember: {title: string, text: string, facts: string[]},
+ *   explain: {title: string, text: string, items: Array<{q: string, hint?: string, placeholder?: string}>},
+ *   ask: {title: string, text: string, placeholder?: string, motto?: string},
+ *   values?: Record<string,string>,
+ *   keyFor: (f: string) => string, onChange: (f: string, v: string) => void,
+ * }} opts
+ */
+export function createMediationFlow({
+  kind, title, underline, intro, introDe, badge, motto, audio, remember, explain, ask,
+  values = {}, keyFor, onChange,
+}) {
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const svg = (paths, size = 30) =>
+    `<svg viewBox="0 0 32 32" width="${size}" height="${size}" aria-hidden="true">${paths}</svg>`;
+  const ICON = {
+    head: svg('<path d="M6 19v-3a10 10 0 0 1 20 0v3" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="5" y="18" width="5" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="22" y="18" width="5" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/>'),
+    trans: svg('<text x="3" y="17" font-size="14" font-family="sans-serif" fill="currentColor">文</text><text x="15" y="28" font-size="15" font-weight="700" font-family="sans-serif" fill="currentColor">A</text>'),
+    mail: svg('<rect x="4" y="8" width="24" height="17" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M5 10l11 8 11-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>'),
+    pen: '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-5L16 4l4 4L9 19z M14 6l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  };
+
+  const wrap = el("div", "exo exo-medf");
+
+  // ----- Header -----
+  const head = el("header", "exo-medf__head");
+  const ht = el("div", "exo-medf__head-text");
+  if (kind) ht.appendChild(el("p", "exo-medf__kind", kind));
+  const h = el("h3", "exo-medf__title");
+  if (underline && title.includes(underline)) {
+    const [a, b] = title.split(underline);
+    h.append(document.createTextNode(a), el("span", "exo-medf__swoosh", underline), document.createTextNode(b));
+  } else h.textContent = title;
+  ht.appendChild(h);
+  ht.appendChild(el("p", "exo-medf__intro", intro));
+  if (introDe) ht.appendChild(el("p", "exo-medf__intro-de", introDe));
+  head.appendChild(ht);
+  const hs = el("div", "exo-medf__head-side");
+  if (badge) {
+    const bd = el("span", "exo-medf__badge");
+    bd.innerHTML = svg('<circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 20l5-10 5 10M12.5 17h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>', 20);
+    bd.appendChild(el("span", "", badge));
+    hs.appendChild(bd);
+  }
+  if (motto) hs.appendChild(el("p", "exo-medf__motto", motto));
+  head.appendChild(hs);
+  wrap.appendChild(head);
+
+  // ----- The three stages -----
+  const flow = el("div", "exo-medf__flow");
+  wrap.appendChild(flow);
+  const stage = (icon, no, label, heading, text, cls) => {
+    const s = el("section", `exo-medf__stage ${cls}`);
+    const top = el("div", "exo-medf__stage-top");
+    const ic = el("span", "exo-medf__icon");
+    ic.innerHTML = icon;
+    const tx = el("div");
+    const lab = el("p", "exo-medf__label");
+    if (no) lab.appendChild(el("span", "exo-medf__no", no));
+    lab.appendChild(el("span", "", label));
+    tx.append(lab, el("h4", "exo-medf__h", heading), el("p", "exo-medf__text", text));
+    top.append(ic, tx);
+    s.appendChild(top);
+    return s;
+  };
+  const arrow = () => {
+    const a = el("span", "exo-medf__arrow", "→");
+    a.setAttribute("aria-hidden", "true");
+    return a;
+  };
+
+  // 1 · Remember
+  const s1 = stage(ICON.head, "1", "Step 1", remember.title, remember.text, "exo-medf__stage--remember");
+  const facts = el("ul", "exo-medf__facts");
+  const factBtns = remember.facts.map((f, i) => {
+    const li = el("li");
+    const b = el("button", "exo-medf__fact");
+    b.type = "button";
+    b.append(el("span", "exo-medf__tick"), el("span", "", f));
+    const key = `r${i}`;
+    const set = (on) => {
+      b.classList.toggle("exo-medf__fact--on", on);
+      b.setAttribute("aria-pressed", String(on));
+    };
+    set(values[keyFor(key)] === "1");
+    b.addEventListener("click", () => {
+      const on = !b.classList.contains("exo-medf__fact--on");
+      set(on);
+      onChange(key, on ? "1" : "");
+      paintCheck();
+    });
+    li.appendChild(b);
+    facts.appendChild(li);
+    return b;
+  });
+  s1.appendChild(facts);
+  if (audio?.src) {
+    const again = el("div", "exo-medf__again");
+    const btn = el("button", "exo-medf__again-btn");
+    btn.type = "button";
+    btn.textContent = "🔊 Listen again";
+    const player = new Audio();
+    player.preload = "none";
+    btn.addEventListener("click", () => {
+      if (!player.src) player.src = audio.src;
+      if (player.paused) {
+        player.play().catch(() => {});
+        btn.textContent = "⏸ Pause";
+      } else {
+        player.pause();
+        btn.textContent = "🔊 Listen again";
+      }
+    });
+    player.addEventListener("ended", () => (btn.textContent = "🔊 Listen again"));
+    again.append(btn, el("span", "exo-medf__again-note", "only if your teacher allows it"));
+    s1.appendChild(again);
+  }
+  flow.append(s1, arrow());
+
+  // 2 · Explain in German
+  const s2 = stage(ICON.trans, "", "Steps 2 – 4 · Auf Deutsch", explain.title, explain.text, "exo-medf__stage--explain");
+  const items = el("ol", "exo-medf__items");
+  const deFields = explain.items.map((it, i) => {
+    const li = el("li", "exo-medf__item");
+    li.appendChild(el("span", "exo-medf__item-no", String(i + 1).padStart(2, "0")));
+    const body = el("div", "exo-medf__item-body");
+    body.appendChild(el("strong", "", it.q));
+    if (it.hint) body.appendChild(el("span", "exo-medf__item-hint", it.hint));
+    const box = el("label", "exo-medf__field");
+    const pen = el("span", "exo-medf__pen");
+    pen.innerHTML = ICON.pen;
+    // two short sentences fit: a small box that grows as the learner writes
+    const input = el("textarea", "exo-medf__grow");
+    input.rows = 2;
+    input.placeholder = it.placeholder ?? "";
+    input.setAttribute("aria-label", it.q);
+    const key = `de${i}`;
+    input.dataset.answerKey = keyFor(key);
+    input.value = values[keyFor(key)] ?? "";
+    const grow = () => {
+      input.style.height = "auto";
+      input.style.height = `${input.scrollHeight}px`;
+    };
+    input.addEventListener("input", () => {
+      onChange(key, input.value);
+      grow();
+      paintCheck();
+    });
+    requestAnimationFrame(grow);
+    box.append(pen, input);
+    body.appendChild(box);
+    li.appendChild(body);
+    items.appendChild(li);
+    return input;
+  });
+  s2.appendChild(items);
+  flow.append(s2, arrow());
+
+  // 3 · Ask Daniel in English
+  const s3 = stage(ICON.mail, "4", "Final step · In English", ask.title, ask.text, "exo-medf__stage--ask");
+  const qbox = el("label", "exo-medf__field exo-medf__field--big");
+  const pen3 = el("span", "exo-medf__pen");
+  pen3.innerHTML = ICON.pen;
+  const q = el("textarea");
+  q.rows = 4;
+  q.placeholder = ask.placeholder ?? "";
+  q.setAttribute("aria-label", ask.title);
+  q.dataset.answerKey = keyFor("en");
+  q.value = values[keyFor("en")] ?? "";
+  qbox.append(pen3, q);
+  const qNote = el("p", "exo-medf__qnote");
+  q.addEventListener("input", () => {
+    onChange("en", q.value);
+    paintCheck();
+  });
+  s3.append(qbox, qNote);
+  if (ask.motto) {
+    const doodle = el("div", "exo-medf__doodle");
+    doodle.innerHTML =
+      '<svg viewBox="0 0 120 70" width="110" height="64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M38 22l44-8 8 34-44 8z"/><path d="M38 22l28 20 16-28"/><path d="M22 20l8 4M18 34h9M22 48l8-4M96 12l6-5M100 28h9M96 44l6 5"/></g></svg>';
+    doodle.appendChild(el("p", "", ask.motto));
+    s3.appendChild(doodle);
+  }
+  flow.appendChild(s3);
+
+  // ----- Before you finish: a live checklist -----
+  const fin = el("section", "exo-medf__finish");
+  const fh = el("div", "exo-medf__finish-head");
+  fh.innerHTML = svg('<path d="M12 23h8M13 27h6M16 4a8 8 0 0 0-5 14c1 1 2 2 2 4h6c0-2 1-3 2-4A8 8 0 0 0 16 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M16 0v1M4 6l1 1M28 6l-1 1M1 16h1M30 16h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>', 34);
+  fh.appendChild(el("span", "", "Before you finish"));
+  const checks = el("ul", "exo-medf__checks");
+  const c1 = el("li");
+  const c2 = el("li");
+  checks.append(c1, c2);
+  fin.append(fh, checks);
+  fin.appendChild(el("p", "exo-medf__finish-note", "Use your memory first, then revisit the dialogue if your teacher allows it."));
+  wrap.appendChild(fin);
+
+  function paintCheck() {
+    const done = deFields.filter((f) => f.value.trim()).length;
+    c1.textContent = `All three key facts in German? ${done} / ${deFields.length}`;
+    c1.className = done === deFields.length ? "exo-medf__ok" : "";
+    const v = q.value.trim();
+    const isQ = v.length > 0 && /\?\s*$/.test(v);
+    c2.textContent = !v
+      ? "A real question in English? — not yet"
+      : isQ
+        ? "A real question in English? ✓"
+        : "A real question in English? Add a question mark (?)";
+    c2.className = isQ ? "exo-medf__ok" : v ? "exo-medf__warn" : "";
+    qNote.textContent = !v ? "" : isQ ? "✓ That is a question." : "Tip: a question ends with ?";
+    qNote.className = `exo-medf__qnote${isQ ? " exo-medf__qnote--ok" : ""}`;
+  }
+  paintCheck();
+
+  return wrap;
+}

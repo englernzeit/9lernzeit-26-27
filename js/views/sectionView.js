@@ -52,6 +52,7 @@ import {
   createPosterFill,
   createReportBuilder,
   createListenPrep,
+  createMediationFlow,
 } from "../components/exercises.js";
 import {
   getName,
@@ -449,6 +450,15 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
             label: `${card.paragraph.title} — ${sentence.starter}`,
             answer: answers[`${base}-para-s${k}`] ?? "",
           }));
+        }
+        if (card.type === "mediation-flow") {
+          return [
+            ...card.explain.items.map((it, k) => ({
+              label: `${card.title} — Auf Deutsch: ${it.q}`,
+              answer: answers[`${base}-med-de${k}`] ?? "",
+            })),
+            { label: `${card.title} — In English: ${card.ask.title}`, answer: answers[`${base}-med-en`] ?? "" },
+          ];
         }
         if (card.type === "report-builder") {
           return card.parts.map((p, k) => ({
@@ -936,8 +946,8 @@ function buildCard(step, data, index, taskNo, ctx) {
 
   // The game card is nothing but the game — no header, title or intro.
   // The report builder draws its own (newspaper-style) header.
-  if (data.type === "report-builder") card.classList.add("taskcard--report");
-  if (data.type !== "game" && data.type !== "report-builder") {
+  if (data.type === "report-builder" || data.type === "mediation-flow") card.classList.add("taskcard--report");
+  if (data.type !== "game" && data.type !== "report-builder" && data.type !== "mediation-flow") {
     const head = document.createElement("div");
     head.className = "taskcard__head";
     const num = document.createElement("span");
@@ -1203,6 +1213,19 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "listen-prep":
       body.appendChild(createListenPrep(data));
       break;
+    case "mediation-flow": {
+      const base = `step${step.step}-task${index + 1}-med`;
+      body.appendChild(
+        createMediationFlow({
+          ...data,
+          audio: data.replay,
+          values: ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {},
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
     case "report-builder": {
       const base = `step${step.step}-task${index + 1}-report`;
       const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
