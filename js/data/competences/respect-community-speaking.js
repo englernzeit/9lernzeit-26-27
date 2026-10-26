@@ -9,8 +9,8 @@
  *
  * The week leads there step by step (same path on every level, more
  * support in LE):
- *   Start — what the speaking week is (picture, the 8 lesson words, the path)
- *   1. ideas → choose: topic tiles with a concrete example + a way to do it
+ *   Start — "Your speaking week" (user design) + the 8 lesson words
+ *   1. ideas → choose: the idea generator (user design): topic + result
  *   2. plan + arguments: my plan, my reasons, convince & decide phrases
  *   3. practise: the four moves, "make it longer", present my idea out loud
  *      (LE 1 min · G 2 min · E 3 min, as in the source)
@@ -18,7 +18,6 @@
  *   present.
  */
 
-const SCENE = "assets/images/unit2/speaking/scene.webp";
 
 // The eight words of the lesson (same list on every level in the source)
 const LESSON_WORDS = [
@@ -32,25 +31,28 @@ const LESSON_WORDS = [
   { icon: "👫", en: "the two of us", de: "wir beide" },
 ];
 
-// The path of the week — shown on the Start card of every level
-const WEEK_PATH = [
-  { icon: "💡", en: "Choose an idea.", de: "Wähle eine Idee." },
-  { icon: "📝", en: "Find your reasons.", de: "Finde deine Gründe." },
-  { icon: "🗣️", en: "Practise out loud.", de: "Übe laut." },
-  { icon: "🎭", en: "With a partner: write and act out a dialogue.", de: "Zu zweit: Dialog schreiben und vorspielen." },
-]
+const IMG = "assets/images/unit2/speaking";
 
+// "Your speaking week" — the start card in the user's design
 const START = (de) => ({
-  type: "listen-prep",
-  kind: "Sprechen · Start",
+  type: "speak-week",
+  eyebrow: "Sprechen · Speaking challenge",
   title: "Your speaking week",
-  picture: SCENE,
-  pictureAlt: "Two teenagers talking in a town square",
-  show: "Speaking test",
-  topic: "Your school plans a project week. You and a partner choose ONE project — in English!",
-  ...(de && { topicDe: "Eure Schule plant eine Projektwoche. Du und dein Partner wählt EIN Projekt — auf Englisch!" }),
-  plan: WEEK_PATH.map((p) => (de ? p : { icon: p.icon, en: p.en })),
-  labels: { who: ["", ""], plan: ["Your week", ""] },
+  tagline: "One idea. Two speakers. One conversation in English.",
+  lead: "Your school is planning a project week!",
+  text: "Choose one project with a partner. Discuss your ideas, explain your reasons and prepare a short dialogue in English.",
+  ...(de && { textDe: "Wählt zu zweit ein Projekt. Besprecht eure Ideen, nennt Gründe und bereitet einen kurzen Dialog auf Englisch vor." }),
+  scene: `${IMG}/week-scene.webp`,
+  mission: "Your mission",
+  stepsTitle: "Four steps to conversation",
+  steps: [
+    { icon: `${IMG}/step-bulb.webp`, tone: "yellow", title: "Choose", sub: "Idea", text: de ? "Which project would be exciting for your school? Choose one." : "What project would be exciting for your school? Think of ideas together and choose one." },
+    { icon: `${IMG}/step-notes.webp`, tone: "blue", title: "Build", sub: "Reasons", text: de ? "Why is your project a good idea? Find two reasons." : "Why is your project a good idea? Prepare at least two reasons and useful phrases." },
+    { icon: `${IMG}/step-people.webp`, tone: "peach", title: "Rehearse", sub: "Practise", text: de ? "Take turns speaking with your partner." : "Take turns speaking with your partner. Ask questions, respond and prepare your dialogue." },
+    { icon: `${IMG}/step-mic.webp`, tone: "green", title: "Perform", sub: "Speak", text: de ? "Present your dialogue in English." : "Present your dialogue in English. Speak clearly, listen to each other and bring your idea to life." },
+  ],
+  firstLine: { label: "Your first line", icon: `${IMG}/chat.webp`, quote: "Have you heard about our school's project week? I think we should …" },
+  goodLuck: "Good luck! ☺",
 });
 
 const WORDS = (de) => ({
@@ -70,8 +72,7 @@ const MOVES = [
     name: "React",
     nameDe: "Reagieren",
     tip: "Show that you listened.",
-    tipDe: "Zeig, dass du zugehört hast.",
-    phrases: [["That's a good point.", "Guter Punkt."], ["Oh, really? Cool!", "Ach, wirklich? Cool!"], ["I hadn't thought of that.", "Daran hatte ich nicht gedacht."]],
+    phrases: [["That's a good point.", "Guter Punkt."], ["Oh, really? Cool!", "Ach, wirklich? Cool!"]],
   },
   {
     key: "reason",
@@ -80,7 +81,6 @@ const MOVES = [
     name: "Give a reason",
     nameDe: "Einen Grund nennen",
     tip: "Never just yes or no — say why.",
-    tipDe: "Nie nur ja oder nein — sag, warum.",
     phrases: [["… because …", "… weil …"], ["The main reason is …", "Der Hauptgrund ist …"]],
   },
   {
@@ -90,8 +90,7 @@ const MOVES = [
     name: "Ask back",
     nameDe: "Zurückfragen",
     tip: "Give the ball back to your partner.",
-    tipDe: "Gib den Ball an deinen Partner zurück.",
-    phrases: [["What do you think?", "Was denkst du?"], ["And you?", "Und du?"], ["Would that work for you?", "Würde das für dich passen?"]],
+    phrases: [["What do you think?", "Was denkst du?"], ["And you?", "Und du?"]],
   },
   {
     key: "disagree",
@@ -100,10 +99,10 @@ const MOVES = [
     name: "Disagree politely",
     nameDe: "Höflich widersprechen",
     tip: "Say no — but stay friendly and keep talking.",
-    tipDe: "Sag nein — aber bleib freundlich und red weiter.",
     phrases: [["I see what you mean, but …", "Ich verstehe, was du meinst, aber …"], ["That may be true, but …", "Das mag stimmen, aber …"]],
   },
 ];
+
 const MOVES_SHORT = MOVES.map((m) => ({ ...m, phrases: m.phrases.slice(0, 2) }));
 const MOVE_BUTTONS = MOVES.map(({ key, icon, image, tone, name, nameDe }) => ({ key, icon, image, tone, name, nameDe }));
 
@@ -154,26 +153,46 @@ const LONGER_EXAMPLE = {
   text: "“Yes.” → Yes, I like that idea, because everybody can join in. What would you do first?",
 };
 
-// Topics with a concrete example each, so learners can picture the project
+// The idea generator (user's design): topics with an example, final results
 const TOPICS = [
-  { icon: "🧠", en: "Where prejudice comes from", de: "Woher Vorurteile kommen", idea: "e.g. Why do we judge people by their clothes?" },
-  { icon: "📣", en: "A campaign for our school", de: "Eine Kampagne für unsere Schule", idea: "e.g. a “Nobody eats alone” week" },
-  { icon: "🌍", en: "Interviews with people who moved here", de: "Interviews mit Zugezogenen", idea: "e.g. ask a teacher about their first weeks here" },
-  { icon: "📋", en: "A survey in our year", de: "Eine Umfrage im Jahrgang", idea: "e.g. “Have you ever felt left out?”" },
-  { icon: "🔤", en: "The story of one word", de: "Die Geschichte eines Wortes", idea: "e.g. a word that hurts — and why we stop using it" },
+  { icon: `${IMG}/t-prejudice.webp`, tone: "blue", en: "Understanding prejudice", idea: "e.g. Why do we judge people by their clothes?", de: "Vorurteile verstehen" },
+  { icon: `${IMG}/t-campaign.webp`, tone: "yellow", en: "A school campaign", idea: "e.g. A ‘Nobody eats alone’ week.", de: "eine Schulkampagne" },
+  { icon: `${IMG}/t-migration.webp`, tone: "green", en: "Stories of migration", idea: "e.g. Interview someone who moved here.", de: "Geschichten vom Ankommen" },
+  { icon: `${IMG}/t-survey.webp`, tone: "purple", en: "Student life survey", idea: "e.g. Have you ever felt left out?", de: "Umfrage zum Schulleben" },
+  { icon: `${IMG}/t-words.webp`, tone: "peach", en: "The power of words", idea: "e.g. Words that hurt — and how to stop using them.", de: "die Macht der Wörter" },
 ];
-const FORMATS = [
-  { icon: "🖼️", en: "A poster", de: "ein Poster" },
-  { icon: "🎬", en: "A 60-second film", de: "ein 60-Sekunden-Film" },
-  { icon: "🎤", en: "A song or a rap", de: "ein Song oder Rap" },
-  { icon: "📊", en: "A survey with a graph", de: "eine Umfrage mit Grafik" },
-  { icon: "📷", en: "A photo series", de: "eine Fotoserie" },
-  { icon: "🎙️", en: "An interview", de: "ein Interview" },
+const RESULTS = [
+  { icon: `${IMG}/r-poster.webp`, tone: "blue", en: "A poster", de: "ein Poster" },
+  { icon: `${IMG}/r-film.webp`, tone: "peach", en: "A short film", de: "ein Kurzfilm" },
+  { icon: `${IMG}/r-song.webp`, tone: "yellow", en: "A song or a rap", de: "ein Song oder Rap" },
+  { icon: `${IMG}/r-survey.webp`, tone: "green", en: "A survey with a graph", de: "Umfrage mit Grafik" },
+  { icon: `${IMG}/r-photo.webp`, tone: "purple", en: "A photo series", de: "eine Fotoserie" },
+  { icon: `${IMG}/r-interview.webp`, tone: "blue", en: "An interview", de: "ein Interview" },
 ];
-const TOPICS_EN = TOPICS.map(({ de, ...t }) => t);
-const FORMATS_EN = FORMATS.map(({ de, ...f }) => f);
 
-const PLAN_INTRO = "Choose ONE topic and ONE way to do it. The examples help you.";
+const IDEAS = (de) => ({
+  type: "idea-generator",
+  title: "What should our school do?",
+  intro: "Your school is planning a project week. Explore the ideas below and prepare a project proposal to discuss with a partner.",
+  highlight: "You don't have to agree yet!",
+  ...(de && { introDe: "Wähle ein Thema und ein Ergebnis — das ist dein Vorschlag für das Gespräch." }),
+  scene: `${IMG}/ideas-scene.webp`,
+  badge: "Idea generator",
+  motto: ["Big ideas.", "Better school.", "Together."],
+  topicsIcon: `${IMG}/step-bulb.webp`,
+  topicsTitle: "Pick a project topic",
+  topicsSub: "What should the school focus on?",
+  topics: de ? TOPICS : TOPICS.map(({ de: _d, ...t }) => t),
+  resultsIcon: `${IMG}/r-film.webp`,
+  resultsTitle: "Choose the final result",
+  resultsSub: "How could students present or share this project?",
+  results: de ? RESULTS : RESULTS.map(({ de: _d, ...r }) => r),
+  proposalIcon: `${IMG}/chat.webp`,
+  proposalTitle: "Your proposal for the discussion",
+  proposalText: "Choose one topic and one result format. Use this combination as your proposal when discussing ideas with your partner.",
+  note: "We'll compare ideas, give reasons and decide which project is better!",
+});
+
 
 const SAY_IT_LINES = ["I gave a reason for every idea.", "I asked a question back.", "I spoke with no long pause."];
 
@@ -213,15 +232,7 @@ export default {
       cards: [
         START(true),
         WORDS(true),
-        {
-          type: "plan-builder",
-          kind: "Sprechen · Deine Idee",
-          title: "Choose your project",
-          intro: PLAN_INTRO,
-          introDe: "Wähle EIN Thema und EINE Umsetzung. Die Beispiele helfen dir.",
-          topics: TOPICS,
-          formats: FORMATS,
-        },
+        IDEAS(true),
         {
           type: "written",
           kind: "Sprechen · Gründe",
@@ -306,14 +317,7 @@ export default {
       cards: [
         START(false),
         WORDS(false),
-        {
-          type: "plan-builder",
-          kind: "Sprechen · Deine Idee",
-          title: "Choose your project",
-          intro: PLAN_INTRO,
-          topics: TOPICS_EN,
-          formats: FORMATS_EN,
-        },
+        IDEAS(false),
         {
           type: "written",
           kind: "Sprechen · Plan",
@@ -395,14 +399,7 @@ export default {
       cards: [
         START(false),
         WORDS(false),
-        {
-          type: "plan-builder",
-          kind: "Sprechen · Deine Idee",
-          title: "Choose your project",
-          intro: PLAN_INTRO,
-          topics: TOPICS_EN,
-          formats: FORMATS_EN,
-        },
+        IDEAS(false),
         {
           type: "written",
           kind: "Sprechen · Plan",

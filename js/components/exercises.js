@@ -5037,3 +5037,201 @@ export function createDialogueWriter({ turns, targetWords = [180, 260], seconds 
   paint();
   return wrap;
 }
+
+/**
+ * "Your speaking week" — the Speaking start card (user's design): title
+ * with highlighter, mission picture, four coloured steps with arrows and
+ * a "Your first line" strip you can tap to hear.
+ *
+ * @param {{ eyebrow?: string, title: string, tagline?: string, lead?: string, text?: string, textDe?: string,
+ *   scene?: string, mission?: string, stepsTitle?: string,
+ *   steps: Array<{icon: string, title: string, sub?: string, text: string, tone: string}>,
+ *   firstLine?: {label: string, icon?: string, quote: string}, goodLuck?: string }} opts
+ */
+export function createSpeakWeek({ eyebrow, title, tagline, lead, text, textDe, scene, mission, stepsTitle, steps, firstLine, goodLuck }) {
+  const el = (tag, cls, txt) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt != null) n.textContent = txt;
+    return n;
+  };
+  const img = (src, cls) => {
+    const i = el("img", cls);
+    i.src = src;
+    i.alt = "";
+    i.loading = "lazy";
+    return i;
+  };
+  const wrap = el("div", "exo exo-sweek");
+
+  const head = el("header", "exo-sweek__head");
+  const ht = el("div", "exo-sweek__head-text");
+  if (eyebrow) ht.appendChild(el("p", "exo-sweek__eyebrow", eyebrow));
+  ht.appendChild(el("h3", "exo-sweek__title", title));
+  if (tagline) ht.appendChild(el("p", "exo-sweek__tagline", tagline));
+  if (lead) ht.appendChild(el("p", "exo-sweek__lead", lead));
+  if (text) ht.appendChild(el("p", "exo-sweek__text", text));
+  if (textDe) ht.appendChild(el("p", "exo-sweek__de", textDe));
+  head.appendChild(ht);
+  if (scene) {
+    const fig = el("figure", "exo-sweek__scene");
+    fig.appendChild(img(scene, "exo-sweek__scene-img"));
+    if (mission) fig.appendChild(el("figcaption", "exo-sweek__mission", mission));
+    head.appendChild(fig);
+  }
+  wrap.appendChild(head);
+
+  if (stepsTitle) wrap.appendChild(el("h4", "exo-sweek__steps-title", stepsTitle));
+  const row = el("ol", "exo-sweek__steps");
+  steps.forEach((s, i) => {
+    const li = el("li", `exo-sweek__step exo-sweek__step--${s.tone}`);
+    const top = el("div", "exo-sweek__step-top");
+    top.appendChild(el("span", "exo-sweek__step-no", String(i + 1).padStart(2, "0")));
+    top.appendChild(img(s.icon, "exo-sweek__step-icon"));
+    const name = el("span", "exo-sweek__step-name");
+    name.appendChild(el("strong", "", s.title));
+    if (s.sub) name.appendChild(el("span", "", s.sub));
+    top.appendChild(name);
+    li.append(top, el("p", "exo-sweek__step-text", s.text));
+    row.appendChild(li);
+  });
+  wrap.appendChild(row);
+
+  if (firstLine || goodLuck) {
+    const foot = el("div", "exo-sweek__foot");
+    if (firstLine) {
+      const fl = el("button", "exo-sweek__first");
+      fl.type = "button";
+      fl.setAttribute("aria-label", `Hear: ${firstLine.quote}`);
+      if (firstLine.icon) fl.appendChild(img(firstLine.icon, "exo-sweek__first-icon"));
+      fl.appendChild(el("span", "exo-sweek__first-label", firstLine.label));
+      fl.appendChild(el("span", "exo-sweek__first-quote", `“${firstLine.quote}”`));
+      fl.addEventListener("click", () => sayAloud(firstLine.quote.replace(/…/g, "")));
+      foot.appendChild(fl);
+    }
+    if (goodLuck) foot.appendChild(el("p", "exo-sweek__luck", goodLuck));
+    wrap.appendChild(foot);
+  }
+  return wrap;
+}
+
+/**
+ * "What should our school do?" — the idea generator (user's design): pick
+ * a project topic and a final result from picture tiles; the proposal
+ * strip turns the two picks into the learner's proposal for the talk.
+ *
+ * @param {{ taskNo: number, eyebrow?: string, title: string, intro: string, highlight?: string, introDe?: string,
+ *   scene?: string, badge?: string, motto?: string[],
+ *   topicsTitle: string, topicsSub?: string, topicsIcon?: string, topics: Array<{icon: string, en: string, idea?: string, de?: string, tone: string}>,
+ *   resultsTitle: string, resultsSub?: string, resultsIcon?: string, results: Array<{icon: string, en: string, de?: string, tone: string}>,
+ *   proposalTitle: string, proposalText: string, proposalIcon?: string, note?: string,
+ *   values?: Record<string,string>, keyFor: (f: string) => string, onChange: (f: string, v: string) => void }} opts
+ */
+export function createIdeaGenerator(o) {
+  const { values = {}, keyFor, onChange } = o;
+  const el = (tag, cls, txt) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt != null) n.textContent = txt;
+    return n;
+  };
+  const img = (src, cls) => {
+    const i = el("img", cls);
+    i.src = src;
+    i.alt = "";
+    i.loading = "lazy";
+    return i;
+  };
+  const wrap = el("div", "exo exo-igen");
+  const pick = { topic: values[keyFor("topic")] ?? "", format: values[keyFor("format")] ?? "" };
+
+  // header
+  const head = el("header", "exo-igen__head");
+  const ht = el("div", "exo-igen__head-text");
+  ht.appendChild(el("p", "exo-igen__eyebrow", o.eyebrow ?? `Task ${o.taskNo} · Sprechen`));
+  ht.appendChild(el("h3", "exo-igen__title", o.title));
+  const intro = el("p", "exo-igen__intro", o.intro);
+  if (o.highlight) intro.append(" ", el("mark", "exo-igen__mark", o.highlight));
+  ht.appendChild(intro);
+  if (o.introDe) ht.appendChild(el("p", "exo-igen__de", o.introDe));
+  head.appendChild(ht);
+  const art = el("div", "exo-igen__art");
+  if (o.badge) art.appendChild(el("span", "exo-igen__badge", o.badge));
+  if (o.motto) {
+    const m = el("p", "exo-igen__motto");
+    o.motto.forEach((t) => m.appendChild(el("span", "", t)));
+    art.appendChild(m);
+  }
+  if (o.scene) art.appendChild(img(o.scene, "exo-igen__scene"));
+  head.appendChild(art);
+  wrap.appendChild(head);
+
+  // a pick row: heading band + tiles
+  const groups = {};
+  const band = (no, tone, icon, title, sub) => {
+    const b = el("div", `exo-igen__band exo-igen__band--${tone}`);
+    if (icon) b.appendChild(img(icon, "exo-igen__band-icon"));
+    b.appendChild(el("span", "exo-igen__band-no", String(no)));
+    const t = el("div", "exo-igen__band-text");
+    t.appendChild(el("h4", "", title));
+    if (sub) t.appendChild(el("p", "", sub));
+    b.appendChild(t);
+    return b;
+  };
+  const tiles = (field, list, cls) => {
+    const grid = el("div", `exo-igen__tiles ${cls}`);
+    groups[field] = list.map((t, i) => {
+      const b = el("button", `exo-igen__tile exo-igen__tile--${t.tone}`);
+      b.type = "button";
+      b.setAttribute("aria-pressed", "false");
+      b.appendChild(img(t.icon, "exo-igen__tile-icon"));
+      b.appendChild(el("strong", "exo-igen__tile-en", t.en));
+      if (t.idea) b.appendChild(el("span", "exo-igen__tile-idea", t.idea));
+      if (t.de) b.appendChild(el("span", "exo-igen__tile-de", t.de));
+      b.addEventListener("click", () => {
+        pick[field] = pick[field] === String(i) ? "" : String(i);
+        onChange(field, pick[field]);
+        paint();
+      });
+      grid.appendChild(b);
+      return b;
+    });
+    return grid;
+  };
+  wrap.appendChild(band(1, "blue", o.topicsIcon, o.topicsTitle, o.topicsSub));
+  wrap.appendChild(tiles("topic", o.topics, "exo-igen__tiles--topics"));
+  wrap.appendChild(band(2, "peach", o.resultsIcon, o.resultsTitle, o.resultsSub));
+  wrap.appendChild(tiles("format", o.results, "exo-igen__tiles--results"));
+
+  // proposal strip
+  const strip = el("div", "exo-igen__proposal");
+  if (o.proposalIcon) strip.appendChild(img(o.proposalIcon, "exo-igen__proposal-icon"));
+  const pt = el("div", "exo-igen__proposal-text");
+  pt.appendChild(el("h4", "", o.proposalTitle));
+  const ptxt = el("p", "exo-igen__proposal-p");
+  pt.appendChild(ptxt);
+  strip.appendChild(pt);
+  if (o.note) strip.appendChild(el("p", "exo-igen__note", o.note));
+  wrap.appendChild(strip);
+
+  function paint() {
+    for (const f of ["topic", "format"]) {
+      groups[f].forEach((b, i) => {
+        const on = pick[f] === String(i);
+        b.classList.toggle("exo-igen__tile--on", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
+    }
+    const t = o.topics[Number(pick.topic)];
+    const r = o.results[Number(pick.format)];
+    if (pick.topic !== "" && pick.format !== "") {
+      ptxt.replaceChildren(document.createTextNode("My proposal: "), el("strong", "", `${r.en} — ${t.en.toLowerCase()}`));
+      strip.classList.add("exo-igen__proposal--set");
+    } else {
+      ptxt.textContent = o.proposalText;
+      strip.classList.remove("exo-igen__proposal--set");
+    }
+  }
+  paint();
+  return wrap;
+}

@@ -59,6 +59,8 @@ import {
   createPlanBuilder,
   createPractiseTimer,
   createDialogueWriter,
+  createSpeakWeek,
+  createIdeaGenerator,
 } from "../components/exercises.js";
 import {
   getName,
@@ -456,6 +458,11 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
             label: `${card.paragraph.title} — ${sentence.starter}`,
             answer: answers[`${base}-para-s${k}`] ?? "",
           }));
+        }
+        if (card.type === "idea-generator") {
+          const t = card.topics[Number(answers[`${base}-plan-topic`])]?.en ?? "";
+          const f = card.results[Number(answers[`${base}-plan-format`])]?.en ?? "";
+          return [{ label: `${card.title} — my proposal`, answer: t && f ? `${f} — ${t}` : t || f }];
         }
         if (card.type === "dialogue-writer") {
           const nm = (w) => (answers[`${base}-dlg-name${w}`] ?? "").trim() || `Partner ${w}`;
@@ -927,7 +934,8 @@ function buildStepSection(step, ctx) {
       data.type !== "video" &&
       data.type !== "image" &&
       data.type !== "listen-prep" &&
-      data.type !== "talk-moves"
+      data.type !== "talk-moves" &&
+      data.type !== "speak-week"
     )
       taskNo += 1;
     return buildCard(step, data, i, taskNo, ctx);
@@ -977,7 +985,7 @@ function buildCard(step, data, index, taskNo, ctx) {
 
   // The game card is nothing but the game — no header, title or intro.
   // The report builder draws its own (newspaper-style) header.
-  const ownHeader = ["report-builder", "mediation-flow", "change-writer"].includes(data.type);
+  const ownHeader = ["report-builder", "mediation-flow", "change-writer", "speak-week", "idea-generator"].includes(data.type);
   if (ownHeader) card.classList.add("taskcard--report");
   if (data.type !== "game" && !ownHeader) {
     const head = document.createElement("div");
@@ -1253,6 +1261,22 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "move-pick":
       body.appendChild(createMovePick({ moves: data.moves, items: data.items }));
       break;
+    case "speak-week":
+      body.appendChild(createSpeakWeek(data));
+      break;
+    case "idea-generator": {
+      const base = `step${step.step}-task${index + 1}-plan`;
+      body.appendChild(
+        createIdeaGenerator({
+          ...data,
+          taskNo,
+          values: ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {},
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
     case "dialogue-writer": {
       const base = `step${step.step}-task${index + 1}-dlg`;
       body.appendChild(
