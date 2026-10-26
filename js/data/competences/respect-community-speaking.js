@@ -21,14 +21,14 @@
 
 // The eight words of the lesson (same list on every level in the source)
 const LESSON_WORDS = [
-  { icon: "💬", en: "conversation", de: "das Gespräch" },
-  { icon: "✅", en: "dos and don'ts", de: "was man tun und lassen sollte" },
-  { icon: "🤝", en: "shake hands", de: "sich die Hand geben" },
-  { icon: "🏆", en: "successful", de: "erfolgreich" },
-  { icon: "🧍‍♂️🧍‍♀️", en: "queue", de: "die Warteschlange" },
-  { icon: "👍", en: "agree on sth.", de: "sich auf etwas einigen" },
-  { icon: "💡", en: "suggest sth.", de: "etwas vorschlagen" },
-  { icon: "👫", en: "the two of us", de: "wir beide" },
+  { img: "w-conversation", en: "conversation", de: "das Gespräch" },
+  { img: "w-dos", en: "dos and don'ts", de: "was man tun und lassen sollte" },
+  { img: "w-shake", en: "shake hands", de: "sich die Hand geben" },
+  { img: "w-successful", en: "successful", de: "erfolgreich" },
+  { img: "w-queue", en: "queue", de: "die Warteschlange" },
+  { img: "w-agree", en: "agree on sth.", de: "sich auf etwas einigen" },
+  { img: "w-suggest", en: "suggest sth.", de: "etwas vorschlagen" },
+  { img: "w-twoofus", en: "the two of us", de: "wir beide" },
 ];
 
 const IMG = "assets/images/unit2/speaking";
@@ -61,11 +61,13 @@ const START = (de) => ({
 });
 
 const WORDS = (de) => ({
-  type: "listen-prep",
+  type: "word-cards",
   kind: "Sprechen · Wörter",
   title: "The words of this lesson",
-  words: LESSON_WORDS,
-  labels: { words: ["Tap a card", de ? "Du hörst das Wort und siehst es auf Deutsch." : ""] },
+  tap: "Tap a card.",
+  ...(de && { tapDe: "Du hörst das Wort und siehst es auf Deutsch." }),
+  motto: ["Small words.", "Big conversations."],
+  words: LESSON_WORDS.map((w) => ({ ...w, img: `${IMG}/${w.img}.webp` })),
 });
 
 // The four moves — picture cards; phrases are read aloud when tapped.

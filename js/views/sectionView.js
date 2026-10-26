@@ -62,6 +62,7 @@ import {
   createSpeakWeek,
   createIdeaGenerator,
   ideaProposal,
+  createWordCards,
 } from "../components/exercises.js";
 import {
   getName,
@@ -938,6 +939,7 @@ function buildStepSection(step, ctx) {
       data.type !== "video" &&
       data.type !== "image" &&
       data.type !== "listen-prep" &&
+      data.type !== "word-cards" &&
       data.type !== "talk-moves" &&
       data.type !== "speak-week"
     )
@@ -1007,7 +1009,7 @@ function buildCard(step, data, index, taskNo, ctx) {
             ? "Model"
             : data.type === "phrase-reference"
               ? "Words"
-              : data.type === "listen-prep"
+              : data.type === "listen-prep" || data.type === "word-cards"
                 ? "Start"
                 : data.type === "talk-moves"
                   ? "Words"
@@ -1258,6 +1260,9 @@ function buildCard(step, data, index, taskNo, ctx) {
       break;
     case "listen-prep":
       body.appendChild(createListenPrep(data));
+      break;
+    case "word-cards":
+      body.appendChild(createWordCards(data));
       break;
     case "talk-moves":
       body.appendChild(createTalkMoves({ moves: data.moves }));

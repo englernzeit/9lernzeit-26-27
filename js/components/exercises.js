@@ -5268,3 +5268,53 @@ export function createIdeaGenerator(o) {
   paint();
   return wrap;
 }
+
+/**
+ * "The words of this lesson" (user's design): picture word cards — tap one
+ * to hear the word; its German meaning appears under it.
+ *
+ * @param {{ tap?: string, tapDe?: string, motto?: string[],
+ *   words: Array<{img: string, en: string, de: string}> }} opts
+ */
+export function createWordCards({ tap, tapDe, motto, words }) {
+  const el = (tag, cls, txt) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt != null) n.textContent = txt;
+    return n;
+  };
+  const wrap = el("div", "exo exo-wcards");
+  if (tap || motto) {
+    const top = el("div", "exo-wcards__top");
+    const t = el("div", "exo-wcards__tap");
+    if (tap) t.appendChild(el("p", "exo-wcards__tap-en", tap));
+    if (tapDe) t.appendChild(el("p", "exo-wcards__tap-de", tapDe));
+    top.appendChild(t);
+    if (motto) {
+      const m = el("p", "exo-wcards__motto");
+      motto.forEach((line) => m.appendChild(el("span", "", line)));
+      top.appendChild(m);
+    }
+    wrap.appendChild(top);
+  }
+  const grid = el("div", "exo-wcards__grid");
+  words.forEach((w) => {
+    const b = el("button", "exo-wcards__card");
+    b.type = "button";
+    b.setAttribute("aria-label", `${w.en} — ${w.de}`);
+    const pic = el("img", "exo-wcards__pic");
+    pic.src = w.img;
+    pic.alt = "";
+    pic.loading = "lazy";
+    const txt = el("span", "exo-wcards__text");
+    txt.append(el("span", "exo-wcards__en", w.en), el("span", "exo-wcards__de", w.de));
+    b.append(pic, txt);
+    b.addEventListener("click", () => {
+      b.classList.add("exo-wcards__card--open");
+      sayAloud(w.en.replace(/sth\./g, "something"), 0.85);
+    });
+    grid.appendChild(b);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
