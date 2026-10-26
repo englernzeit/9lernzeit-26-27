@@ -145,7 +145,7 @@
 
 /* ----- Plan builder ----- */
 .exo-plan { display: flex; flex-direction: column; gap: 1rem; margin-top: 0.6rem; font-family: var(--j-font-body); color: var(--j-ink); }
-.exo-plan__h { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-family: var(--j-font-display); font-size: 1.5rem; }
+.exo-plan__h { margin: 0 0 0.4rem; font-family: var(--j-font-display); font-size: 1.4rem; }
 .exo-plan__no {
   display: grid;
   place-items: center;
@@ -158,7 +158,7 @@
   font-size: 1rem;
 }
 .exo-plan__h-de { margin: 0 0 0.5rem 2.2rem; font-size: 0.92rem; font-style: italic; color: var(--j-khaki); }
-.exo-plan__tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: 0.5rem; }
+.exo-plan__tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(6.6rem, 1fr)); gap: 0.45rem; }
 .exo-plan__tile {
   display: flex;
   flex-direction: column;
@@ -328,7 +328,8 @@
 .exo-dlg__stage { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.1rem 0.6rem; margin: 0 0 0.35rem; }
 .exo-dlg__stage strong { color: var(--dlg); font-size: 1.02rem; }
 .exo-dlg__hint { font-size: 0.9rem; }
-.exo-dlg__hint-de { flex-basis: 100%; font-size: 0.85rem; font-style: italic; color: var(--j-khaki); }
+.exo-dlg__hint-de { font-size: 0.85rem; font-style: italic; color: var(--j-khaki); }
+.exo-dlg__line::placeholder { color: #a39a88; font-style: italic; }
 .exo-dlg__line {
   width: 100%;
   padding: 0.4rem 0.6rem;

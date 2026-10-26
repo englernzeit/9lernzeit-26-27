@@ -3955,7 +3955,7 @@ export function createReportBuilder({
  *   plan: Array<{icon: string, en: string, de?: string}>,
  * }} opts
  */
-export function createListenPrep({ picture, pictureAlt, show, showDe, speakers, topic, topicDe, words, numbers = [], plan, labels = {} }) {
+export function createListenPrep({ picture, pictureAlt, show, showDe, speakers = [], topic, topicDe, words = [], numbers = [], plan = [], labels = {} }) {
   // headings can be renamed, so the same warm-up also prepares Speaking
   const L = {
     who: ["Who is talking?", "Wer spricht?"],
@@ -3983,10 +3983,12 @@ export function createListenPrep({ picture, pictureAlt, show, showDe, speakers, 
       /* no speech on this device — the cards still work */
     }
   };
-  const section = (no, en, de) => {
+  // A plain heading per part — no numbers, so the card stays light
+  const section = (en, de) => {
     const s = el("section", "exo-lprep__sec");
+    if (!en && !de) return s; // no heading at all — the card title says it
     const h = el("h4", "exo-lprep__h");
-    h.append(el("span", "exo-lprep__h-no", String(no)), el("span", "", en));
+    if (en) h.append(el("span", "", en));
     if (de) h.appendChild(el("span", "exo-lprep__h-de", de));
     s.appendChild(h);
     return s;
@@ -3994,8 +3996,8 @@ export function createListenPrep({ picture, pictureAlt, show, showDe, speakers, 
 
   const wrap = el("div", "exo exo-lprep");
 
-  // 1 · Who is talking?
-  const who = section(1, ...L.who);
+  // Who is talking? (picture, speakers, topic — each part optional)
+  const who = section(...L.who);
   const stage = el("div", "exo-lprep__stage");
   const left = el("div", "exo-lprep__left");
   stage.appendChild(left);
@@ -4026,13 +4028,14 @@ export function createListenPrep({ picture, pictureAlt, show, showDe, speakers, 
   topicBox.appendChild(el("span", "exo-lprep__topic-tag", "Topic"));
   topicBox.appendChild(el("p", "exo-lprep__topic-en", topic));
   if (topicDe) topicBox.appendChild(el("p", "exo-lprep__de", topicDe));
-  left.appendChild(topicBox);
-  stage.appendChild(side);
+  if (topic) left.appendChild(topicBox);
+  if (speakers.length || showDe) stage.appendChild(side);
+  else stage.classList.add("exo-lprep__stage--solo");
   who.appendChild(stage);
-  wrap.appendChild(who);
+  if (picture || speakers.length || topic) wrap.appendChild(who);
 
-  // 2 · Words you will hear — tap to turn over
-  const ws = section(2, ...L.words);
+  // Words — tap to turn over
+  const ws = section(...L.words);
   const grid = el("div", "exo-lprep__words");
   const turned = new Set();
   const counter = el("p", "exo-lprep__count");
@@ -4063,11 +4066,11 @@ export function createListenPrep({ picture, pictureAlt, show, showDe, speakers, 
   });
   ws.append(grid, counter);
   paintCount();
-  wrap.appendChild(ws);
+  if (words.length) wrap.appendChild(ws);
 
-  // 3 · Listen for these numbers
+  // Listen for these numbers
   if (numbers.length) {
-    const ns = section(3, ...L.numbers);
+    const ns = section(...L.numbers);
     const row = el("div", "exo-lprep__numbers");
     numbers.forEach((nb) => {
       const b = el("button", "exo-lprep__num");
@@ -4084,20 +4087,20 @@ export function createListenPrep({ picture, pictureAlt, show, showDe, speakers, 
     wrap.appendChild(ns);
   }
 
-  // 4 · Your listening plan
-  const ps = section(numbers.length ? 4 : 3, ...L.plan);
-  const steps = el("ol", "exo-lprep__plan");
-  plan.forEach((p, i) => {
+  // The plan (listening plan / way through the week)
+  const ps = section(...L.plan);
+  const steps = el("ol", `exo-lprep__plan${plan.length === 4 ? " exo-lprep__plan--four" : ""}`);
+  plan.forEach((p) => {
     const li = el("li", "exo-lprep__step");
     li.append(el("span", "exo-lprep__step-icon", p.icon));
     const t = el("div");
-    t.append(el("span", "exo-lprep__step-no", `Step ${i + 1}`), el("strong", "", p.en));
+    t.append(el("strong", "", p.en));
     if (p.de) t.appendChild(el("span", "exo-lprep__de", p.de));
     li.appendChild(t);
     steps.appendChild(li);
   });
   ps.appendChild(steps);
-  wrap.appendChild(ps);
+  if (plan.length) wrap.appendChild(ps);
 
   return wrap;
 }
@@ -4617,16 +4620,13 @@ function moveBadge(m, cls) {
  * @param {{ moves: Array<{key: string, icon: string, image?: string, tone: string,
  *   name: string, nameDe: string, tip: string, tipDe?: string, phrases: Array<[string, string]>}> }} opts
  */
-export function createTalkMoves({ moves, prefix = "Move" }) {
+export function createTalkMoves({ moves }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-moves";
-  moves.forEach((m, i) => {
+  moves.forEach((m) => {
     const card = document.createElement("section");
     card.className = `exo-moves__card exo-moves__card--${m.tone}`;
     card.appendChild(moveBadge(m, "exo-moves__pic"));
-    const no = document.createElement("span");
-    no.className = "exo-moves__no";
-    no.textContent = `${prefix} ${i + 1}`;
     const h = document.createElement("h4");
     h.className = "exo-moves__name";
     h.textContent = m.name;
@@ -4636,13 +4636,7 @@ export function createTalkMoves({ moves, prefix = "Move" }) {
     const tip = document.createElement("p");
     tip.className = "exo-moves__tip";
     tip.textContent = m.tip;
-    card.append(no, h, de, tip);
-    if (m.tipDe) {
-      const td = document.createElement("p");
-      td.className = "exo-moves__tip-de";
-      td.textContent = m.tipDe;
-      card.appendChild(td);
-    }
+    card.append(h, de, tip);
     const ul = document.createElement("ul");
     ul.className = "exo-moves__phrases";
     m.phrases.forEach(([en, deP]) => {
@@ -4762,11 +4756,9 @@ export function createPlanBuilder({ topics, formats, starters, values = {}, keyF
   const summary = el("p", "exo-plan__summary");
   const groups = {};
 
-  const tileRow = (field, no, title, titleDe, list) => {
+  const tileRow = (field, title, list) => {
     const sec = el("section", "exo-plan__sec");
-    const h = el("h4", "exo-plan__h");
-    h.append(el("span", "exo-plan__no", String(no)), el("span", "", title));
-    sec.append(h, el("p", "exo-plan__h-de", titleDe));
+    sec.appendChild(el("h4", "exo-plan__h", title));
     const row = el("div", `exo-plan__tiles exo-plan__tiles--${field}`);
     groups[field] = list.map((t, i) => {
       const b = el("button", "exo-plan__tile");
@@ -4792,15 +4784,12 @@ export function createPlanBuilder({ topics, formats, starters, values = {}, keyF
     sec.appendChild(row);
     wrap.appendChild(sec);
   };
-  tileRow("topic", 1, "Choose a topic", "Wähle ein Thema.", topics);
-  tileRow("format", 2, "Choose a way to do it", "Wähle, wie ihr es macht.", formats);
+  tileRow("topic", "A topic", topics);
+  tileRow("format", "A way to do it", formats);
+  wrap.appendChild(summary);
 
-  const sec3 = el("section", "exo-plan__sec");
-  const h3 = el("h4", "exo-plan__h");
-  h3.append(el("span", "exo-plan__no", "3"), el("span", "", "Fill in your plan"));
-  sec3.append(h3, el("p", "exo-plan__h-de", "Schreib zu jedem Punkt ein paar Wörter oder einen Satz."), summary);
   const list = el("div", "exo-plan__rows");
-  starters.forEach((st, k) => {
+  (starters ?? []).forEach((st, k) => {
     const row = el("label", "exo-plan__row");
     row.appendChild(el("span", "exo-plan__label", st));
     const input = el("input", "exo-plan__input");
@@ -4812,8 +4801,7 @@ export function createPlanBuilder({ topics, formats, starters, values = {}, keyF
     row.appendChild(input);
     list.appendChild(row);
   });
-  sec3.appendChild(list);
-  wrap.appendChild(sec3);
+  if (starters?.length) wrap.appendChild(list);
 
   function paint() {
     for (const field of ["topic", "format"]) {
@@ -4824,7 +4812,7 @@ export function createPlanBuilder({ topics, formats, starters, values = {}, keyF
     summary.textContent =
       pick.topic !== "" && pick.format !== ""
         ? `My plan: ${f.en.toLowerCase()} — ${t.en.toLowerCase()}.`
-        : "Choose a topic and a way above — your plan appears here.";
+        : "Tap a topic and a way.";
     summary.classList.toggle("exo-plan__summary--set", pick.topic !== "" && pick.format !== "");
   }
   paint();
@@ -4941,15 +4929,12 @@ export function createDialogueWriter({ turns, targetWords = [180, 260], seconds 
 
   // ----- 1 · Who are you, what are your ideas? -----
   const cast = el("section", "exo-dlg__cast");
-  const castH = el("h4", "exo-dlg__h");
-  castH.append(el("span", "exo-dlg__no", "1"), el("span", "", "You two and your ideas"));
-  cast.append(castH, el("p", "exo-dlg__h-de", "Eure Namen und eure zwei Projektideen (aus Step 1–3)."));
   const pair = el("div", "exo-dlg__pair");
   const side = (who) => {
     const box = el("div", `exo-dlg__side exo-dlg__side--${who.toLowerCase()}`);
     box.appendChild(el("span", "exo-dlg__badge", who));
     const name = field(`name${who}`, "input", "exo-dlg__name", `Partner ${who}: name`);
-    const idea = field(`idea${who}`, "input", "exo-dlg__idea", "Project idea, e.g. a photo series about …");
+    const idea = field(`idea${who}`, "input", "exo-dlg__idea", "Project idea");
     box.append(name, idea);
     pair.appendChild(box);
     return { name, idea };
@@ -4963,17 +4948,14 @@ export function createDialogueWriter({ turns, targetWords = [180, 260], seconds 
 
   // ----- 2 · The dialogue, turn by turn -----
   const script = el("section", "exo-dlg__script");
-  const sH = el("h4", "exo-dlg__h");
-  sH.append(el("span", "exo-dlg__no", "2"), el("span", "", "Write your dialogue"));
-  script.append(sH, el("p", "exo-dlg__h-de", "Schreibt abwechselnd. Tippe auf eine Wendung, um sie einzufügen."));
   const rows = turns.map((t, i) => {
     const row = el("div", `exo-dlg__turn exo-dlg__turn--${t.who.toLowerCase()}`);
     const who = el("span", "exo-dlg__who");
     const stage = el("p", "exo-dlg__stage");
-    stage.append(el("strong", "", `${i + 1} · ${t.stage}`));
-    if (t.hint) stage.append(el("span", "exo-dlg__hint", t.hint));
-    if (t.hintDe) stage.append(el("span", "exo-dlg__hint-de", t.hintDe));
-    const ta = field(`t${i + 1}`, "textarea", "exo-dlg__line", "…");
+    stage.append(el("strong", "", t.stage));
+    if (t.stageDe) stage.append(el("span", "exo-dlg__hint-de", t.stageDe));
+    // the hint lives in the box itself — no extra lines on the card
+    const ta = field(`t${i + 1}`, "textarea", "exo-dlg__line", t.hint ?? "…");
     ta.rows = 2;
     const body = el("div", "exo-dlg__body");
     body.append(stage, ta);
@@ -5007,9 +4989,6 @@ export function createDialogueWriter({ turns, targetWords = [180, 260], seconds 
 
   // ----- 3 · Length, listen, rehearse -----
   const check = el("section", "exo-dlg__check");
-  const cH = el("h4", "exo-dlg__h");
-  cH.append(el("span", "exo-dlg__no", "3"), el("span", "", "Check, listen, rehearse"));
-  check.append(cH, el("p", "exo-dlg__h-de", "Ist der Dialog ca. 2 Minuten lang? Hört ihn euch an — dann übt ihn mit der Uhr."));
   const meter = el("div", "exo-dlg__meter");
   const bar = el("span", "exo-dlg__bar");
   const fill = el("span", "exo-dlg__fill");

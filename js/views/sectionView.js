@@ -1248,7 +1248,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(createListenPrep(data));
       break;
     case "talk-moves":
-      body.appendChild(createTalkMoves({ moves: data.moves, prefix: data.prefix }));
+      body.appendChild(createTalkMoves({ moves: data.moves }));
       break;
     case "move-pick":
       body.appendChild(createMovePick({ moves: data.moves, items: data.items }));
