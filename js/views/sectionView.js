@@ -461,7 +461,7 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
           const f = card.formats[Number(answers[`${base}-plan-format`])]?.en ?? "";
           return [
             { label: `${card.title} — topic and way`, answer: t && f ? `${f} — ${t}` : t || f },
-            ...card.starters.map((st, k) => ({ label: `${card.title} — ${st}`, answer: answers[`${base}-plan-s${k + 1}`] ?? "" })),
+            ...card.starters.map((st, k) => ({ label: `${card.title} — ${st.replace(/:\s*$/, "")}`, answer: answers[`${base}-plan-s${k + 1}`] ?? "" })),
           ];
         }
         if (card.type === "change-writer") {
