@@ -4617,7 +4617,7 @@ function moveBadge(m, cls) {
  * @param {{ moves: Array<{key: string, icon: string, image?: string, tone: string,
  *   name: string, nameDe: string, tip: string, tipDe?: string, phrases: Array<[string, string]>}> }} opts
  */
-export function createTalkMoves({ moves }) {
+export function createTalkMoves({ moves, prefix = "Move" }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-moves";
   moves.forEach((m, i) => {
@@ -4626,7 +4626,7 @@ export function createTalkMoves({ moves }) {
     card.appendChild(moveBadge(m, "exo-moves__pic"));
     const no = document.createElement("span");
     no.className = "exo-moves__no";
-    no.textContent = `Move ${i + 1}`;
+    no.textContent = `${prefix} ${i + 1}`;
     const h = document.createElement("h4");
     h.className = "exo-moves__name";
     h.textContent = m.name;
@@ -4780,6 +4780,7 @@ export function createPlanBuilder({ topics, formats, starters, values = {}, keyF
       } else b.appendChild(el("span", "exo-plan__icon", t.icon));
       b.appendChild(el("span", "exo-plan__en", t.en));
       if (t.de) b.appendChild(el("span", "exo-plan__de", t.de));
+      if (t.idea) b.appendChild(el("span", "exo-plan__idea", t.idea));
       b.addEventListener("click", () => {
         pick[field] = pick[field] === String(i) ? "" : String(i);
         onChange(field, pick[field]);
@@ -4897,6 +4898,163 @@ export function createPractiseTimer({ seconds = 60, label = "Practise out loud",
     left = seconds;
     paint();
   });
+  paint();
+  return wrap;
+}
+
+/**
+ * Partner work: write a two-minute dialogue in which two students present
+ * their own project ideas, try to convince each other and decide together.
+ * Names and ideas first, then one row per turn (A / B alternate) with a
+ * stage hint (EN + DE) and tap-to-insert phrases. A live length bar
+ * estimates the speaking time; "Hear our dialogue" reads it aloud in two
+ * voices; a two-minute timer is there for rehearsing.
+ *
+ * @param {{
+ *   turns: Array<{who: "A"|"B", stage: string, hint?: string, hintDe?: string, phrases?: string[]}>,
+ *   targetWords?: [number, number], seconds?: number,
+ *   values?: Record<string,string>,
+ *   keyFor: (f: string) => string, onChange: (f: string, v: string) => void,
+ * }} opts
+ */
+export function createDialogueWriter({ turns, targetWords = [180, 260], seconds = 120, values = {}, keyFor, onChange }) {
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const field = (key, tag, cls, placeholder) => {
+    const f = el(tag, cls);
+    if (tag === "input") f.type = "text";
+    f.placeholder = placeholder;
+    f.dataset.answerKey = keyFor(key);
+    f.value = values[keyFor(key)] ?? "";
+    f.addEventListener("input", () => {
+      onChange(key, f.value);
+      paint();
+    });
+    return f;
+  };
+
+  const wrap = el("div", "exo exo-dlg");
+
+  // ----- 1 · Who are you, what are your ideas? -----
+  const cast = el("section", "exo-dlg__cast");
+  const castH = el("h4", "exo-dlg__h");
+  castH.append(el("span", "exo-dlg__no", "1"), el("span", "", "You two and your ideas"));
+  cast.append(castH, el("p", "exo-dlg__h-de", "Eure Namen und eure zwei Projektideen (aus Step 1–3)."));
+  const pair = el("div", "exo-dlg__pair");
+  const side = (who) => {
+    const box = el("div", `exo-dlg__side exo-dlg__side--${who.toLowerCase()}`);
+    box.appendChild(el("span", "exo-dlg__badge", who));
+    const name = field(`name${who}`, "input", "exo-dlg__name", `Partner ${who}: name`);
+    const idea = field(`idea${who}`, "input", "exo-dlg__idea", "Project idea, e.g. a photo series about …");
+    box.append(name, idea);
+    pair.appendChild(box);
+    return { name, idea };
+  };
+  const A = side("A");
+  pair.appendChild(el("span", "exo-dlg__vs", "🤝"));
+  const B = side("B");
+  cast.appendChild(pair);
+  wrap.appendChild(cast);
+  const nameOf = (who) => ((who === "A" ? A : B).name.value.trim() || `Partner ${who}`);
+
+  // ----- 2 · The dialogue, turn by turn -----
+  const script = el("section", "exo-dlg__script");
+  const sH = el("h4", "exo-dlg__h");
+  sH.append(el("span", "exo-dlg__no", "2"), el("span", "", "Write your dialogue"));
+  script.append(sH, el("p", "exo-dlg__h-de", "Schreibt abwechselnd. Tippe auf eine Wendung, um sie einzufügen."));
+  const rows = turns.map((t, i) => {
+    const row = el("div", `exo-dlg__turn exo-dlg__turn--${t.who.toLowerCase()}`);
+    const who = el("span", "exo-dlg__who");
+    const stage = el("p", "exo-dlg__stage");
+    stage.append(el("strong", "", `${i + 1} · ${t.stage}`));
+    if (t.hint) stage.append(el("span", "exo-dlg__hint", t.hint));
+    if (t.hintDe) stage.append(el("span", "exo-dlg__hint-de", t.hintDe));
+    const ta = field(`t${i + 1}`, "textarea", "exo-dlg__line", "…");
+    ta.rows = 2;
+    const body = el("div", "exo-dlg__body");
+    body.append(stage, ta);
+    if (t.phrases?.length) {
+      const chips = el("div", "exo-dlg__chips");
+      t.phrases.forEach((p) => {
+        const c = el("button", "exo-dlg__chip", p);
+        c.type = "button";
+        c.addEventListener("pointerdown", (e) => e.preventDefault());
+        c.addEventListener("click", () => {
+          const text = p.replace(/\s*…$/, "").trimEnd() + " ";
+          const at = document.activeElement === ta ? ta.selectionStart : ta.value.length;
+          const before = ta.value.slice(0, at);
+          const pad = before && !/\s$/.test(before) ? " " : "";
+          ta.value = before + pad + text + ta.value.slice(at);
+          ta.focus();
+          const pos = (before + pad + text).length;
+          ta.setSelectionRange(pos, pos);
+          onChange(`t${i + 1}`, ta.value);
+          paint();
+        });
+        chips.appendChild(c);
+      });
+      body.appendChild(chips);
+    }
+    row.append(who, body);
+    script.appendChild(row);
+    return { who, ta, t };
+  });
+  wrap.appendChild(script);
+
+  // ----- 3 · Length, listen, rehearse -----
+  const check = el("section", "exo-dlg__check");
+  const cH = el("h4", "exo-dlg__h");
+  cH.append(el("span", "exo-dlg__no", "3"), el("span", "", "Check, listen, rehearse"));
+  check.append(cH, el("p", "exo-dlg__h-de", "Ist der Dialog ca. 2 Minuten lang? Hört ihn euch an — dann übt ihn mit der Uhr."));
+  const meter = el("div", "exo-dlg__meter");
+  const bar = el("span", "exo-dlg__bar");
+  const fill = el("span", "exo-dlg__fill");
+  bar.appendChild(fill);
+  const len = el("p", "exo-dlg__len");
+  meter.append(bar, len);
+  check.appendChild(meter);
+  const listen = el("button", "exo-dlg__listen", "▶ Hear our dialogue");
+  listen.type = "button";
+  check.appendChild(listen);
+  check.appendChild(createPractiseTimer({ seconds, label: "Rehearse — 2 minutes", labelDe: "Übt zu zweit mit der Uhr — dann präsentiert ihr." }));
+  wrap.appendChild(check);
+
+  // two voices, turn after turn
+  listen.addEventListener("click", () => {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    synth.cancel();
+    const voices = synth.getVoices().filter((v) => /^en/i.test(v.lang));
+    rows.forEach(({ ta, t }) => {
+      const text = ta.value.trim();
+      if (!text) return;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-GB";
+      u.rate = 0.95;
+      if (voices.length > 1) u.voice = voices[t.who === "A" ? 0 : 1];
+      else u.pitch = t.who === "A" ? 1.15 : 0.8;
+      synth.speak(u);
+    });
+  });
+
+  function paint() {
+    rows.forEach(({ who, t }) => (who.textContent = nameOf(t.who)));
+    const words = rows.reduce((n, r) => n + (r.ta.value.trim() ? r.ta.value.trim().split(/\s+/).length : 0), 0);
+    const [lo, hi] = targetWords;
+    const secs = Math.round((words / 110) * 60);
+    fill.style.width = `${Math.min(100, (words / hi) * 100)}%`;
+    meter.classList.toggle("exo-dlg__meter--ok", words >= lo && words <= hi);
+    meter.classList.toggle("exo-dlg__meter--over", words > hi);
+    len.textContent = !words
+      ? `Aim for about ${lo}–${hi} words (≈ 2 minutes).`
+      : `${words} words ≈ ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")} min — ${
+          words < lo ? "a bit short, add more reasons or questions." : words > hi ? "a bit long, make some lines shorter." : "good length!"
+        }`;
+  }
   paint();
   return wrap;
 }

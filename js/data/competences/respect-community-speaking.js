@@ -1,44 +1,71 @@
 /**
  * Respect & Community (Unit 2) — Speaking: "Keep Talking".
  *
- * Built from the LE / G-Kurs / E-Kurs source (06_Speaking_*). Getting
- * ready for the speaking test: the four moves that keep a conversation
- * going (react · give a reason · ask back · disagree politely), turning
- * one-word answers into real ones, planning your own project part, and
- * saying it out loud (practice timer; no recording in the app).
+ * Built from the LE / G-Kurs / E-Kurs source (06_Speaking_*). The exam
+ * task: "Your school is planning a project week against discrimination."
+ * Every student chooses a topic and a way to do it, plans their own part
+ * and finds arguments; then two partners talk, try to convince each other
+ * and decide together which project the school should do.
  *
- * Every level is visual: picture move cards with read-aloud phrases, a
- * picture "which move?", a tile-based project planner and stopwatches.
- * Step 1 LE starts with a picture warm-up instead of a text.
- *
- * Step 1 LE · Step 2 G-Kurs (+ plan) · Step 3 E-Kurs (+ say it, problem) ·
- * Step 4 challenge: your 60-second project pitch.
+ * The week leads there step by step (same path on every level, more
+ * support in LE):
+ *   Start — what the speaking week is (picture, the 8 lesson words, the path)
+ *   1. ideas → choose: topic tiles with a concrete example + a way to do it
+ *   2. plan + arguments: my plan, my reasons, convince & decide phrases
+ *   3. practise: the four moves, "make it longer", present my idea out loud
+ *      (LE 1 min · G 2 min · E 3 min, as in the source)
+ *   Step 4 — partner work: write a two-minute dialogue, listen, rehearse,
+ *   present.
  */
 
 const SCENE = "assets/images/unit2/speaking/scene.webp";
 
-const GLOSS_INTRO = [
-  "The speaking test is a four-to-six-minute ",
-  { w: "conversation", de: "das Gespräch" },
-  " with a partner. Learn the ",
-  { w: "dos and don'ts", de: "das, was man tun und lassen sollte" },
-  ": a ",
-  { w: "successful", de: "erfolgreich" },
-  " talk is not a ",
-  { w: "queue", de: "die Warteschlange" },
-  " of yes/no answers. ",
-  { w: "Suggest", de: "vorschlagen" },
-  " an idea, ",
-  { w: "agree on", de: "sich einigen auf" },
-  " a plan, and remember it is ",
-  { w: "the two of us", de: "wir beide" },
-  " — give the ball back. You don't even need to ",
-  { w: "shake hands", de: "sich die Hand geben" },
-  "; you just need to keep it going.",
+// The eight words of the lesson (same list on every level in the source)
+const LESSON_WORDS = [
+  { icon: "💬", en: "conversation", de: "das Gespräch" },
+  { icon: "✅", en: "dos and don'ts", de: "was man tun und lassen sollte" },
+  { icon: "🤝", en: "shake hands", de: "sich die Hand geben" },
+  { icon: "🏆", en: "successful", de: "erfolgreich" },
+  { icon: "🧍‍♂️🧍‍♀️", en: "queue", de: "die Warteschlange" },
+  { icon: "👍", en: "agree on sth.", de: "sich auf etwas einigen" },
+  { icon: "💡", en: "suggest sth.", de: "etwas vorschlagen" },
+  { icon: "👫", en: "the two of us", de: "wir beide" },
 ];
 
-// The four moves — a picture card each (icon now; an illustration can be
-// added later as `image`). Phrases are read aloud when tapped.
+// The path of the week — shown on the Start card of every level
+const WEEK_PATH = [
+  { icon: "💡", en: "Choose a project idea for your school.", de: "Wähle eine Projektidee für deine Schule." },
+  { icon: "📝", en: "Plan it and find good reasons.", de: "Plane sie und finde gute Gründe." },
+  { icon: "🗣️", en: "Practise: present your idea out loud.", de: "Übe: Stell deine Idee laut vor." },
+  { icon: "🎭", en: "Step 4: with a partner, write and present a 2-minute dialogue — decide together!", de: "Step 4: Schreibt zu zweit einen 2-Minuten-Dialog, präsentiert ihn — und entscheidet gemeinsam!" },
+];
+
+const START = (de) => ({
+  type: "listen-prep",
+  kind: "Sprechen · Vorbereitung",
+  title: "Your speaking week",
+  intro: "Your school is planning a project week against discrimination. Which project should it be? You and a partner decide — in English!",
+  ...(de && { introDe: "Eure Schule plant eine Projektwoche gegen Diskriminierung. Welches Projekt soll es werden? Du und dein Partner entscheidet — auf Englisch!" }),
+  picture: SCENE,
+  pictureAlt: "Two teenagers talking in a town square",
+  show: "Speaking test",
+  ...(de && { showDe: "Im Sprechtest sprecht ihr zu zweit 4–6 Minuten." }),
+  speakers: [
+    { icon: "🙋‍♀️", name: "You", role: "bring your own project idea", ...(de && { roleDe: "du bringst deine eigene Projektidee mit" }) },
+    { icon: "🙋‍♂️", name: "Your partner", role: "brings a different idea", ...(de && { roleDe: "dein Partner bringt eine andere Idee mit" }) },
+  ],
+  topic: "You talk, try to convince each other — and agree on ONE project for your school.",
+  ...(de && { topicDe: "Ihr sprecht, versucht euch zu überzeugen — und einigt euch auf EIN Projekt für eure Schule." }),
+  words: LESSON_WORDS,
+  plan: WEEK_PATH.map((p) => (de ? p : { icon: p.icon, en: p.en })),
+  labels: {
+    who: ["What is the speaking test?", de ? "Was ist der Sprechtest?" : ""],
+    words: ["The words of this lesson", de ? "Tippe auf eine Karte: Du hörst das Wort und siehst es auf Deutsch." : "Tap a card to hear the word and see it in German."],
+    plan: ["Your way through the week", de ? "So läuft die Woche" : ""],
+  },
+});
+
+// The four moves — picture cards; phrases are read aloud when tapped.
 const MOVES = [
   {
     key: "react",
@@ -84,6 +111,30 @@ const MOVES = [
 const MOVES_LE = MOVES.map((m) => ({ ...m, phrases: m.phrases.slice(0, 2) }));
 const MOVE_BUTTONS = MOVES.map(({ key, icon, image, tone, name, nameDe }) => ({ key, icon, image, tone, name, nameDe }));
 
+// Convince your partner — and decide together
+const CONVINCE = [
+  {
+    key: "convince",
+    icon: "📣",
+    tone: "coral",
+    name: "Convince",
+    nameDe: "Überzeugen",
+    tip: "Say why YOUR idea is the best one.",
+    tipDe: "Sag, warum DEINE Idee die beste ist.",
+    phrases: [["I think we should …, because …", "Ich finde, wir sollten …, weil …"], ["The best thing about my idea is …", "Das Beste an meiner Idee ist …"], ["Imagine …", "Stell dir vor …"], ["And there is one more thing: …", "Und noch etwas: …"]],
+  },
+  {
+    key: "decide",
+    icon: "🤝",
+    tone: "teal",
+    name: "Decide together",
+    nameDe: "Gemeinsam entscheiden",
+    tip: "Find ONE plan you both like.",
+    tipDe: "Findet EINEN Plan, den ihr beide gut findet.",
+    phrases: [["How about …?", "Wie wäre es mit …?"], ["Let's combine our ideas: …", "Lass uns unsere Ideen verbinden: …"], ["OK, you have convinced me.", "Okay, du hast mich überzeugt."], ["So we agree on …", "Also einigen wir uns auf …"]],
+  },
+];
+
 const WHICH_MOVE_LE = [
   { say: "What do you think?", de: "Was denkst du?", answer: "ask" },
   { say: "That's a good point.", de: "Guter Punkt.", answer: "react" },
@@ -102,47 +153,38 @@ const WHICH_MOVE = [
 
 const LONGER_EXAMPLE = {
   title: "Example",
-  text: "“Yes.” → Yes, I like that idea, because everybody can join in. What do you think?",
+  text: "“Yes.” → Yes, I like that idea, because everybody can join in. What would you do first?",
 };
 
-const MAKE_LONGER = {
-  intro:
-    "Your partner asks: “Which project should our class do?” Make each short answer longer — with a reason AND a question back.",
-  starters: ["“No.” → …", "“A poster.” → …", "“I don't know.” → …", "“Maybe.” → …"],
-};
+// Topics with a concrete example each, so learners can picture the project
+const TOPICS = [
+  { icon: "🧠", en: "Where prejudice comes from", de: "Woher Vorurteile kommen", idea: "e.g. Why do people judge others by their name, clothes or accent?" },
+  { icon: "📣", en: "A campaign for our school", de: "Eine Kampagne für unsere Schule", idea: "e.g. a “Nobody eats alone” week with posters and buddies" },
+  { icon: "🌍", en: "Interviews with people who moved here", de: "Interviews mit Zugezogenen", idea: "e.g. ask a neighbour or a teacher about their first months here" },
+  { icon: "📋", en: "A survey in our year", de: "Eine Umfrage im Jahrgang", idea: "e.g. “Have you ever felt left out?” — show the answers in a graph" },
+  { icon: "🔤", en: "The story of one word", de: "Die Geschichte eines Wortes", idea: "e.g. a word that hurts: where it comes from and why we stop using it" },
+];
+const FORMATS = [
+  { icon: "🖼️", en: "A poster for the main corridor", de: "ein Poster für den Flur" },
+  { icon: "🎬", en: "A 60-second film", de: "ein 60-Sekunden-Film" },
+  { icon: "🎤", en: "A song or a rap", de: "ein Song oder Rap" },
+  { icon: "📊", en: "A survey with a graph", de: "eine Umfrage mit Grafik" },
+  { icon: "📷", en: "A photo series", de: "eine Fotoserie" },
+  { icon: "🎙️", en: "An interview with somebody from outside school", de: "ein Interview mit jemandem von außerhalb" },
+];
+const TOPICS_EN = TOPICS.map(({ de, ...t }) => t);
+const FORMATS_EN = FORMATS.map(({ de, ...f }) => f);
 
-const PLAN = {
-  intro:
-    "Your school is planning a project week against discrimination. Choose a topic and a way to do it — then fill in your plan. You will talk about it with your partner.",
-  topics: [
-    { icon: "🧠", en: "Where prejudice comes from", de: "Woher Vorurteile kommen" },
-    { icon: "📣", en: "A campaign for our school", de: "Eine Kampagne für unsere Schule" },
-    { icon: "🌍", en: "Interviews with people who moved here", de: "Interviews mit Zugezogenen" },
-    { icon: "📋", en: "A survey in our year", de: "Eine Umfrage im Jahrgang" },
-    { icon: "🔤", en: "The story of one word", de: "Die Geschichte eines Wortes" },
-  ],
-  formats: [
-    { icon: "🖼️", en: "A poster", de: "ein Poster" },
-    { icon: "🎬", en: "A 60-second film", de: "ein 60-Sekunden-Film" },
-    { icon: "🎤", en: "A song or rap", de: "ein Song oder Rap" },
-    { icon: "📊", en: "A survey with a graph", de: "eine Umfrage mit Grafik" },
-    { icon: "📷", en: "A photo series", de: "eine Fotoserie" },
-    { icon: "🎙️", en: "An interview", de: "ein Interview" },
-  ],
-  starters: ["Why this one? (two reasons):", "What we need:", "Who does what:", "How long it takes:"],
-};
+const PLAN_INTRO =
+  "Your school is planning a project week against discrimination. Choose ONE topic and ONE way of doing it — look at the examples for ideas. Then fill in your plan. This is YOUR idea for the talk with your partner.";
 
-const SAY_IT = {
-  intro:
-    "Talk about your plan for three minutes without stopping — start the timer, record yourself on your phone if you like, then tick the list.",
-  lines: [
-    "I gave a reason for every idea.",
-    "I asked my partner something at least twice.",
-    "I used at least two phrases from the four moves.",
-    "I spoke for the whole time with no long pause.",
-    "I said what I think, not only what the box says.",
-  ],
-};
+const SAY_IT_LINES = [
+  "I gave a reason for every idea.",
+  "I asked my partner something at least twice.",
+  "I used at least two phrases from the four moves.",
+  "I spoke for the whole time with no long pause.",
+  "I said what I think, not only what the box says.",
+];
 
 const PROBLEM = {
   situation: "In the speaking test your partner says almost nothing — four minutes, and they have answered “yes” three times.",
@@ -153,6 +195,20 @@ const PROBLEM = {
   ],
 };
 
+// Step 4 — the dialogue, turn by turn
+const DIALOGUE_TURNS = [
+  { who: "A", stage: "Start the talk", hint: "Say hello and ask for B's idea.", hintDe: "Begrüße B und frag nach der Idee.", phrases: ["Hi! Our school is planning a project week.", "What's your idea?"] },
+  { who: "B", stage: "Present your idea", hint: "Your project + one reason.", hintDe: "Dein Projekt + ein Grund.", phrases: ["I'd like to make …", "I think we should …, because …"] },
+  { who: "A", stage: "React and present your idea", hint: "React, then your project + one reason.", hintDe: "Reagiere, dann dein Projekt + ein Grund.", phrases: ["That's a good point.", "My idea is …", "The best thing about my idea is …"] },
+  { who: "B", stage: "Ask back", hint: "Ask A a question about the idea.", hintDe: "Stell A eine Frage zur Idee.", phrases: ["What do you need for that?", "Who would do what?", "How long would it take?"] },
+  { who: "A", stage: "Answer and give another reason", hint: "Answer the question — then one more reason.", hintDe: "Beantworte die Frage — dann noch ein Grund.", phrases: ["We need …", "And there is one more thing: …"] },
+  { who: "B", stage: "Disagree politely", hint: "Say what you don't like — and your best argument.", hintDe: "Sag, was dir nicht gefällt — und dein bestes Argument.", phrases: ["I see what you mean, but …", "That may be true, but …", "The main reason is …"] },
+  { who: "A", stage: "Try to convince B", hint: "Make your idea sound great.", hintDe: "Lass deine Idee toll klingen.", phrases: ["Imagine …", "Everybody could …", "What do you think?"] },
+  { who: "B", stage: "Suggest a decision", hint: "Choose one idea — or combine both.", hintDe: "Wähle eine Idee — oder verbindet beide.", phrases: ["How about …?", "Let's combine our ideas: …", "OK, you have convinced me."] },
+  { who: "A", stage: "Agree together", hint: "Say what you both decided.", hintDe: "Sag, was ihr entschieden habt.", phrases: ["Great! So we agree on …", "That's a deal!"] },
+  { who: "B", stage: "Close the talk", hint: "The first step — and goodbye.", hintDe: "Der erste Schritt — und Tschüss.", phrases: ["Let's start on …", "I'll …, and you …", "See you!"] },
+];
+
 export default {
   title: "Keep Talking",
 
@@ -160,46 +216,39 @@ export default {
     /* ============ STEP 1 — LE ============ */
     {
       step: 1,
-      subtitle: "LE · Die vier Züge eines Gesprächs — mit Bildern",
+      subtitle: "LE · Idee wählen, Gründe finden, sprechen — mit Hilfe",
       accent: "coral",
       layout: "slide",
       cards: [
+        START(true),
         {
-          type: "listen-prep",
-          kind: "Sprechen · LE · Vorbereitung",
-          title: "The speaking test",
-          intro: "Look, tap and listen — then you know what to do.",
-          introDe: "Schau, tippe und hör zu — dann weißt du, was du im Sprechtest machst.",
-          picture: SCENE,
-          pictureAlt: "Two teenagers talking in a town square",
-          show: "Speaking test",
-          showDe: "Im Sprechtest sprichst du 4–6 Minuten mit einem Partner oder einer Partnerin.",
-          speakers: [
-            { icon: "🙋‍♀️", name: "You", role: "you talk and you listen", roleDe: "du sprichst und hörst zu" },
-            { icon: "🙋‍♂️", name: "Your partner", role: "talks with you — like ping-pong 🏓", roleDe: "spricht mit dir — wie beim Tischtennis" },
-          ],
-          topic: "Together you plan a class project against discrimination.",
-          topicDe: "Ihr plant zusammen ein Klassenprojekt gegen Diskriminierung.",
-          words: [
-            { icon: "💬", en: "conversation", de: "das Gespräch" },
-            { icon: "🧑‍🤝‍🧑", en: "partner", de: "der Partner / die Partnerin" },
-            { icon: "💡", en: "idea", de: "die Idee" },
-            { icon: "🤔", en: "reason", de: "der Grund" },
-            { icon: "👍", en: "agree", de: "zustimmen" },
-            { icon: "👎", en: "disagree", de: "widersprechen" },
-            { icon: "❓", en: "question", de: "die Frage" },
-            { icon: "🎨", en: "project", de: "das Projekt" },
-          ],
-          plan: [
-            { icon: "🏓", en: "Never only “yes” or “no”.", de: "Nie nur „ja“ oder „nein“." },
-            { icon: "💡", en: "Always give a reason: … because …", de: "Nenn immer einen Grund: … weil …" },
-            { icon: "↩️", en: "Ask back: What do you think?", de: "Frag zurück: Was denkst du?" },
-          ],
-          labels: {
-            who: ["What is the speaking test?", "Was ist der Sprechtest?"],
-            words: ["Words for talking", "Tippe auf eine Karte: Du hörst das Wort und siehst es auf Deutsch."],
-            plan: ["Three golden rules", "Drei goldene Regeln"],
-          },
+          type: "plan-builder",
+          kind: "Sprechen · Deine Idee",
+          title: "Choose your project",
+          intro: PLAN_INTRO,
+          introDe: "Eure Schule plant eine Projektwoche gegen Diskriminierung. Wähle EIN Thema und EINE Umsetzung — die Beispiele helfen dir. Dann füll deinen Plan aus. Das ist DEINE Idee für das Gespräch.",
+          topics: TOPICS,
+          formats: FORMATS,
+          starters: ["Why this one? Because …", "We need …", "It takes … (days / lessons)"],
+        },
+        {
+          type: "talk-moves",
+          kind: "Sprechen · Überzeugen",
+          title: "Convince — and decide together",
+          prefix: "Tool",
+          intro: "With these phrases you convince your partner and decide together. Tap a phrase to hear it.",
+          introDe: "Mit diesen Sätzen überzeugst du deinen Partner und ihr entscheidet gemeinsam. Tippe auf einen Satz — du hörst ihn.",
+          moves: CONVINCE.map((m) => ({ ...m, phrases: m.phrases.slice(0, 3) })),
+        },
+        {
+          type: "written",
+          kind: "Sprechen · Argumente",
+          title: "My reasons",
+          intro: "Why is YOUR project good for your school? Write two reasons.",
+          introDe: "Warum ist DEIN Projekt gut für eure Schule? Schreib zwei Gründe.",
+          example: { title: "Example", text: "Our school needs my project, because new students often feel alone. Another reason is that a poster stays on the wall all year." },
+          starters: ["Our school needs my project, because …", "Another reason is …"],
+          help: "Hilfe: need = brauchen · because = weil · another reason = ein weiterer Grund",
         },
         {
           type: "talk-moves",
@@ -230,6 +279,26 @@ export default {
         },
         {
           type: "written",
+          kind: "Sprechen · Selbstcheck",
+          title: "Now say it — 1 minute",
+          intro: "Present YOUR idea out loud for one minute — to a partner or to the mirror. Then tick the list.",
+          introDe: "Stell DEINE Idee eine Minute lang laut vor — einem Partner oder vor dem Spiegel. Dann hake die Liste ab.",
+          lines: ["I said my idea.", "I gave two reasons.", "I asked a question: What do you think?"],
+          checklist: true,
+          timer: { seconds: 60, label: "Talk for one minute", labelDe: "Sprich eine Minute am Stück." },
+        },
+        {
+          type: "idea-pick",
+          kind: "Problem solving",
+          title: "Which idea is best?",
+          intro: "Bewerte jede Idee, wähle die beste — und schreib, warum.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
+          starters: ["Idea ___ is best, because …"],
+          help: "Hilfe: Dein Partner sagt im Test fast nichts. Idee 1 = selbst weiterreden · Idee 2 = kurze offene Fragen stellen und warten · Idee 3 = vorher die Themen aufteilen.",
+        },
+        {
+          type: "written",
           kind: "Offene Frage",
           title: "Talking to you",
           introDe: "Mit wem kannst du leicht reden — und warum? Schreib ein oder zwei Sätze.",
@@ -243,18 +312,34 @@ export default {
     /* ============ STEP 2 — G-Kurs ============ */
     {
       step: 2,
-      subtitle: "G-Kurs · Reagieren, begründen, zurückfragen",
+      subtitle: "G-Kurs · Planen, begründen, überzeugen",
       accent: "olive",
       layout: "spread",
       cards: [
+        START(false),
         {
-          type: "text",
-          kind: "Sprechen · G-Kurs",
-          title: "The speaking test",
-          image: SCENE,
-          imageAlt: "Two teenagers talking in a town square",
-          paragraphs: [GLOSS_INTRO],
-          help: "Faustregel: nie nur „yes“ oder „no“ — immer ein Grund und eine Rückfrage.",
+          type: "plan-builder",
+          kind: "Sprechen · Deine Idee",
+          title: "Choose your project",
+          intro: PLAN_INTRO,
+          topics: TOPICS_EN,
+          formats: FORMATS_EN,
+          starters: ["Why this one? (two reasons):", "What we need:", "Who does what:", "How long it takes:"],
+        },
+        {
+          type: "talk-moves",
+          kind: "Sprechen · Überzeugen",
+          title: "Convince — and decide together",
+          prefix: "Tool",
+          intro: "Use these phrases to convince your partner and to agree on one project. Tap a phrase to hear it.",
+          moves: CONVINCE,
+        },
+        {
+          type: "written",
+          kind: "Sprechen · Argumente",
+          title: "My arguments",
+          intro: "Why should the school choose YOUR project? Write three arguments for the talk with your partner.",
+          starters: ["Our school needs this project, because …", "Another reason is …", "Imagine …"],
         },
         {
           type: "talk-moves",
@@ -275,18 +360,27 @@ export default {
           type: "written",
           kind: "Sprechen · Ausbauen",
           title: "Make it longer",
-          intro: MAKE_LONGER.intro,
+          intro: "Your partner asks: “Which project should our class do?” Make each short answer longer — with a reason AND a question back.",
           example: LONGER_EXAMPLE,
-          starters: MAKE_LONGER.starters,
+          starters: ["“No.” → …", "“A poster.” → …", "“I don't know.” → …", "“Maybe.” → …"],
         },
         {
-          type: "plan-builder",
-          kind: "Sprechen · Planen",
-          title: "Plan your own part",
-          intro: PLAN.intro,
-          topics: PLAN.topics,
-          formats: PLAN.formats,
-          starters: PLAN.starters,
+          type: "written",
+          kind: "Sprechen · Selbstcheck",
+          title: "Now say it — 2 minutes",
+          intro: "Present your plan out loud for two minutes without stopping — record yourself on your phone if you like. Then tick the list.",
+          lines: SAY_IT_LINES,
+          checklist: true,
+          timer: { seconds: 120, label: "Talk for two minutes", labelDe: "Sprich zwei Minuten am Stück." },
+        },
+        {
+          type: "idea-pick",
+          kind: "Problem solving",
+          title: "Which idea is best?",
+          intro: "Rate every idea, pick the best one, then say why it beats the others.",
+          situation: PROBLEM.situation,
+          ideas: PROBLEM.ideas,
+          starters: ["Idea ___ is best, because …", "The other ideas are not as good, because …"],
         },
         {
           type: "written",
@@ -301,17 +395,34 @@ export default {
     /* ============ STEP 3 — E-Kurs ============ */
     {
       step: 3,
-      subtitle: "E-Kurs · Planen, sprechen, am Laufen halten",
+      subtitle: "E-Kurs · Überzeugen und gemeinsam entscheiden",
       accent: "slate",
       layout: "spread",
       cards: [
+        START(false),
         {
-          type: "text",
-          kind: "Sprechen · E-Kurs",
-          title: "The speaking test",
-          image: SCENE,
-          imageAlt: "Two teenagers talking in a town square",
-          paragraphs: [GLOSS_INTRO],
+          type: "plan-builder",
+          kind: "Sprechen · Deine Idee",
+          title: "Choose your project",
+          intro: PLAN_INTRO,
+          topics: TOPICS_EN,
+          formats: FORMATS_EN,
+          starters: ["Why this one? (two reasons):", "What we need:", "Who does what:", "How long it takes:", "What could go wrong — and what we do then:"],
+        },
+        {
+          type: "talk-moves",
+          kind: "Sprechen · Überzeugen",
+          title: "Convince — and decide together",
+          prefix: "Tool",
+          intro: "Use these phrases to convince your partner and to agree on one project. Tap a phrase to hear it.",
+          moves: CONVINCE,
+        },
+        {
+          type: "written",
+          kind: "Sprechen · Argumente",
+          title: "My arguments — and the other side",
+          intro: "Write three arguments for YOUR project — and answer one argument your partner might use against it.",
+          starters: ["Our school needs this project, because …", "Another reason is …", "Imagine …", "Some people might say … , but …"],
         },
         {
           type: "talk-moves",
@@ -332,25 +443,16 @@ export default {
           type: "written",
           kind: "Sprechen · Ausbauen",
           title: "Make it longer",
-          intro: MAKE_LONGER.intro,
+          intro: "Your partner asks: “Which project should our class do?” Make each short answer longer — with a reason AND a question back.",
           example: LONGER_EXAMPLE,
-          starters: MAKE_LONGER.starters,
-        },
-        {
-          type: "plan-builder",
-          kind: "Sprechen · Planen",
-          title: "Plan your own part",
-          intro: PLAN.intro,
-          topics: PLAN.topics,
-          formats: PLAN.formats,
-          starters: [...PLAN.starters, "What could go wrong — and what we do then:"],
+          starters: ["“No.” → …", "“A poster.” → …", "“I don't know.” → …", "“Maybe.” → …"],
         },
         {
           type: "written",
           kind: "Sprechen · Selbstcheck",
-          title: "Now say it — three minutes, out loud",
-          intro: SAY_IT.intro,
-          lines: SAY_IT.lines,
+          title: "Now say it — 3 minutes",
+          intro: "Present your plan out loud for three minutes without stopping — record yourself on your phone if you like. Then tick the list.",
+          lines: SAY_IT_LINES,
           checklist: true,
           timer: { seconds: 180, label: "Talk for three minutes", labelDe: "Sprich drei Minuten am Stück — ohne lange Pause." },
         },
@@ -373,34 +475,25 @@ export default {
       ],
     },
 
-    /* ============ STEP 4 — Challenge ============ */
+    /* ============ STEP 4 — Challenge (partner work) ============ */
     {
       step: 4,
-      subtitle: "Challenge · Your 60-second pitch",
+      subtitle: "Challenge · Partnerarbeit: euer 2-Minuten-Dialog",
       accent: "ochre",
       layout: "single",
       cards: [
         {
-          type: "written",
-          kind: "Kreativ · Challenge",
-          title: "Pitch your project in 60 seconds",
+          type: "dialogue-writer",
+          kind: "Partnerarbeit · Challenge",
+          title: "Which project should our school do?",
           intro:
-            "You have one minute to convince your class to choose YOUR project. Write five short sentences, then say them out loud with the timer.",
+            "Work with a partner. You each bring your own project idea from Steps 1–3. Write a dialogue of about two minutes: present both ideas, ask questions, try to convince each other — and decide together. Then listen to it, rehearse it and present it.",
           introDe:
-            "Du hast eine Minute, um deine Klasse von DEINEM Projekt zu überzeugen. Schreib fünf kurze Sätze — dann sprich sie laut und stopp die Zeit.",
-          example: {
-            title: "Example pitch",
-            text: "Who wants a school where nobody eats lunch alone? Let's make a photo series! Firstly, it is quick, because everybody has a phone. Secondly, a photo stays on the wall all year. What do you think? So I think we should start on Monday!",
-          },
-          starters: [
-            "1 · Start with a question: Who wants …?",
-            "2 · Reason 1: Firstly, … because …",
-            "3 · Reason 2: Secondly, …",
-            "4 · Ask back: What do you think?",
-            "5 · The end: So I think we should …",
-          ],
-          timer: { seconds: 60, label: "Now say it — 60 seconds", labelDe: "Jetzt laut sprechen — schaffst du es in 60 Sekunden?" },
-          help: "Hilfe: Who wants …? = Wer will …? · Firstly = Erstens · Secondly = Zweitens · So I think we should … = Also finde ich, wir sollten …",
+            "Arbeitet zu zweit. Jeder bringt seine eigene Projektidee aus Step 1–3 mit. Schreibt einen Dialog von ca. 2 Minuten: Stellt beide Ideen vor, fragt nach, versucht euch zu überzeugen — und entscheidet gemeinsam. Dann hört ihn euch an, übt ihn und präsentiert ihn.",
+          turns: DIALOGUE_TURNS,
+          targetWords: [180, 260],
+          seconds: 120,
+          help: "Tipp: Beim Präsentieren nicht ablesen — schaut euch an! Jeder Satz hat einen Grund oder eine Frage.",
         },
       ],
     },

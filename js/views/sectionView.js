@@ -58,6 +58,7 @@ import {
   createMovePick,
   createPlanBuilder,
   createPractiseTimer,
+  createDialogueWriter,
 } from "../components/exercises.js";
 import {
   getName,
@@ -455,6 +456,14 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
             label: `${card.paragraph.title} — ${sentence.starter}`,
             answer: answers[`${base}-para-s${k}`] ?? "",
           }));
+        }
+        if (card.type === "dialogue-writer") {
+          const nm = (w) => (answers[`${base}-dlg-name${w}`] ?? "").trim() || `Partner ${w}`;
+          return [
+            { label: `${card.title} — ${nm("A")}'s idea`, answer: answers[`${base}-dlg-ideaA`] ?? "" },
+            { label: `${card.title} — ${nm("B")}'s idea`, answer: answers[`${base}-dlg-ideaB`] ?? "" },
+            ...card.turns.map((tn, k) => ({ label: `${k + 1}. ${nm(tn.who)} (${tn.stage})`, answer: answers[`${base}-dlg-t${k + 1}`] ?? "" })),
+          ];
         }
         if (card.type === "plan-builder") {
           const t = card.topics[Number(answers[`${base}-plan-topic`])]?.en ?? "";
@@ -1239,11 +1248,25 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(createListenPrep(data));
       break;
     case "talk-moves":
-      body.appendChild(createTalkMoves({ moves: data.moves }));
+      body.appendChild(createTalkMoves({ moves: data.moves, prefix: data.prefix }));
       break;
     case "move-pick":
       body.appendChild(createMovePick({ moves: data.moves, items: data.items }));
       break;
+    case "dialogue-writer": {
+      const base = `step${step.step}-task${index + 1}-dlg`;
+      body.appendChild(
+        createDialogueWriter({
+          turns: data.turns,
+          targetWords: data.targetWords,
+          seconds: data.seconds,
+          values: ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {},
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
     case "plan-builder": {
       const base = `step${step.step}-task${index + 1}-plan`;
       body.appendChild(
