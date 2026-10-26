@@ -54,6 +54,10 @@ import {
   createListenPrep,
   createMediationFlow,
   createChangeWriter,
+  createTalkMoves,
+  createMovePick,
+  createPlanBuilder,
+  createPractiseTimer,
 } from "../components/exercises.js";
 import {
   getName,
@@ -451,6 +455,14 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
             label: `${card.paragraph.title} — ${sentence.starter}`,
             answer: answers[`${base}-para-s${k}`] ?? "",
           }));
+        }
+        if (card.type === "plan-builder") {
+          const t = card.topics[Number(answers[`${base}-plan-topic`])]?.en ?? "";
+          const f = card.formats[Number(answers[`${base}-plan-format`])]?.en ?? "";
+          return [
+            { label: `${card.title} — topic and way`, answer: t && f ? `${f} — ${t}` : t || f },
+            ...card.starters.map((st, k) => ({ label: `${card.title} — ${st}`, answer: answers[`${base}-plan-s${k + 1}`] ?? "" })),
+          ];
         }
         if (card.type === "change-writer") {
           const pick = answers[`${base}-chg-idea`] ?? "";
@@ -905,7 +917,8 @@ function buildStepSection(step, ctx) {
       data.type !== "phrase-reference" &&
       data.type !== "video" &&
       data.type !== "image" &&
-      data.type !== "listen-prep"
+      data.type !== "listen-prep" &&
+      data.type !== "talk-moves"
     )
       taskNo += 1;
     return buildCard(step, data, i, taskNo, ctx);
@@ -975,7 +988,9 @@ function buildCard(step, data, index, taskNo, ctx) {
               ? "Words"
               : data.type === "listen-prep"
                 ? "Start"
-                : `Task ${taskNo}`;
+                : data.type === "talk-moves"
+                  ? "Words"
+                  : `Task ${taskNo}`;
     const kind = document.createElement("span");
     kind.className = "taskcard__kind";
     kind.textContent = data.kind ?? "";
@@ -1223,6 +1238,26 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "listen-prep":
       body.appendChild(createListenPrep(data));
       break;
+    case "talk-moves":
+      body.appendChild(createTalkMoves({ moves: data.moves }));
+      break;
+    case "move-pick":
+      body.appendChild(createMovePick({ moves: data.moves, items: data.items }));
+      break;
+    case "plan-builder": {
+      const base = `step${step.step}-task${index + 1}-plan`;
+      body.appendChild(
+        createPlanBuilder({
+          topics: data.topics,
+          formats: data.formats,
+          starters: data.starters,
+          values: ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {},
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
     case "change-writer": {
       const base = `step${step.step}-task${index + 1}-chg`;
       body.appendChild(
@@ -1381,6 +1416,11 @@ function buildCard(step, data, index, taskNo, ctx) {
     }
     default:
       appendWrittenBody(body, step, data, index, ctx);
+  }
+
+  // Optional practice stopwatch (speaking tasks)
+  if (data.timer) {
+    body.appendChild(createPractiseTimer(typeof data.timer === "object" ? data.timer : { seconds: data.timer }));
   }
 
   if (data.help) {

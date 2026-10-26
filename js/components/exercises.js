@@ -3955,7 +3955,15 @@ export function createReportBuilder({
  *   plan: Array<{icon: string, en: string, de?: string}>,
  * }} opts
  */
-export function createListenPrep({ picture, show, showDe, speakers, topic, topicDe, words, numbers = [], plan }) {
+export function createListenPrep({ picture, pictureAlt, show, showDe, speakers, topic, topicDe, words, numbers = [], plan, labels = {} }) {
+  // headings can be renamed, so the same warm-up also prepares Speaking
+  const L = {
+    who: ["Who is talking?", "Wer spricht?"],
+    words: ["Words you will hear", "Tippe auf eine Karte: Du hörst das Wort und siehst es auf Deutsch."],
+    numbers: ["Listen for these numbers!", "Diese Zahlen kommen vor. Tippe — du hörst, wie man sie sagt."],
+    plan: ["Your listening plan", "So hörst du"],
+    ...labels,
+  };
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -3987,7 +3995,7 @@ export function createListenPrep({ picture, show, showDe, speakers, topic, topic
   const wrap = el("div", "exo exo-lprep");
 
   // 1 · Who is talking?
-  const who = section(1, "Who is talking?", "Wer spricht?");
+  const who = section(1, ...L.who);
   const stage = el("div", "exo-lprep__stage");
   const left = el("div", "exo-lprep__left");
   stage.appendChild(left);
@@ -3995,7 +4003,7 @@ export function createListenPrep({ picture, show, showDe, speakers, topic, topic
     const fig = el("figure", "exo-lprep__pic");
     const img = el("img");
     img.src = picture;
-    img.alt = "A school radio studio with a microphone";
+    img.alt = pictureAlt ?? "A school radio studio with a microphone";
     img.loading = "lazy";
     fig.appendChild(img);
     const onAir = el("figcaption", "exo-lprep__onair");
@@ -4024,7 +4032,7 @@ export function createListenPrep({ picture, show, showDe, speakers, topic, topic
   wrap.appendChild(who);
 
   // 2 · Words you will hear — tap to turn over
-  const ws = section(2, "Words you will hear", "Tippe auf eine Karte: Du hörst das Wort und siehst es auf Deutsch.");
+  const ws = section(2, ...L.words);
   const grid = el("div", "exo-lprep__words");
   const turned = new Set();
   const counter = el("p", "exo-lprep__count");
@@ -4059,7 +4067,7 @@ export function createListenPrep({ picture, show, showDe, speakers, topic, topic
 
   // 3 · Listen for these numbers
   if (numbers.length) {
-    const ns = section(3, "Listen for these numbers!", "Diese Zahlen kommen vor. Tippe — du hörst, wie man sie sagt.");
+    const ns = section(3, ...L.numbers);
     const row = el("div", "exo-lprep__numbers");
     numbers.forEach((nb) => {
       const b = el("button", "exo-lprep__num");
@@ -4077,7 +4085,7 @@ export function createListenPrep({ picture, show, showDe, speakers, topic, topic
   }
 
   // 4 · Your listening plan
-  const ps = section(numbers.length ? 4 : 3, "Your listening plan", "So hörst du");
+  const ps = section(numbers.length ? 4 : 3, ...L.plan);
   const steps = el("ol", "exo-lprep__plan");
   plan.forEach((p, i) => {
     const li = el("li", "exo-lprep__step");
@@ -4566,5 +4574,329 @@ export function createChangeWriter({
   paintChoice();
   paintCount();
 
+  return wrap;
+}
+
+/* ---------- Speaking (Unit 2) — visual widgets ---------- */
+
+/** Read an English phrase aloud (Web Speech); silently does nothing without it. */
+function sayAloud(text, rate = 0.9) {
+  try {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/[“”"]/g, ""));
+    u.lang = "en-GB";
+    u.rate = rate;
+    synth.speak(u);
+  } catch {
+    /* no speech on this device */
+  }
+}
+
+/** A move's picture: the generated illustration if there is one, else its emoji badge. */
+function moveBadge(m, cls) {
+  const b = document.createElement("span");
+  b.className = `${cls} exo-moves--${m.tone}`;
+  if (m.image) {
+    const img = document.createElement("img");
+    img.src = m.image;
+    img.alt = "";
+    img.loading = "lazy";
+    b.appendChild(img);
+  } else {
+    b.textContent = m.icon;
+  }
+  return b;
+}
+
+/**
+ * The four conversation moves as picture cards: picture/icon, name (EN +
+ * DE), what it does, and phrases you can tap to hear (with German).
+ *
+ * @param {{ moves: Array<{key: string, icon: string, image?: string, tone: string,
+ *   name: string, nameDe: string, tip: string, tipDe?: string, phrases: Array<[string, string]>}> }} opts
+ */
+export function createTalkMoves({ moves }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-moves";
+  moves.forEach((m, i) => {
+    const card = document.createElement("section");
+    card.className = `exo-moves__card exo-moves__card--${m.tone}`;
+    card.appendChild(moveBadge(m, "exo-moves__pic"));
+    const no = document.createElement("span");
+    no.className = "exo-moves__no";
+    no.textContent = `Move ${i + 1}`;
+    const h = document.createElement("h4");
+    h.className = "exo-moves__name";
+    h.textContent = m.name;
+    const de = document.createElement("p");
+    de.className = "exo-moves__name-de";
+    de.textContent = m.nameDe;
+    const tip = document.createElement("p");
+    tip.className = "exo-moves__tip";
+    tip.textContent = m.tip;
+    card.append(no, h, de, tip);
+    if (m.tipDe) {
+      const td = document.createElement("p");
+      td.className = "exo-moves__tip-de";
+      td.textContent = m.tipDe;
+      card.appendChild(td);
+    }
+    const ul = document.createElement("ul");
+    ul.className = "exo-moves__phrases";
+    m.phrases.forEach(([en, deP]) => {
+      const li = document.createElement("li");
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "exo-moves__phrase";
+      b.setAttribute("aria-label", `Hear: ${en}`);
+      const e = document.createElement("span");
+      e.className = "exo-moves__en";
+      e.textContent = en;
+      const d = document.createElement("span");
+      d.className = "exo-moves__de";
+      d.textContent = deP;
+      b.append(e, d);
+      b.addEventListener("click", () => sayAloud(en));
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+    wrap.appendChild(card);
+  });
+  return wrap;
+}
+
+/**
+ * "Which move is it?" with pictures: each sentence gets the four move
+ * buttons. A right pick locks green; a wrong pick is crossed out and the
+ * learner tries again — the answer is never shown. Sentences are shuffled.
+ *
+ * @param {{ moves: Array<{key: string, icon: string, image?: string, tone: string, name: string, nameDe: string}>,
+ *   items: Array<{say: string, de?: string, answer: string}> }} opts
+ */
+export function createMovePick({ moves, items }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-mpick";
+  const score = document.createElement("p");
+  score.className = "exo-mpick__score";
+  let right = 0;
+  const paint = () => {
+    score.textContent = right === items.length ? `✔ All ${items.length} right — great!` : `${right} / ${items.length} right`;
+    score.classList.toggle("exo-mpick__score--done", right === items.length);
+  };
+  shuffledCopy(items).forEach((it) => {
+    const row = document.createElement("div");
+    row.className = "exo-mpick__row";
+    const bubble = document.createElement("button");
+    bubble.type = "button";
+    bubble.className = "exo-mpick__bubble";
+    bubble.setAttribute("aria-label", `Hear: ${it.say}`);
+    const s = document.createElement("span");
+    s.textContent = it.say;
+    bubble.appendChild(s);
+    if (it.de) {
+      const d = document.createElement("span");
+      d.className = "exo-mpick__de";
+      d.textContent = it.de;
+      bubble.appendChild(d);
+    }
+    bubble.addEventListener("click", () => sayAloud(it.say));
+    const opts = document.createElement("div");
+    opts.className = "exo-mpick__opts";
+    let solved = false;
+    moves.forEach((m) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = `exo-mpick__opt exo-mpick__opt--${m.tone}`;
+      b.appendChild(moveBadge(m, "exo-mpick__icon"));
+      const n = document.createElement("span");
+      n.className = "exo-mpick__name";
+      n.textContent = m.name;
+      const nd = document.createElement("span");
+      nd.className = "exo-mpick__name-de";
+      nd.textContent = m.nameDe;
+      b.append(n, nd);
+      b.addEventListener("click", () => {
+        if (solved || b.disabled) return;
+        if (m.key === it.answer) {
+          solved = true;
+          right += 1;
+          b.classList.add("exo-mpick__opt--right");
+          row.classList.add("exo-mpick__row--done");
+          opts.querySelectorAll("button").forEach((x) => (x.disabled = true));
+          paint();
+        } else {
+          b.classList.add("exo-mpick__opt--wrong");
+          b.disabled = true;
+        }
+      });
+      opts.appendChild(b);
+    });
+    row.append(bubble, opts);
+    wrap.appendChild(row);
+  });
+  wrap.appendChild(score);
+  paint();
+  return wrap;
+}
+
+/**
+ * Plan your project part: pick a topic and a way to do it from picture
+ * tiles (one each), see the plan as one sentence, then fill in the rest.
+ *
+ * @param {{ topics: Array<{icon: string, en: string, de?: string}>, formats: Array<{icon: string, image?: string, en: string, de?: string}>,
+ *   starters: string[], values?: Record<string,string>,
+ *   keyFor: (f: string) => string, onChange: (f: string, v: string) => void }} opts
+ */
+export function createPlanBuilder({ topics, formats, starters, values = {}, keyFor, onChange }) {
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const wrap = el("div", "exo exo-plan");
+  const pick = { topic: values[keyFor("topic")] ?? "", format: values[keyFor("format")] ?? "" };
+  const summary = el("p", "exo-plan__summary");
+  const groups = {};
+
+  const tileRow = (field, no, title, titleDe, list) => {
+    const sec = el("section", "exo-plan__sec");
+    const h = el("h4", "exo-plan__h");
+    h.append(el("span", "exo-plan__no", String(no)), el("span", "", title));
+    sec.append(h, el("p", "exo-plan__h-de", titleDe));
+    const row = el("div", `exo-plan__tiles exo-plan__tiles--${field}`);
+    groups[field] = list.map((t, i) => {
+      const b = el("button", "exo-plan__tile");
+      b.type = "button";
+      if (t.image) {
+        const img = el("img", "exo-plan__img");
+        img.src = t.image;
+        img.alt = "";
+        img.loading = "lazy";
+        b.appendChild(img);
+      } else b.appendChild(el("span", "exo-plan__icon", t.icon));
+      b.appendChild(el("span", "exo-plan__en", t.en));
+      if (t.de) b.appendChild(el("span", "exo-plan__de", t.de));
+      b.addEventListener("click", () => {
+        pick[field] = pick[field] === String(i) ? "" : String(i);
+        onChange(field, pick[field]);
+        paint();
+      });
+      row.appendChild(b);
+      return b;
+    });
+    sec.appendChild(row);
+    wrap.appendChild(sec);
+  };
+  tileRow("topic", 1, "Choose a topic", "Wähle ein Thema.", topics);
+  tileRow("format", 2, "Choose a way to do it", "Wähle, wie ihr es macht.", formats);
+
+  const sec3 = el("section", "exo-plan__sec");
+  const h3 = el("h4", "exo-plan__h");
+  h3.append(el("span", "exo-plan__no", "3"), el("span", "", "Fill in your plan"));
+  sec3.append(h3, el("p", "exo-plan__h-de", "Schreib zu jedem Punkt ein paar Wörter oder einen Satz."), summary);
+  const list = el("div", "exo-plan__rows");
+  starters.forEach((st, k) => {
+    const row = el("label", "exo-plan__row");
+    row.appendChild(el("span", "exo-plan__label", st));
+    const input = el("input", "exo-plan__input");
+    input.type = "text";
+    const key = `s${k + 1}`;
+    input.dataset.answerKey = keyFor(key);
+    input.value = values[keyFor(key)] ?? "";
+    input.addEventListener("input", () => onChange(key, input.value));
+    row.appendChild(input);
+    list.appendChild(row);
+  });
+  sec3.appendChild(list);
+  wrap.appendChild(sec3);
+
+  function paint() {
+    for (const field of ["topic", "format"]) {
+      groups[field].forEach((b, i) => b.classList.toggle("exo-plan__tile--on", pick[field] === String(i)));
+    }
+    const t = topics[Number(pick.topic)];
+    const f = formats[Number(pick.format)];
+    summary.textContent =
+      pick.topic !== "" && pick.format !== ""
+        ? `My plan: ${f.en.toLowerCase()} — ${t.en.toLowerCase()}.`
+        : "Choose a topic and a way above — your plan appears here.";
+    summary.classList.toggle("exo-plan__summary--set", pick.topic !== "" && pick.format !== "");
+  }
+  paint();
+  return wrap;
+}
+
+/**
+ * A practice stopwatch for speaking tasks: start, watch the ring run
+ * down, "Time's up!" at zero. Nothing is recorded.
+ * @param {{ seconds?: number, label?: string, labelDe?: string }} opts
+ */
+export function createPractiseTimer({ seconds = 60, label = "Practise out loud", labelDe = "Sprich laut und stopp die Zeit." } = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-timer";
+  const R = 34;
+  const C = 2 * Math.PI * R;
+  wrap.innerHTML = `<svg class="exo-timer__ring" viewBox="0 0 80 80" width="88" height="88" aria-hidden="true"><circle cx="40" cy="40" r="${R}" class="exo-timer__track"/><circle cx="40" cy="40" r="${R}" class="exo-timer__bar" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg>`;
+  const ring = wrap.querySelector(".exo-timer__bar");
+  const time = document.createElement("span");
+  time.className = "exo-timer__time";
+  const side = document.createElement("div");
+  side.className = "exo-timer__side";
+  const t = document.createElement("strong");
+  t.textContent = label;
+  const td = document.createElement("span");
+  td.className = "exo-timer__de";
+  td.textContent = labelDe;
+  const btns = document.createElement("div");
+  btns.className = "exo-timer__btns";
+  const start = document.createElement("button");
+  start.type = "button";
+  start.className = "exo-timer__start";
+  const reset = document.createElement("button");
+  reset.type = "button";
+  reset.className = "exo-timer__reset";
+  reset.textContent = "↺ Reset";
+  btns.append(start, reset);
+  side.append(t, td, btns);
+  wrap.append(time, side);
+
+  let left = seconds;
+  let timer = null;
+  const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  const paint = () => {
+    time.textContent = left > 0 ? fmt(left) : "Time's up!";
+    ring.setAttribute("stroke-dashoffset", String(C * (1 - left / seconds)));
+    wrap.classList.toggle("exo-timer--done", left === 0);
+    wrap.classList.toggle("exo-timer--running", !!timer);
+    start.textContent = timer ? "⏸ Pause" : left === seconds ? `▶ Start ${seconds} s` : "▶ Go on";
+  };
+  const stop = () => {
+    clearInterval(timer);
+    timer = null;
+  };
+  start.addEventListener("click", () => {
+    if (timer) stop();
+    else if (left > 0) {
+      timer = setInterval(() => {
+        left -= 1;
+        if (left <= 0) {
+          left = 0;
+          stop();
+        }
+        paint();
+      }, 1000);
+    }
+    paint();
+  });
+  reset.addEventListener("click", () => {
+    stop();
+    left = seconds;
+    paint();
+  });
+  paint();
   return wrap;
 }
