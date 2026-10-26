@@ -5041,12 +5041,13 @@ export function createDialogueWriter({ turns, targetWords = [180, 260], seconds 
 /**
  * "Your speaking week" — the Speaking start card (user's design): title
  * with highlighter, mission picture, four coloured steps with arrows and
- * a "Your first line" strip you can tap to hear.
+ * a "Your first line" strip you can tap to hear. Steps and the first line
+ * may carry a German line (`de`) for LE.
  *
  * @param {{ eyebrow?: string, title: string, tagline?: string, lead?: string, text?: string, textDe?: string,
  *   scene?: string, mission?: string, stepsTitle?: string,
- *   steps: Array<{icon: string, title: string, sub?: string, text: string, tone: string}>,
- *   firstLine?: {label: string, icon?: string, quote: string}, goodLuck?: string }} opts
+ *   steps: Array<{icon: string, title: string, sub?: string, text: string, de?: string, tone: string}>,
+ *   firstLine?: {label: string, icon?: string, quote: string, de?: string}, goodLuck?: string }} opts
  */
 export function createSpeakWeek({ eyebrow, title, tagline, lead, text, textDe, scene, mission, stepsTitle, steps, firstLine, goodLuck }) {
   const el = (tag, cls, txt) => {
@@ -5083,16 +5084,16 @@ export function createSpeakWeek({ eyebrow, title, tagline, lead, text, textDe, s
 
   if (stepsTitle) wrap.appendChild(el("h4", "exo-sweek__steps-title", stepsTitle));
   const row = el("ol", "exo-sweek__steps");
-  steps.forEach((s, i) => {
+  steps.forEach((s) => {
     const li = el("li", `exo-sweek__step exo-sweek__step--${s.tone}`);
     const top = el("div", "exo-sweek__step-top");
-    top.appendChild(el("span", "exo-sweek__step-no", String(i + 1).padStart(2, "0")));
     top.appendChild(img(s.icon, "exo-sweek__step-icon"));
     const name = el("span", "exo-sweek__step-name");
     name.appendChild(el("strong", "", s.title));
     if (s.sub) name.appendChild(el("span", "", s.sub));
     top.appendChild(name);
     li.append(top, el("p", "exo-sweek__step-text", s.text));
+    if (s.de) li.appendChild(el("p", "exo-sweek__step-de", s.de));
     row.appendChild(li);
   });
   wrap.appendChild(row);
@@ -5105,7 +5106,10 @@ export function createSpeakWeek({ eyebrow, title, tagline, lead, text, textDe, s
       fl.setAttribute("aria-label", `Hear: ${firstLine.quote}`);
       if (firstLine.icon) fl.appendChild(img(firstLine.icon, "exo-sweek__first-icon"));
       fl.appendChild(el("span", "exo-sweek__first-label", firstLine.label));
-      fl.appendChild(el("span", "exo-sweek__first-quote", `“${firstLine.quote}”`));
+      const q = el("span", "exo-sweek__first-say");
+      q.appendChild(el("span", "exo-sweek__first-quote", `“${firstLine.quote}”`));
+      if (firstLine.de) q.appendChild(el("span", "exo-sweek__first-de", firstLine.de));
+      fl.appendChild(q);
       fl.addEventListener("click", () => sayAloud(firstLine.quote.replace(/…/g, "")));
       foot.appendChild(fl);
     }
@@ -5116,16 +5120,35 @@ export function createSpeakWeek({ eyebrow, title, tagline, lead, text, textDe, s
 }
 
 /**
+ * The sentence a learner can say for a topic + result pick, e.g. "I think
+ * we should make a poster about prejudice." Needs `about`/`make` on the
+ * picks (German: `aboutDe`, `obj` + `verb`); null when they are missing.
+ *
+ * @param {{about?: string, aboutDe?: string}} topic
+ * @param {{make?: string, obj?: string, verb?: string}} result
+ */
+export function ideaProposal(topic, result) {
+  if (!topic?.about || !result?.make) return null;
+  return {
+    en: `I think we should ${result.make} about ${topic.about}.`,
+    de: result.obj && topic.aboutDe ? `Ich finde, wir sollten ${result.obj} ${topic.aboutDe} ${result.verb}.` : "",
+  };
+}
+
+/**
  * "What should our school do?" — the idea generator (user's design): pick
  * a project topic and a final result from picture tiles; the proposal
- * strip turns the two picks into the learner's proposal for the talk.
+ * strip turns the two picks into a sentence to say in the talk (tap to
+ * hear). With `speak`, tapping a tile also reads its English aloud (LE).
  *
  * @param {{ taskNo: number, eyebrow?: string, title: string, intro: string, highlight?: string, introDe?: string,
- *   scene?: string, badge?: string, motto?: string[],
- *   topicsTitle: string, topicsSub?: string, topicsIcon?: string, topics: Array<{icon: string, en: string, idea?: string, de?: string, tone: string}>,
- *   resultsTitle: string, resultsSub?: string, resultsIcon?: string, results: Array<{icon: string, en: string, de?: string, tone: string}>,
- *   proposalTitle: string, proposalText: string, proposalIcon?: string, note?: string,
- *   values?: Record<string,string>, keyFor: (f: string) => string, onChange: (f: string, v: string) => void }} opts
+ *   scene?: string, badge?: string, motto?: string[], speak?: boolean,
+ *   topicsTitle: string, topicsSub?: string, topicsIcon?: string,
+ *   topics: Array<{icon: string, en: string, idea?: string, de?: string, about?: string, aboutDe?: string, tone: string}>,
+ *   resultsTitle: string, resultsSub?: string, resultsIcon?: string,
+ *   results: Array<{icon: string, en: string, de?: string, make?: string, obj?: string, verb?: string, tone: string}>,
+ *   proposalTitle: string, proposalText: string, proposalIcon?: string, sayLabel?: string, note?: string,
+ *   values?: Record<string,string>, keyFor: (f: string) => string, onChange: (f: string, v: string) => void }} o
  */
 export function createIdeaGenerator(o) {
   const { values = {}, keyFor, onChange } = o;
@@ -5168,10 +5191,9 @@ export function createIdeaGenerator(o) {
 
   // a pick row: heading band + tiles
   const groups = {};
-  const band = (no, tone, icon, title, sub) => {
+  const band = (tone, icon, title, sub) => {
     const b = el("div", `exo-igen__band exo-igen__band--${tone}`);
     if (icon) b.appendChild(img(icon, "exo-igen__band-icon"));
-    b.appendChild(el("span", "exo-igen__band-no", String(no)));
     const t = el("div", "exo-igen__band-text");
     t.appendChild(el("h4", "", title));
     if (sub) t.appendChild(el("p", "", sub));
@@ -5184,12 +5206,14 @@ export function createIdeaGenerator(o) {
       const b = el("button", `exo-igen__tile exo-igen__tile--${t.tone}`);
       b.type = "button";
       b.setAttribute("aria-pressed", "false");
-      b.appendChild(img(t.icon, "exo-igen__tile-icon"));
-      b.appendChild(el("strong", "exo-igen__tile-en", t.en));
+      const top = el("span", "exo-igen__tile-top");
+      top.append(img(t.icon, "exo-igen__tile-icon"), el("strong", "exo-igen__tile-en", t.en));
+      b.appendChild(top);
       if (t.idea) b.appendChild(el("span", "exo-igen__tile-idea", t.idea));
       if (t.de) b.appendChild(el("span", "exo-igen__tile-de", t.de));
       b.addEventListener("click", () => {
         pick[field] = pick[field] === String(i) ? "" : String(i);
+        if (o.speak && pick[field] !== "") sayAloud(t.en);
         onChange(field, pick[field]);
         paint();
       });
@@ -5198,21 +5222,27 @@ export function createIdeaGenerator(o) {
     });
     return grid;
   };
-  wrap.appendChild(band(1, "blue", o.topicsIcon, o.topicsTitle, o.topicsSub));
+  wrap.appendChild(band("blue", o.topicsIcon, o.topicsTitle, o.topicsSub));
   wrap.appendChild(tiles("topic", o.topics, "exo-igen__tiles--topics"));
-  wrap.appendChild(band(2, "peach", o.resultsIcon, o.resultsTitle, o.resultsSub));
+  wrap.appendChild(band("peach", o.resultsIcon, o.resultsTitle, o.resultsSub));
   wrap.appendChild(tiles("format", o.results, "exo-igen__tiles--results"));
 
-  // proposal strip
+  // proposal strip: the picks become a sentence to say
   const strip = el("div", "exo-igen__proposal");
   if (o.proposalIcon) strip.appendChild(img(o.proposalIcon, "exo-igen__proposal-icon"));
   const pt = el("div", "exo-igen__proposal-text");
   pt.appendChild(el("h4", "", o.proposalTitle));
   const ptxt = el("p", "exo-igen__proposal-p");
-  pt.appendChild(ptxt);
+  const pde = el("p", "exo-igen__proposal-de");
+  pt.append(ptxt, pde);
   strip.appendChild(pt);
+  const hear = el("button", "exo-igen__hear", o.sayLabel ?? "🔊 Hear it");
+  hear.type = "button";
+  strip.appendChild(hear);
   if (o.note) strip.appendChild(el("p", "exo-igen__note", o.note));
   wrap.appendChild(strip);
+  let sentence = "";
+  hear.addEventListener("click", () => sentence && sayAloud(sentence));
 
   function paint() {
     for (const f of ["topic", "format"]) {
@@ -5224,13 +5254,16 @@ export function createIdeaGenerator(o) {
     }
     const t = o.topics[Number(pick.topic)];
     const r = o.results[Number(pick.format)];
-    if (pick.topic !== "" && pick.format !== "") {
-      ptxt.replaceChildren(document.createTextNode("My proposal: "), el("strong", "", `${r.en} — ${t.en.toLowerCase()}`));
-      strip.classList.add("exo-igen__proposal--set");
-    } else {
-      ptxt.textContent = o.proposalText;
-      strip.classList.remove("exo-igen__proposal--set");
-    }
+    const both = pick.topic !== "" && pick.format !== "";
+    const say = both ? ideaProposal(t, r) : null;
+    sentence = say?.en ?? "";
+    if (say) ptxt.replaceChildren(el("strong", "", `“${say.en}”`));
+    else if (both) ptxt.replaceChildren(document.createTextNode("My proposal: "), el("strong", "", `${r.en} — ${t.en.toLowerCase()}`));
+    else ptxt.textContent = o.proposalText;
+    pde.textContent = say?.de ?? "";
+    pde.hidden = !say?.de;
+    hear.hidden = !say;
+    strip.classList.toggle("exo-igen__proposal--set", both);
   }
   paint();
   return wrap;

@@ -61,6 +61,7 @@ import {
   createDialogueWriter,
   createSpeakWeek,
   createIdeaGenerator,
+  ideaProposal,
 } from "../components/exercises.js";
 import {
   getName,
@@ -460,9 +461,12 @@ async function downloadAnswerSheet(view, unit, section, content, name) {
           }));
         }
         if (card.type === "idea-generator") {
-          const t = card.topics[Number(answers[`${base}-plan-topic`])]?.en ?? "";
-          const f = card.results[Number(answers[`${base}-plan-format`])]?.en ?? "";
-          return [{ label: `${card.title} — my proposal`, answer: t && f ? `${f} — ${t}` : t || f }];
+          const tp = card.topics[Number(answers[`${base}-plan-topic`])];
+          const rs = card.results[Number(answers[`${base}-plan-format`])];
+          const t = tp?.en ?? "";
+          const f = rs?.en ?? "";
+          const say = tp && rs ? ideaProposal(tp, rs)?.en : "";
+          return [{ label: `${card.title} — my proposal`, answer: say || (t && f ? `${f} — ${t}` : t || f) }];
         }
         if (card.type === "dialogue-writer") {
           const nm = (w) => (answers[`${base}-dlg-name${w}`] ?? "").trim() || `Partner ${w}`;
