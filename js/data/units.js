@@ -63,16 +63,16 @@ export const UNITS = [
     wideCards: true, // landscape (≈5:3) location cards
     taskBackground: "assets/images/unit2/bg-tasks-classroom.jpg",
     // Theme 2 "Respect" — eight competences, built from the LE/G/E source.
-    // Order = the Lernzeitplan (one competence per week): Grammar, Reading,
-    // Vocabulary, Mediation, Listening, Writing, Speaking, Revision.
+    // Order = the Lernzeitplan (one competence per week): Reading, Vocabulary,
+    // Mediation, Listening, Grammar, Writing, Speaking, Revision.
     // pos = % of the unit page (landscape): down the left side, across the
     // bottom, up the right, Revision last at the top right.
     sections: [
-      { id: "grammar", label: "Grammar Garden", card: "assets/images/unit2/card-grammar.webp", pos: { x: 13, y: 28 } },
-      { id: "reading", label: "Reading Room", card: "assets/images/unit2/card-reading.webp", pos: { x: 12, y: 52 } },
-      { id: "vocabulary", label: "Vocabulary Village", card: "assets/images/unit2/card-vocabulary.webp", pos: { x: 13, y: 76 } },
-      { id: "mediation", label: "Mediation Bridge", card: "assets/images/unit2/card-mediation.webp", pos: { x: 36, y: 89 } },
-      { id: "listening", label: "Listening Studio", card: "assets/images/unit2/card-listening.webp", pos: { x: 64, y: 89 } },
+      { id: "reading", label: "Reading Room", card: "assets/images/unit2/card-reading.webp", pos: { x: 13, y: 28 } },
+      { id: "vocabulary", label: "Vocabulary Village", card: "assets/images/unit2/card-vocabulary.webp", pos: { x: 12, y: 52 } },
+      { id: "mediation", label: "Mediation Bridge", card: "assets/images/unit2/card-mediation.webp", pos: { x: 13, y: 76 } },
+      { id: "listening", label: "Listening Studio", card: "assets/images/unit2/card-listening.webp", pos: { x: 36, y: 89 } },
+      { id: "grammar", label: "Grammar Garden", card: "assets/images/unit2/card-grammar.webp", pos: { x: 64, y: 89 } },
       { id: "writing", label: "Writing Corner", card: "assets/images/unit2/card-writing.webp", pos: { x: 87, y: 76 } },
       { id: "speaking", label: "Speaking Square", card: "assets/images/unit2/card-speaking.webp", pos: { x: 88, y: 52 } },
       { id: "revision", label: "Revision Tower", card: "assets/images/unit2/card-revision.webp", pos: { x: 87, y: 28 } },
